@@ -1,24 +1,21 @@
-import httpx
+from openai import OpenAI
 import os
-import logging
 
-logger = logging.getLogger(__name__)
+client = OpenAI(
+    base_url=os.getenv("MODEL_HOST", "http://localhost:12434/engines/v1"),
+    api_key="not-needed"  # DMR ignores this, but the SDK requires a value
+)
 
-MODEL_HOST = os.getenv("MODEL_HOST", "http://model:11434")
+MODEL_MAP = {
+    "code": "ai/qwen3-coder",
+    "reasoning": "ai/qwen3.5",
+    "general": "ai/llama3.1",
+}
 
-
-async def query_model(prompt: str, model: str = "llama3") -> str:
-    """
-    Forward a prompt to the Dockerized model server (Ollama-compatible API)
-    and return the generated text.
-    """
-    url = f"{MODEL_HOST}/api/generate"
-    payload = {"model": model, "prompt": prompt, "stream": False}
-
-    logger.info("Sending request to model server at %s", url)
-    async with httpx.AsyncClient(timeout=120.0) as client:
-        response = await client.post(url, json=payload)
-        response.raise_for_status()
-
-    data = response.json()
-    return data.get("response", "")
+def query_model(task_type: str, prompt: str):
+    model = MODEL_MAP.get(task_type, "ai/qwen3.5")
+    response = client.chat.completions.create(
+        model=model,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return response.choices[0].message.content
