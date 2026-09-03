@@ -1,0 +1,30 @@
+================================================================================
+AEROSOVEREIGN FIELD INSPECTION REPORT
+TAG NO: 101-P-02A (CDU Crude Feed Booster Pump)
+Inspection Date: 2026-08-28 | Inspector: S. Nair (NDT Level II)
+================================================================================
+
+1. OPERATIONAL CONTEXT
+Unit 101 CDU experienced minor discharge pressure oscillations during high-sulfur
+crude feed blend switch. On-stream inspection performed per SOP-ENG-042.
+
+2. RECORDED MEASUREMENTS
+- Suction Pressure: 2.1 barg
+- Discharge Pressure: 14.8 barg (Nominal: 15.0 barg)
+- Suction Temperature: 42.5 °C
+- Motor Current: 118 Amperes (Full Load Rating: 135 A)
+
+3. VIBRATION SPECTRUM (DE & NDE BEARING HOUSINGS)
+- Drive-End (DE) Horizontal: 1.85 mm/s RMS
+- Drive-End (DE) Vertical:   1.42 mm/s RMS
+- Non-Drive-End (NDE) Axial: 2.10 mm/s RMS
+Assessment: All vibration values comply with Zone A (ISO 10816-3).
+
+4. ULTRASONIC WALL THICKNESS MEASUREMENTS
+- Suction Flange Neck: 17.6 mm (Original: 18.0 mm)
+- Casing Volute Apex:  22.4 mm (Original: 23.0 mm)
+Calculated Corrosion Rate: 0.08 mm/year (Well within design allowance).
+
+5. INSPECTION CONCLUSION
+Equipment is mechanically sound and cleared for unrestricted continuous duty.
+Next scheduled inspection: February 2027.

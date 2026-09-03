@@ -1,0 +1,32 @@
+================================================================================
+MANGALORE REFINERY AND PETROCHEMICALS LIMITED (MRPL)
+STANDARD OPERATING PROCEDURE: PUMP INSPECTION & INTEGRITY MONITORING
+Document ID: MRPL-SOP-ENG-042 | Revision: 4.2 | Classification: RESTRICTED
+================================================================================
+
+1. OBJECTIVE & SCOPE
+This standard operating procedure governs the periodic mechanical integrity,
+NDT testing, and vibration baseline evaluation of API 610 centrifugal process
+pumps deployed in CDU (Crude Distillation Unit) and VDU processing units.
+
+2. MANDATORY PRE-REQUISITES
+- Hazardous Work Permit (Class A Hot/Cold) authorized by Safety Officer.
+- Complete mechanical lock-out/tag-out (LOTO) of motor 3.3kV feeder breaker.
+- Depressurization and chemical neutralization of pump casing to 0.0 barg.
+- Continuous LEL (Lower Explosive Limit) monitoring showing 0.0% combustible gas.
+
+3. VIBRATION CRITERIA (ISO 10816-3 CLASS I/II RIGID MOUNT)
+- Zone A (New / Overhauled): Overall velocity RMS < 2.3 mm/s
+- Zone B (Unrestricted Long-Term Operation): 2.3 mm/s to 4.5 mm/s RMS
+- Zone C (Alarm / Investigation Trigger): 4.5 mm/s to 7.1 mm/s RMS
+- Zone D (Immediate Trip & Shutdown): > 7.1 mm/s RMS
+
+4. BEARING TEMPERATURE LIMITS
+- Hydrodynamic Sleeve Bearings: Maximum 85°C (185°F)
+- Antifriction Rolling Bearings: Maximum 93°C (200°F)
+- Lube oil supply temperature must remain between 40°C and 49°C.
+
+5. NON-DESTRUCTIVE TESTING (NDT) WALL THICKNESS
+- Suction nozzle nominal thickness: 18.0 mm (Corrosion Allowance: 3.0 mm)
+- Minimum retirement wall thickness (MRWT): 14.5 mm
+- If ultrasonic reading falls below 15.0 mm, ultrasonic B-scan grid is mandatory.

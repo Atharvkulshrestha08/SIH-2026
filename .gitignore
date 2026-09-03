@@ -24,5 +24,7 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Uploads
+# Uploads & Generated Documents
 /tmp/aerosovereign/
+backend/uploads/
+backend/documents/generated/

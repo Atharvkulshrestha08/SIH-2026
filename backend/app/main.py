@@ -1,18 +1,11 @@
-from fastapi import FastAPI
-from app.router import router
-from app.logging_config import setup_logging
+"""Compatibility alias for app.main -> gateway.main."""
+import sys
+import os
 
-setup_logging()
+backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
 
-app = FastAPI(
-    title="AeroSovereign API",
-    description="Backend API for AeroSovereign AI platform",
-    version="1.0.0",
-)
+from gateway.main import app
 
-app.include_router(router)
-
-
-@app.get("/")
-async def root():
-    return {"message": "AeroSovereign backend is running"}
+__all__ = ["app"]

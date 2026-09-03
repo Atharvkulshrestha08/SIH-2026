@@ -1,0 +1,54 @@
+"""Intent router agent for sub-100ms task classification."""
+import time
+import re
+from shared.schemas import TaskType, RouteDecision
+
+
+def classify_task(prompt: str) -> RouteDecision:
+    """
+    Classifies the user prompt into specialized task categories.
+    Executes in < 5ms using rule heuristics, compatible with Qwen2.5-3B intent classifier.
+    """
+    p = prompt.lower()
+
+    # Code / Math calculation
+    if any(k in p for k in ["calculate", "formula", "python", "code", "run", "stress", "flow rate", "reynolds", "ast", "math"]):
+        return RouteDecision(
+            task_type=TaskType.CODE_MATH,
+            target_model="qwen2.5-coder:7b-instruct-q4_K_M",
+            target_node="node2_compute",
+            confidence=0.98,
+            reasoning="Engineering calculation or code execution detected.",
+            requires_sandbox=True,
+        )
+
+    # Document Inspection / Memo Generation
+    if any(k in p for k in ["memo", "approval", "report", "generate doc", "word", "excel", "docx", "xlsx"]):
+        return RouteDecision(
+            task_type=TaskType.REPORT_GENERATION,
+            target_model="llama3.1:8b-instruct-q4_K_M",
+            target_node="node2_compute",
+            confidence=0.96,
+            reasoning="Deliverable / document generation requested.",
+            requires_docx=True,
+        )
+
+    # SOP / Inspection / RAG
+    if any(k in p for k in ["sop", "standard", "asme", "api 610", "iso", "manual", "procedure", "inspection", "guideline"]):
+        return RouteDecision(
+            task_type=TaskType.SOP_RAG,
+            target_model="llama3.1:8b-instruct-q4_K_M",
+            target_node="node2_compute",
+            confidence=0.95,
+            reasoning="Industrial SOP knowledge retrieval needed.",
+            requires_rag=True,
+        )
+
+    # Default General Task
+    return RouteDecision(
+        task_type=TaskType.GENERAL,
+        target_model="llama3",
+        target_node="node1_gateway",
+        confidence=0.90,
+        reasoning="General sovereign engineering assistance.",
+    )
