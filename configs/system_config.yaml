@@ -1,0 +1,38 @@
+# AeroSovereign System Configuration
+network:
+  node1_gateway:
+    host: "127.0.0.1"
+    port: 8000
+  node2_compute:
+    host: "127.0.0.1" # Change to Node 2 LAN IP (e.g., 192.168.1.20) in dual-node mode
+    port: 8001
+
+models:
+  task_router:
+    provider: "ollama"
+    model_name: "qwen2.5:3b"
+    base_url: "http://127.0.0.1:11434"
+  
+  engineering_coder:
+    provider: "ollama"
+    model_name: "qwen2.5-coder:7b-instruct-q4_K_M"
+    base_url: "http://127.0.0.1:11434"
+  
+  sop_rag:
+    provider: "ollama"
+    model_name: "llama3.1:8b-instruct-q4_K_M"
+    base_url: "http://127.0.0.1:11434"
+
+voice:
+  stt:
+    engine: "faster-whisper"
+    model_size: "base.en"
+    device: "cpu" # or "cuda"
+    compute_type: "int8"
+  tts:
+    engine: "piper"
+    voice: "en_US-lessac-medium"
+
+sandbox:
+  timeout_seconds: 5
+  max_memory_mb: 512

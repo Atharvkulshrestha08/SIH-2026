@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  # ── Ollama model server ──────────────────────────────────────────────────────
+  model:
+    image: ollama/ollama:latest
+    container_name: aerosovereign-model
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+
+  # ── FastAPI backend ──────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: aerosovereign-backend
+    env_file:
+      - ../backend/.env.example          # rename to .env in production
+    environment:
+      - MODEL_HOST=http://model:11434
+    ports:
+      - "8000:8000"
+    depends_on:
+      - model
+    restart: unless-stopped
+
+  # ── (Optional) Frontend ──────────────────────────────────────────────────────
+  # Uncomment to containerise the Vite dev server:
+  # frontend:
+  #   image: node:20-alpine
+  #   working_dir: /app
+  #   volumes:
+  #     - ../frontend:/app
+  #   command: sh -c "npm install && npm run dev -- --host"
+  #   ports:
+  #     - "5173:5173"
+  #   environment:
+  #     - VITE_API_URL=http://localhost:8000/api/v1
+
+volumes:
+  ollama_data:
