@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   askModel,
   executeCode,
@@ -201,6 +202,24 @@ export default function Home() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <Link
+            to="/"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              fontSize: "0.8rem",
+              padding: "0.4rem 0.8rem",
+              borderRadius: "8px",
+              background: "rgba(255, 255, 255, 0.05)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              color: "#a1a1aa",
+              textDecoration: "none",
+              transition: "all 0.2s ease"
+            }}
+          >
+            ← Landing Page
+          </Link>
           <div className="security-badge">
             <div className="pulse-dot"></div>
             <span>100% OFFLINE / 0 KB EGRESS</span>
