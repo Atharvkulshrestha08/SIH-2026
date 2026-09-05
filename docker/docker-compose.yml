@@ -1,16 +1,6 @@
 version: "3.9"
 
 services:
-  # ── Ollama model server ──────────────────────────────────────────────────────
-  model:
-    image: ollama/ollama:latest
-    container_name: aerosovereign-model
-    volumes:
-      - ollama_data:/root/.ollama
-    ports:
-      - "11434:11434"
-    restart: unless-stopped
-
   # ── FastAPI backend ──────────────────────────────────────────────────────────
   backend:
     build:
@@ -18,13 +8,40 @@ services:
       dockerfile: Dockerfile
     container_name: aerosovereign-backend
     env_file:
-      - ../backend/.env.example          # rename to .env in production
+      - ../backend/.env
     environment:
-      - MODEL_HOST=http://model:11434
+      - MODEL_HOST=http://model-runner.docker.internal/engines/v1
+      - POSTGRES_HOST=postgres
+      - QDRANT_URL=http://qdrant:6333
     ports:
       - "8000:8000"
     depends_on:
-      - model
+      - postgres
+      - qdrant
+    restart: unless-stopped
+
+  # ── Local PostgreSQL (replaces Supabase — sovereignty requirement) ──────────
+  postgres:
+    image: postgres:16
+    container_name: aerosovereign-postgres
+    environment:
+      POSTGRES_USER: aerosovereign
+      POSTGRES_PASSWORD: localdev
+      POSTGRES_DB: aerosovereign
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # ── Qdrant (vector DB for Week 5 RAG embeddings) ─────────────────────────────
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: aerosovereign-qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrantdata:/qdrant/storage
     restart: unless-stopped
 
   # ── (Optional) Frontend ──────────────────────────────────────────────────────
@@ -41,4 +58,5 @@ services:
   #     - VITE_API_URL=http://localhost:8000/api/v1
 
 volumes:
-  ollama_data:
+  pgdata:
+  qdrantdata:
