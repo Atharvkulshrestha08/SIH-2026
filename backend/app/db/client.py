@@ -1,13 +1,31 @@
+"""Local PostgreSQL client for AeroSovereign — replaces Supabase entirely.
+All data stays on-premises; no external network calls."""
 import os
-from supabase import create_client, Client
+# pyrefly: ignore [missing-import]
+import asyncpg
+DB_HOST = os.getenv("POSTGRES_HOST", "localhost")
+DB_PORT = os.getenv("POSTGRES_PORT", "5433")
+DB_NAME = os.getenv("POSTGRES_DB", "aerosovereign")
+DB_USER = os.getenv("POSTGRES_USER", "aerosovereign")
+DB_PASSWORD = os.getenv("POSTGRES_PASSWORD", "localdev")
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+_pool: asyncpg.Pool | None = None
 
-if not SUPABASE_URL or not SUPABASE_KEY:
-    raise RuntimeError(
-        "Missing SUPABASE_URL or SUPABASE_KEY in environment. "
-        "Check backend/.env"
+
+async def init_pool():
+    global _pool
+    _pool = await asyncpg.create_pool(
+        host=DB_HOST, port=DB_PORT, database=DB_NAME,
+        user=DB_USER, password=DB_PASSWORD,
     )
+    schema_path = os.path.join(os.path.dirname(__file__), "schema.sql")
+    with open(schema_path) as f:
+        schema_sql = f.read()
+    async with _pool.acquire() as conn:
+        await conn.execute(schema_sql)
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+async def get_pool() -> asyncpg.Pool:
+    if _pool is None:
+        await init_pool()
+    return _pool
