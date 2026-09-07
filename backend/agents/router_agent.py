@@ -15,7 +15,7 @@ def classify_task(prompt: str) -> RouteDecision:
     if any(k in p for k in ["calculate", "formula", "python", "code", "run", "stress", "flow rate", "reynolds", "ast", "math"]):
         return RouteDecision(
             task_type=TaskType.CODE_MATH,
-            target_model="qwen2.5-coder:7b-instruct-q4_K_M",
+            target_model="code",
             target_node="node2_compute",
             confidence=0.98,
             reasoning="Engineering calculation or code execution detected.",
@@ -26,7 +26,7 @@ def classify_task(prompt: str) -> RouteDecision:
     if any(k in p for k in ["memo", "approval", "report", "generate doc", "word", "excel", "docx", "xlsx"]):
         return RouteDecision(
             task_type=TaskType.REPORT_GENERATION,
-            target_model="llama3.1:8b-instruct-q4_K_M",
+            target_model="reasoning",
             target_node="node2_compute",
             confidence=0.96,
             reasoning="Deliverable / document generation requested.",
@@ -37,7 +37,7 @@ def classify_task(prompt: str) -> RouteDecision:
     if any(k in p for k in ["sop", "standard", "asme", "api 610", "iso", "manual", "procedure", "inspection", "guideline"]):
         return RouteDecision(
             task_type=TaskType.SOP_RAG,
-            target_model="llama3.1:8b-instruct-q4_K_M",
+            target_model="reasoning",
             target_node="node2_compute",
             confidence=0.95,
             reasoning="Industrial SOP knowledge retrieval needed.",
@@ -47,7 +47,7 @@ def classify_task(prompt: str) -> RouteDecision:
     # Default General Task
     return RouteDecision(
         task_type=TaskType.GENERAL,
-        target_model="llama3",
+        target_model="general",
         target_node="node1_gateway",
         confidence=0.90,
         reasoning="General sovereign engineering assistance.",

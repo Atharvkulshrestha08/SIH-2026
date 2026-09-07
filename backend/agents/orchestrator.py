@@ -5,7 +5,7 @@ from typing import Optional
 from shared.schemas import TaskRequest, TaskResponse, TaskType
 from agents.router_agent import classify_task
 from rag.retriever import search_knowledge_base
-from models.model_manager import query_model
+from app.models.model_manager import query_model
 from security.audit import log_event
 
 logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ async def run_orchestrated_task(request: TaskRequest) -> TaskResponse:
         )
 
     # 3. Model Query
-    text_response = await query_model(augmented_prompt, chosen_model)
+    text_response = await query_model(chosen_model, augmented_prompt)
 
     elapsed_ms = (time.perf_counter() - start_time) * 1000.0
 

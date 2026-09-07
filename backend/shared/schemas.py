@@ -40,7 +40,7 @@ class TaskResponse(BaseModel):
     text_response: str
     execution_time_ms: float = 0.0
     output_files: Optional[List[str]] = Field(default_factory=list)
-    sovereign_status: str = "PASS_0_EGRESS"
+    sovereign_status: str = "PASS_0_EXTERNAL_EGRESS"
 
 
 class ExecuteRequest(BaseModel):
