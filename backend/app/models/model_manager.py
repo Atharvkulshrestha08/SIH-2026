@@ -18,8 +18,9 @@ MODEL_MAP = {
 
 client = AsyncOpenAI(
     base_url=MODEL_HOST,
-    api_key="not-needed",  # DMR ignores this, but the SDK requires a value
-    timeout=15.0,
+    api_key="not-needed",
+    timeout=90.0,   # generous enough for a full generation, avoids mid-generation aborts
+    max_retries=0,  # don't restart generation from scratch on timeout - one clean attempt is faster
 )
 
 
@@ -55,6 +56,7 @@ async def query_model(task_type: str, prompt: str) -> str:
         response = await client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
+            max_tokens=500,
         )
         content = response.choices[0].message.content
         if content:
