@@ -8,7 +8,34 @@ ALLOWED_APPS = {
     "calculator": "calc.exe",
     "chrome": "chrome.exe",
     "whatsapp": "whatsapp:",
-    "docker": r"C:\ProgramData\Microsoft\Windows\Start Menu\Docker Desktop.lnk",  # confirm this path
+    "docker": r"C:\ProgramData\Microsoft\Windows\Start Menu\Docker Desktop.lnk",
+
+    # Office suite
+    "word": "winword.exe",
+    "excel": "excel.exe",
+    "powerpoint": "powerpnt.exe",
+
+    # Browsers
+    "edge": "msedge.exe",
+    "firefox": "firefox.exe",
+
+    # System utilities
+    "file explorer": "explorer.exe",
+    "explorer": "explorer.exe",
+    "task manager": "taskmgr.exe",
+    "settings": "ms-settings:",
+    "control panel": "control.exe",
+    "command prompt": "cmd.exe",
+    "cmd": "cmd.exe",
+    "powershell": "powershell.exe",
+    "paint": "mspaint.exe",
+    "snipping tool": "ms-screenclip:",
+
+    # Dev / media (common on a dev's laptop)
+    "vscode": r"C:\Users\%USERNAME%\AppData\Local\Programs\Microsoft VS Code\Code.exe",
+    "vs code": r"C:\Users\%USERNAME%\AppData\Local\Programs\Microsoft VS Code\Code.exe",
+    "spotify": "spotify:",
+    "vlc": "vlc.exe",
 }
 
 ALLOWED_FILE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "sample_data"))
@@ -38,7 +65,7 @@ def execute_action(action: str, target: str) -> dict:
         if key not in ALLOWED_APPS:
             return {"status": "denied", "detail": f"'{target}' not in allowed app list"}
         try:
-            os.startfile(ALLOWED_APPS[key])
+            os.startfile(os.path.expandvars(ALLOWED_APPS[key]))
             logger.info(f"Opened app: {key}")
             return {"status": "success", "detail": f"Opened {target}"}
         except Exception as e:

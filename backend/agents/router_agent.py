@@ -57,7 +57,13 @@ def classify_task(prompt: str) -> RouteDecision:
 # --- System Action Intent (opens apps/files, bypasses model call) ---
 
 ACTION_TRIGGERS = ["open", "launch", "start"]
-KNOWN_APPS = ["notepad", "calculator", "chrome", "docker", "whatsapp"]
+KNOWN_APPS = [
+    "notepad", "calculator", "chrome", "docker", "whatsapp",
+    "word", "excel", "powerpoint", "edge", "firefox",
+    "file explorer", "explorer", "task manager", "settings",
+    "control panel", "command prompt", "cmd", "powershell",
+    "paint", "snipping tool", "vscode", "vs code", "spotify", "vlc",
+]
 
 STOPWORDS = {
     "open", "launch", "start", "the", "a", "an", "file", "please", "for",
