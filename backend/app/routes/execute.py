@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.sandbox.executor import run_code
 
@@ -13,5 +13,9 @@ class ExecuteRequest(BaseModel):
 @router.post("/")
 async def execute(request: ExecuteRequest):
     """Run code inside the sandbox and return stdout/stderr."""
-    result = await run_code(request.code, request.language)
+    try:
+        result = await run_code(request.code, request.language)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Sandbox execution failed unexpectedly: {e}")
+
     return result

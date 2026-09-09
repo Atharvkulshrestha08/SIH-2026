@@ -18,13 +18,13 @@ from shared.schemas import (
 )
 from agents.orchestrator import run_orchestrated_task
 from agents.router_agent import classify_task
-from sandbox.executor import run_code
-from documents.extract import extract_text
-from documents.generate import generate_docx_memo, generate_xlsx_sheet, DOC_OUTPUT_DIR
+from app.sandbox.executor import run_code
+from app.documents.extract import extract_text
+from app.documents.generate import generate_docx_memo, generate_xlsx_sheet, DOC_OUTPUT_DIR
 from rag.retriever import search_knowledge_base
 from security.monitor import get_egress_metrics
 from security.audit import get_audit_logs, log_event
-from models.model_manager import MODEL_HOST
+from app.models.model_manager import MODEL_HOST
 
 router = APIRouter(prefix="/api/v1")
 
