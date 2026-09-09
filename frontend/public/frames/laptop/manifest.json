@@ -1,0 +1,7 @@
+{
+  "name": "laptop-reveal-sequence",
+  "count": 90,
+  "pattern": "/frames/laptop/frame_%03d.webp",
+  "width": 1280,
+  "height": 720
+}

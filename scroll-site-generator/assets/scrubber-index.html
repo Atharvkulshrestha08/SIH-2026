@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURUM One — Espresso, Elevated</title>
+<style>
+  :root {
+    --bg: #0a0908;
+    --brass: #c9a050;
+    --brass-bright: #e8c477;
+    --text: #f5f0e8;
+    --text-dim: rgba(245, 240, 232, 0.55);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: auto; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── loader ── */
+  #loader {
+    position: fixed; inset: 0; z-index: 100;
+    background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 28px;
+    transition: opacity 0.8s ease;
+  }
+  #loader.done { opacity: 0; pointer-events: none; }
+  #loader .mark {
+    font-size: 15px; letter-spacing: 0.5em; text-indent: 0.5em;
+    color: var(--brass); text-transform: uppercase; font-weight: 500;
+  }
+  #loader .bar {
+    width: 180px; height: 1px; background: rgba(201, 160, 80, 0.2);
+    overflow: hidden; position: relative;
+  }
+  #loader .bar i {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 0%;
+    background: var(--brass); display: block;
+    transition: width 0.2s ease;
+  }
+
+  /* ── scroll stage ── */
+  #track { height: 900vh; position: relative; }
+  #stage {
+    position: sticky; top: 0; height: 100vh; width: 100%;
+    overflow: hidden;
+  }
+  #film {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    display: block;
+  }
+  #vignette {
+    position: absolute; inset: 0; z-index: 5; pointer-events: none;
+    background:
+      radial-gradient(ellipse 62% 68% at 50% 50%, transparent 52%, rgba(10, 9, 8, 0.9) 96%),
+      linear-gradient(to right, rgba(10, 9, 8, 0.9), transparent 18%, transparent 82%, rgba(10, 9, 8, 0.9));
+  }
+
+  /* ── captions ── */
+  .caption {
+    position: absolute; z-index: 10;
+    opacity: 0; pointer-events: none;
+    will-change: opacity, transform;
+  }
+  .caption h1 {
+    font-size: clamp(44px, 7vw, 96px);
+    font-weight: 600; letter-spacing: -0.02em; line-height: 1.02;
+  }
+  .caption h2 {
+    font-size: clamp(30px, 4.2vw, 60px);
+    font-weight: 600; letter-spacing: -0.015em; line-height: 1.05;
+  }
+  .caption p {
+    margin-top: 14px;
+    font-size: clamp(15px, 1.4vw, 20px);
+    color: var(--text-dim); font-weight: 400; letter-spacing: 0.01em;
+    max-width: 34ch;
+  }
+  .caption .brass { color: var(--brass-bright); }
+
+  .cap-center { left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; }
+  .cap-center p { margin-left: auto; margin-right: auto; }
+  .cap-left { left: 7vw; top: 50%; transform: translateY(-50%); }
+  .cap-right { right: 7vw; top: 50%; transform: translateY(-50%); text-align: right; }
+  .cap-right p { margin-left: auto; }
+  .cap-top { left: 50%; top: 12vh; transform: translateX(-50%); text-align: center; }
+  .cap-bottom { left: 50%; bottom: 10vh; transform: translateX(-50%); text-align: center; }
+
+  #scroll-cue {
+    position: absolute; bottom: 4.5vh; left: 50%; transform: translateX(-50%);
+    z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 10px;
+    color: var(--text-dim); font-size: 12px; letter-spacing: 0.3em; text-indent: 0.3em;
+    text-transform: uppercase;
+    transition: opacity 0.5s ease;
+  }
+  #scroll-cue::after {
+    content: ""; width: 1px; height: 34px;
+    background: linear-gradient(to bottom, var(--brass), transparent);
+    animation: cue 1.8s ease-in-out infinite;
+  }
+  @keyframes cue {
+    0%, 100% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(8px); opacity: 0.4; }
+  }
+
+  /* ── final CTA ── */
+  .cta {
+    margin-top: 30px; pointer-events: auto;
+    display: inline-block;
+    padding: 14px 38px;
+    border: 1px solid var(--brass);
+    border-radius: 100px;
+    color: var(--brass-bright); text-decoration: none;
+    font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  .cta:hover { background: var(--brass); color: #0a0908; }
+
+  /* ── outro ── */
+  #outro {
+    min-height: 60vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px;
+    text-align: center; padding: 10vh 24px;
+  }
+  #outro .mark { color: var(--brass); letter-spacing: 0.5em; text-indent: 0.5em; font-size: 13px; text-transform: uppercase; }
+  #outro p { color: var(--text-dim); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="mark">Aurum</div>
+  <div class="bar"><i id="loadbar"></i></div>
+</div>
+
+<div id="track">
+  <div id="stage">
+    <canvas id="film"></canvas>
+    <div id="vignette"></div>
+
+    <div class="caption cap-center" data-in="-0.05" data-hold="0.02" data-out="0.05">
+      <h1>AURUM <span class="brass">One</span></h1>
+      <p>Espresso, elevated.</p>
+    </div>
+
+    <div class="caption cap-left" data-in="0.055" data-hold="0.085" data-out="0.115">
+      <h2>It begins<br>with the bean.</h2>
+      <p>Single-origin. Roasted to the edge of sweetness.</p>
+    </div>
+
+    <div class="caption cap-right" data-in="0.24" data-hold="0.30" data-out="0.365">
+      <h2>Precision.<br><span class="brass">Assembled.</span></h2>
+      <p>Every component, machined to a tenth of a millimetre.</p>
+    </div>
+
+    <div class="caption cap-left" data-in="0.40" data-hold="0.445" data-out="0.49">
+      <h2>First, water.</h2>
+      <p>A pure flush at ninety-three degrees. Before every single shot.</p>
+    </div>
+
+    <div class="caption cap-right" data-in="0.52" data-hold="0.565" data-out="0.61">
+      <h2>Steam,<br>on command.</h2>
+      <p>Nine bars of quiet power.</p>
+    </div>
+
+    <div class="caption cap-left" data-in="0.65" data-hold="0.695" data-out="0.735">
+      <h2>Twenty-five seconds<br>to <span class="brass">perfection.</span></h2>
+      <p>A slow pour. A dense, tiger-striped crema.</p>
+    </div>
+
+    <div class="caption cap-right" data-in="0.77" data-hold="0.815" data-out="0.855">
+      <h2>Silk, poured.</h2>
+      <p>Micro-foam, folded — not frothed.</p>
+    </div>
+
+    <div class="caption cap-bottom" data-in="0.90" data-hold="0.97" data-out="1.1">
+      <h1>AURUM <span class="brass">One</span></h1>
+      <p>The gold standard of espresso.</p>
+      <a class="cta" href="#outro">Reserve yours</a>
+    </div>
+
+    <div id="scroll-cue">Scroll</div>
+  </div>
+</div>
+
+<div id="outro">
+  <div class="mark">Aurum</div>
+  <p>AURUM One. Hand-assembled. Shipping winter 2026.</p>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
