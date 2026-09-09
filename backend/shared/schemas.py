@@ -12,7 +12,7 @@ class TaskType(str, Enum):
     VISION = "VISION"
     REPORT_GENERATION = "REPORT_GENERATION"
     MULTI_STEP_WORKFLOW = "MULTI_STEP_WORKFLOW"
-
+    SYSTEM_ACTION = "SYSTEM_ACTION"
 
 class RouteDecision(BaseModel):
     task_type: TaskType
