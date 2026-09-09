@@ -1,0 +1,162 @@
+<!-- ═══════════════════════════════════════════════════════════════
+  Brand-page section library (vanilla). Paste after the film's #track,
+  replacing the old #outro. Uses the site's CSS vars: bg, accent
+  (--brass or rename), --text, --text-dim. Fill every [BRACKET].
+  Include the <style> and the reveal <script> once.
+════════════════════════════════════════════════════════════════ -->
+
+<style>
+  /* ── sticky nav (appears after the film) ── */
+  #brandnav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 80;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 4vw;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px);
+    opacity: 0; pointer-events: none; transform: translateY(-8px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  #brandnav.on { opacity: 1; pointer-events: auto; transform: none; }
+  #brandnav .mark { letter-spacing: 0.4em; text-indent: 0.4em; font-size: 13px; color: var(--brass); text-transform: uppercase; }
+  #brandnav .links { display: flex; gap: 2.4vw; }
+  #brandnav a { color: var(--text-dim); text-decoration: none; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; transition: color 0.25s; }
+  #brandnav a:hover { color: var(--text); }
+  #brandnav .navcta { border: 1px solid var(--brass); border-radius: 100px; padding: 8px 22px; color: var(--brass); }
+
+  /* ── shared section chrome ── */
+  .bp { position: relative; padding: 14vh 7vw; max-width: 1500px; margin: 0 auto; }
+  .bp .kicker { font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--brass); margin-bottom: 18px; }
+  .bp h2 { font-weight: 650; letter-spacing: -0.03em; line-height: 1.0; font-size: clamp(34px, 4.6vw, 68px); }
+  .bp p.lead { color: var(--text-dim); font-size: clamp(14px, 1.3vw, 18px); line-height: 1.7; max-width: 44ch; }
+  [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity 0.8s cubic-bezier(.2,.6,.2,1), transform 0.8s cubic-bezier(.2,.6,.2,1); }
+  [data-reveal].in { opacity: 1; transform: none; }
+
+  .bp-split { display: grid; grid-template-columns: 1fr 1fr; gap: 6vw; align-items: center; }
+  .bp-split img { width: 100%; border-radius: 6px;
+    -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 60%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 60%, transparent 100%); }
+  .bp-split.flip > :first-child { order: 2; }
+  @media (max-width: 800px) { .bp-split { grid-template-columns: 1fr; } .bp-split.flip > :first-child { order: 0; } }
+
+  .bp-manifesto { text-align: center; padding: 22vh 7vw; }
+  .bp-manifesto h2 { font-size: clamp(40px, 7vw, 110px); max-width: 16ch; margin: 0 auto; }
+
+  .bp-stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 8vw; text-align: center; }
+  .bp-stats .num { font-weight: 650; letter-spacing: -0.02em; font-size: clamp(38px, 5vw, 76px); color: var(--brass); }
+  .bp-stats .lbl { margin-top: 6px; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); }
+
+  .bp-specs table { width: 100%; max-width: 760px; margin: 0 auto; border-collapse: collapse; }
+  .bp-specs td { padding: 16px 8px; border-bottom: 1px solid color-mix(in srgb, var(--text) 10%, transparent); font-size: clamp(13px, 1.2vw, 16px); }
+  .bp-specs td:first-child { color: var(--text-dim); letter-spacing: 0.12em; text-transform: uppercase; font-size: 12px; }
+  .bp-specs td:last-child { text-align: right; }
+
+  .bp-quote { text-align: center; max-width: 34ch; margin: 0 auto; }
+  .bp-quote blockquote { font-size: clamp(22px, 2.8vw, 40px); font-weight: 550; letter-spacing: -0.02em; line-height: 1.25; }
+  .bp-quote cite { display: block; margin-top: 22px; font-style: normal; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); }
+
+  .bp-gallery { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+  .bp-gallery img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+  .bp-gallery .g1 { grid-column: span 7; aspect-ratio: 4/3; }
+  .bp-gallery .g2 { grid-column: span 5; aspect-ratio: 4/5; }
+  .bp-gallery .g3 { grid-column: span 5; aspect-ratio: 1/1; }
+  .bp-gallery .g4 { grid-column: span 7; aspect-ratio: 16/10; }
+  @media (max-width: 800px) { .bp-gallery img { grid-column: span 12 !important; } }
+
+  .bp-ctaband { text-align: center; padding: 20vh 7vw; }
+
+  footer.bp-footer { border-top: 1px solid color-mix(in srgb, var(--text) 8%, transparent); padding: 9vh 7vw 6vh; }
+  .bp-footer .cols { display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 5vw; max-width: 1500px; margin: 0 auto; }
+  .bp-footer h4 { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px; }
+  .bp-footer a { display: block; color: var(--text-dim); text-decoration: none; font-size: 14px; margin-bottom: 10px; }
+  .bp-footer a:hover { color: var(--text); }
+  .bp-footer .fine { margin-top: 8vh; text-align: center; font-size: 11px; letter-spacing: 0.2em; color: color-mix(in srgb, var(--text) 30%, transparent); text-transform: uppercase; }
+  @media (max-width: 800px) { .bp-footer .cols { grid-template-columns: 1fr 1fr; } }
+</style>
+
+<nav id="brandnav">
+  <span class="mark">[BRAND]</span>
+  <div class="links">
+    <a href="#story">Story</a><a href="#craft">Craft</a><a href="#specs">Specs</a><a href="#gallery">Gallery</a>
+  </div>
+  <a class="navcta" href="#reserve">[CTA]</a>
+</nav>
+
+<section class="bp bp-manifesto" id="story">
+  <div data-reveal><p class="kicker">[BRAND]</p><h2>[ONE-LINE BELIEF STATEMENT.]</h2></div>
+</section>
+
+<section class="bp">
+  <div class="bp-split">
+    <div data-reveal><p class="kicker">Origin</p><h2>[WHY IT EXISTS]</h2><p class="lead">[2 SENTENCES: the itch, the decision.]</p></div>
+    <img data-reveal src="[STILL-CROP.webp]" alt="[ALT]" />
+  </div>
+</section>
+
+<section class="bp" id="craft">
+  <div class="bp-split flip">
+    <div data-reveal><p class="kicker">Craft — 01</p><h2>[DETAIL HEADLINE]</h2><p class="lead">[2 SENTENCES on the detail the film showed.]</p></div>
+    <img data-reveal src="[DETAIL-CROP.webp]" alt="[ALT]" />
+  </div>
+</section>
+<!-- duplicate the craft split (unflipped) for Craft — 02 -->
+
+<section class="bp"><div class="bp-stats">
+  <div data-reveal><div class="num">[N]</div><div class="lbl">[label]</div></div>
+  <div data-reveal><div class="num">[N]</div><div class="lbl">[label]</div></div>
+  <div data-reveal><div class="num">[N]</div><div class="lbl">[label]</div></div>
+</div></section>
+
+<section class="bp bp-specs" id="specs">
+  <div data-reveal><p class="kicker" style="text-align:center">Specifications</p>
+  <table>
+    <tr><td>[Spec]</td><td>[Value]</td></tr>
+    <tr><td>[Spec]</td><td>[Value]</td></tr>
+    <tr><td>[Spec]</td><td>[Value]</td></tr>
+    <tr><td>[Spec]</td><td>[Value]</td></tr>
+    <tr><td>[Spec]</td><td>[Value]</td></tr>
+  </table></div>
+</section>
+
+<section class="bp bp-quote">
+  <div data-reveal><blockquote>"[SHORT PULL QUOTE.]"</blockquote><cite>[ATTRIBUTION]</cite></div>
+</section>
+
+<section class="bp" id="gallery"><div class="bp-gallery">
+  <img class="g1" data-reveal src="[IMG]" alt="" /><img class="g2" data-reveal src="[IMG]" alt="" />
+  <img class="g3" data-reveal src="[IMG]" alt="" /><img class="g4" data-reveal src="[IMG]" alt="" />
+</div></section>
+
+<section class="bp bp-ctaband" id="reserve">
+  <div data-reveal><h2>[CLOSING PROMISE.]</h2><br /><a class="cta" href="#">[CTA TEXT]</a></div>
+</section>
+
+<footer class="bp-footer">
+  <div class="cols">
+    <div><span style="letter-spacing:0.4em;text-transform:uppercase;color:var(--brass);font-size:13px">[BRAND]</span>
+      <p class="lead" style="margin-top:14px;font-size:13px">[One-line brand summary.]</p></div>
+    <div><h4>Product</h4><a href="#story">Story</a><a href="#craft">Craft</a><a href="#specs">Specs</a></div>
+    <div><h4>Company</h4><a href="#">About</a><a href="#">Journal</a><a href="#">Stockists</a></div>
+    <div><h4>Support</h4><a href="#">Care</a><a href="#">Warranty</a><a href="#">Contact</a></div>
+  </div>
+  <p class="fine">© [YEAR] [BRAND]. A concept built with AI. All imagery generated.</p>
+</footer>
+
+<script>
+  // reveal-on-scroll + nav after film
+  const io = new IntersectionObserver(
+    (es) => es.forEach((e) => e.isIntersecting && e.target.classList.add("in")),
+    { threshold: 0.18 }
+  );
+  document.querySelectorAll("[data-reveal]").forEach((el) => io.observe(el));
+  // fallback: IO callbacks can be throttled/skipped on instant jumps and
+  // backgrounded tabs — reveal anything already above the fold on scroll
+  const revealNow = () => document.querySelectorAll("[data-reveal]:not(.in)").forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.top < innerHeight * 0.92 && r.bottom > 0) el.classList.add("in");
+  });
+  addEventListener("scroll", revealNow, { passive: true });
+  revealNow();
+  const nav = document.getElementById("brandnav");
+  const filmEnd = () => (document.getElementById("track")?.offsetHeight ?? innerHeight * 3) - innerHeight;
+  addEventListener("scroll", () => nav.classList.toggle("on", scrollY > filmEnd() * 0.95), { passive: true });
+</script>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   askModel,
   executeCode,
@@ -201,6 +202,24 @@ export default function Home() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <Link
+            to="/"
+            style={{
+              padding: "0.4rem 0.85rem",
+              borderRadius: "8px",
+              background: "rgba(255, 255, 255, 0.08)",
+              border: "1px solid var(--border-color)",
+              color: "var(--text-secondary)",
+              textDecoration: "none",
+              fontSize: "0.85rem",
+              fontWeight: 500,
+              display: "flex",
+              alignItems: "center",
+              gap: "0.4rem"
+            }}
+          >
+            ← Overview
+          </Link>
           <div className="security-badge">
             <div className="pulse-dot"></div>
             <span>100% OFFLINE / 0 KB EGRESS</span>
