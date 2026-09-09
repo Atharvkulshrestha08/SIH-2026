@@ -70,8 +70,9 @@ def generate_docx_memo(title: str, findings: str, author: str = "Lead Inspector"
     )
 
     doc.add_heading("3. Approval & Sign-Off", level=2)
-    sig_p = doc.add_paragraph(f"Digitally Approved By: {author}\nSystem: AeroSovereign Verified")
-    sig_p.style.font.italic = True
+    sig_p = doc.add_paragraph()
+    sig_run = sig_p.add_run(f"Digitally Approved By: {author}\nSystem: AeroSovereign Verified")
+    sig_run.italic = True
 
     filename = f"Memo_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.docx"
     filepath = os.path.join(DOC_OUTPUT_DIR, filename)
