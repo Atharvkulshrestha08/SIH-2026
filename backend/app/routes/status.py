@@ -29,6 +29,7 @@ def _external_bytes_sent_since_baseline() -> int:
     return total_delta
 
 
+@router.get("", response_model=SystemStatusResponse)
 @router.get("/", response_model=SystemStatusResponse)
 async def get_status():
     """Return service health, system info, and a real egress measurement."""

@@ -14,6 +14,7 @@ class TaskType(str, Enum):
     MULTI_STEP_WORKFLOW = "MULTI_STEP_WORKFLOW"
     SYSTEM_ACTION = "SYSTEM_ACTION"
 
+
 class RouteDecision(BaseModel):
     task_type: TaskType
     target_model: str
@@ -28,6 +29,7 @@ class RouteDecision(BaseModel):
 class TaskRequest(BaseModel):
     prompt: str
     model: Optional[str] = "auto"
+    task_type: Optional[str] = None
     session_id: Optional[str] = "default-session"
     file_paths: Optional[List[str]] = Field(default_factory=list)
     stream: bool = False
@@ -38,9 +40,13 @@ class TaskResponse(BaseModel):
     task_type: TaskType = TaskType.GENERAL
     model_used: str
     text_response: str
+    response: Optional[str] = None
+    reasoning: Optional[str] = ""
     execution_time_ms: float = 0.0
+    latency_ms: Optional[float] = 0.0
     output_files: Optional[List[str]] = Field(default_factory=list)
     sovereign_status: str = "PASS_0_EXTERNAL_EGRESS"
+    egress_bytes: int = 0
 
 
 class ExecuteRequest(BaseModel):
@@ -55,10 +61,16 @@ class ExecuteResponse(BaseModel):
     execution_time_ms: float = 0.0
 
 
+class RagSearchRequest(BaseModel):
+    query: str
+    top_k: int = 3
+
+
 class DocumentGenerateRequest(BaseModel):
     title: str = "Refinery Inspection Memo"
     memo_type: str = "approval"
-    findings: str = "Inspection completed with zero critical anomalies."
+    findings: Optional[str] = "Inspection completed with zero critical anomalies."
+    body: Optional[str] = None
     author: str = "Lead Inspection Engineer"
     doc_format: str = "docx"  # "docx" or "xlsx"
 

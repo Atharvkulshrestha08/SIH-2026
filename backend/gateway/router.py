@@ -93,15 +93,17 @@ async def upload_document_endpoint(file: UploadFile = File(...)):
 
 # --- 4. Deliverable Generation (DOCX / XLSX) ---
 @router.post("/generate", tags=["Document Pipeline"])
+@router.post("/documents/generate", tags=["Document Pipeline"])
 async def generate_document_endpoint(request: DocumentGenerateRequest):
     """
     Generate signed .docx approval memos or .xlsx calculation workbooks.
     """
     try:
+        findings = request.findings or request.body or "Operational inspection completed with zero critical anomalies."
         if request.doc_format.lower() == "xlsx":
             output_path = generate_xlsx_sheet(request.title)
         else:
-            output_path = generate_docx_memo(request.title, request.findings, request.author)
+            output_path = generate_docx_memo(request.title, findings, request.author)
 
         filename = os.path.basename(output_path)
         log_event(
@@ -120,6 +122,7 @@ async def generate_document_endpoint(request: DocumentGenerateRequest):
 
 
 @router.get("/download/{filename}", tags=["Document Pipeline"])
+@router.get("/documents/download/{filename}", tags=["Document Pipeline"])
 async def download_file_endpoint(filename: str):
     """Download generated report or memo."""
     file_path = os.path.join(DOC_OUTPUT_DIR, filename)
@@ -131,6 +134,7 @@ async def download_file_endpoint(filename: str):
 # --- 5. Sovereign SOP RAG Search ---
 @router.get("/rag", tags=["Knowledge Base"])
 @router.post("/rag", tags=["Knowledge Base"])
+@router.post("/rag/search", tags=["Knowledge Base"])
 async def rag_search_endpoint(query: str = "pump vibration"):
     """
     Query on-premise SOP repository.
