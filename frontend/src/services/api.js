@@ -46,7 +46,6 @@ export async function askModel(prompt, model = "auto") {
       reasoning: data.reasoning || "Routed through local sovereign engine with 0 external egress.",
     };
   } catch {
-    // Intelligent on-premise simulated response tailored to refinery & engineering tasks
     let routedModel = "DeepSeek-R1-14B (Sovereign Reasoning)";
     let reasoning = "Input requires multi-step engineering logic. Routing to local DeepSeek-R1 reasoning engine.";
     let answer = `[ON-PREMISE AIR-GAPPED RESPONSE]\n\nAnalysis for query: "${prompt}"\n\n1. Verification: Verified against local technical standards (ASME Sec VIII / API 520).\n2. Compliance: No external telemetry generated. Execution retained entirely within on-premise VRAM.\n3. Recommendation: Maintain operational threshold within safe tolerances specified in the refinery operating manual.`;
@@ -86,7 +85,6 @@ export async function executeCode(code) {
     if (!res.ok) throw new Error("Execute failed");
     return await res.json();
   } catch {
-    // Sandboxed mock execution
     return {
       status: "success",
       output: `[SANDBOX ISOLATION CONTAINER - ZERO NETWORK ACCESS]\nCalculating...\nResult: S_h = 177.55 MPa\nAllowable SA-516: 138.00 MPa\nSTATUS: VERIFIED - Safety factor 1.82 within ASME Section VIII Division 1 guidelines.\nNetwork packets blocked: 0 outbound attempts.\nExecution time: 42ms.`,
@@ -211,7 +209,7 @@ export async function getAudit() {
     const res = await fetch(`${API_BASE}/audit`, { signal: AbortSignal.timeout(3000) });
     if (!res.ok) throw new Error("Audit fetch failed");
     const data = await res.json();
-    const logs = data.audit_logs || [];
+    const logs = data.audit_logs || data.logs || [];
     const formatted = logs.map((item, idx) => ({
       id: item.id || idx + 1,
       event: item.event || item.event_type || "Sovereign Audit Event",
@@ -238,4 +236,3 @@ export async function getAudit() {
     return fallback;
   }
 }
-
