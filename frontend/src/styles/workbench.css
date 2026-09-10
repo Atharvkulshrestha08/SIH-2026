@@ -5812,3 +5812,204 @@
   background: #0D1320;
   border-top-color: #1E2C42;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   VOICE (STT / TTS / VAD) WORKBENCH STYLES
+   ═══════════════════════════════════════════════════════════════════ */
+
+.wb-composer-mic-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 11.5px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.wb-composer-mic-btn:hover {
+  background: rgba(0, 201, 167, 0.1);
+  border-color: rgba(0, 201, 167, 0.3);
+  color: #00C9A7;
+}
+
+.wb-composer-mic-btn.recording {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #EF4444;
+  color: #EF4444;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.35);
+  animation: wb-mic-pulse 1.5s infinite;
+}
+
+@keyframes wb-mic-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.wb-mic-status-text {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.wb-meta-voice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94A3B8;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wb-meta-voice-btn:hover {
+  background: rgba(0, 201, 167, 0.12);
+  border-color: rgba(0, 201, 167, 0.3);
+  color: #00C9A7;
+}
+
+.wb-meta-voice-btn.speaking {
+  background: rgba(0, 201, 167, 0.2);
+  border-color: #00C9A7;
+  color: #00C9A7;
+  box-shadow: 0 0 8px rgba(0, 201, 167, 0.3);
+  animation: wb-speak-glow 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes wb-speak-glow {
+  from { box-shadow: 0 0 4px rgba(0, 201, 167, 0.2); }
+  to { box-shadow: 0 0 10px rgba(0, 201, 167, 0.5); }
+}
+
+.wb-meta-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #64748B;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.wb-meta-copy-btn:hover {
+  color: #CBD5E1;
+}
+
+.wb-copy-check {
+  color: #10B981;
+}
+
+.wb-topbar-tts-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+  padding: 5px 9px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wb-topbar-tts-btn:hover {
+  background: rgba(0, 201, 167, 0.12);
+  border-color: rgba(0, 201, 167, 0.3);
+  color: #00C9A7;
+}
+
+.wb-topbar-tts-btn.active {
+  background: rgba(0, 201, 167, 0.15);
+  border-color: #00C9A7;
+  color: #00C9A7;
+  box-shadow: 0 0 10px rgba(0, 201, 167, 0.25);
+}
+
+.wb-tts-active-icon {
+  animation: wb-voice-pulse 1.8s infinite;
+}
+
+@keyframes wb-voice-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.wb-topbar-tts-label {
+  font-size: 10.5px;
+  letter-spacing: 0.2px;
+}
+
+.wb-topbar-voice-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wb-voice-preview-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(236, 72, 153, 0.12);
+  border: 1px solid rgba(236, 72, 153, 0.35);
+  color: #F472B6;
+  padding: 4px 8px;
+  border-radius: 7px;
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wb-voice-preview-pill:hover {
+  background: rgba(236, 72, 153, 0.22);
+  border-color: #F472B6;
+  transform: translateY(-1px);
+  box-shadow: 0 0 8px rgba(236, 72, 153, 0.3);
+}
+
+.wb-clean-mic-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #94A3B8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wb-clean-mic-btn:hover {
+  background: rgba(0, 201, 167, 0.1);
+  color: #00C9A7;
+  border-color: rgba(0, 201, 167, 0.3);
+}
+
+.wb-clean-mic-btn.recording {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #EF4444;
+  color: #EF4444;
+  animation: wb-mic-pulse 1.5s infinite;
+}
+
+

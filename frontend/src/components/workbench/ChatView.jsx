@@ -7,9 +7,12 @@ import {
   Shield,
   X,
   FileText,
+  Mic,
+  MicOff,
 } from 'lucide-react';
 import MessageBubble from './MessageBubble';
 import { getCyclicMessage } from '../../services/cyclicMessages';
+import { VoiceRecorderVAD } from '../../services/voiceService';
 
 export default function ChatView({
   messages = [],
@@ -31,9 +34,43 @@ export default function ChatView({
     }
   });
   const [cyclicMsg, setCyclicMsg] = useState(() => getCyclicMessage());
+  const [isRecording, setIsRecording] = useState(false);
+  const [micVolume, setMicVolume] = useState(0);
+
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
+  const vadRecorderRef = useRef(null);
+
+  useEffect(() => {
+    vadRecorderRef.current = new VoiceRecorderVAD({
+      onTranscription: (transcript, isFinal) => {
+        setInputText(transcript);
+      },
+      onVolumeChange: (vol) => setMicVolume(vol),
+      onStatusChange: (status) => {
+        if (status === 'listening') {
+          setIsRecording(true);
+        } else {
+          setIsRecording(false);
+          setMicVolume(0);
+        }
+      },
+      onError: () => setIsRecording(false),
+    });
+
+    return () => {
+      vadRecorderRef.current?.stop(true);
+    };
+  }, []);
+
+  function toggleRecording() {
+    if (isRecording) {
+      vadRecorderRef.current?.stop(false);
+    } else {
+      vadRecorderRef.current?.start();
+    }
+  }
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -130,6 +167,19 @@ export default function ChatView({
                 >
                   <Cpu size={12} />
                   <span>ai/qwen2.5:7B</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`wb-clean-mic-btn ${isRecording ? 'recording' : ''}`}
+                  onClick={toggleRecording}
+                  title={isRecording ? 'Listening (Click to stop)' : 'Voice Input (Hands-free voice RAG)'}
+                >
+                  {isRecording ? (
+                    <MicOff size={15} className="text-red" />
+                  ) : (
+                    <Mic size={15} />
+                  )}
                 </button>
 
                 <button
