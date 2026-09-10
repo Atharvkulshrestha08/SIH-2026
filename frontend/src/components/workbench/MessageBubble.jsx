@@ -28,13 +28,67 @@ export default function MessageBubble({ message }) {
     }
   }
 
-  // Render markdown-like text and formatted code blocks
+  // Clean raw LaTeX math symbols into clean, readable formula text
+  function cleanMathLatex(raw) {
+    if (!raw) return '';
+    let s = raw.trim();
+
+    // Strip leading/trailing \[ \] or \( \) if present
+    if (s.startsWith('\\[') && s.endsWith('\\]')) {
+      s = s.slice(2, -2).trim();
+    } else if (s.startsWith('\\(') && s.endsWith('\\)')) {
+      s = s.slice(2, -2).trim();
+    }
+
+    // Repeated fraction replacements for nested fractions
+    for (let loop = 0; loop < 3; loop++) {
+      s = s.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, '($1) / ($2)');
+    }
+
+    return s
+      // Common Greek letters
+      .replace(/\\sigma_h/g, 'σ_h')
+      .replace(/\\sigma/g, 'σ')
+      .replace(/\\Delta/g, 'Δ')
+      .replace(/\\mu/g, 'μ')
+      .replace(/\\pi/g, 'π')
+      .replace(/\\theta/g, 'θ')
+      .replace(/\\alpha/g, 'α')
+      .replace(/\\beta/g, 'β')
+      .replace(/\\gamma/g, 'γ')
+      .replace(/\\lambda/g, 'λ')
+      .replace(/\\rho/g, 'ρ')
+      .replace(/\\omega/g, 'ω')
+      // Math operators
+      .replace(/\\times/g, '×')
+      .replace(/\\cdot/g, '·')
+      .replace(/\\approx/g, '≈')
+      .replace(/\\pm/g, '±')
+      .replace(/\\le(q)?/g, '≤')
+      .replace(/\\ge(q)?/g, '≥')
+      .replace(/\\ne(q)?/g, '≠')
+      .replace(/\\infty/g, '∞')
+      .replace(/\\sqrt\{([^{}]+)\}/g, '√($1)')
+      // Text wrapper removal: \text{MPa} -> MPa
+      .replace(/\\text\{([^{}]+)\}/g, '$1')
+      // Spacing and escaped backslashes: \  or \quad -> ' '
+      .replace(/\\\s+/g, ' ')
+      .replace(/\\quad/g, ' ')
+      .replace(/\\,/g, ' ')
+      .replace(/\\;/g, ' ')
+      // Strip any lingering standalone \[ \] \( \)
+      .replace(/\\[\[\]\(\)]/g, '')
+      .trim();
+  }
+
+  // Render markdown-like text, formatted code blocks, and math equations
   function renderContent(text) {
     if (!text) return null;
 
     const parts = text.split(/(```[\s\S]*?```)/g);
 
     return parts.map((part, i) => {
+      // 1. Code Blocks
       if (part.startsWith('```') && part.endsWith('```')) {
         const lines = part.slice(3, -3);
         const firstNewline = lines.indexOf('\n');
@@ -61,24 +115,80 @@ export default function MessageBubble({ message }) {
         );
       }
 
-      // Inline code and line breaks
-      const inlineParts = part.split(/(`[^`]+`)/g);
+      // 2. Display Math Blocks \[ ... \]
+      const mathBlockParts = part.split(/(\\\[[\s\S]*?\\\])/g);
+
       return (
         <span key={i}>
-          {inlineParts.map((ip, j) => {
-            if (ip.startsWith('`') && ip.endsWith('`')) {
+          {mathBlockParts.map((mbPart, mIdx) => {
+            if (mbPart.startsWith('\\[') && mbPart.endsWith('\\]')) {
+              const formula = cleanMathLatex(mbPart);
               return (
-                <code key={j} className="wb-inline-code">
-                  {ip.slice(1, -1)}
-                </code>
+                <div
+                  key={`math-${mIdx}`}
+                  className="wb-math-block"
+                  style={{
+                    margin: '10px 0',
+                    padding: '10px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderLeft: '3px solid #10b981',
+                    borderRadius: '6px',
+                    fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+                    fontSize: '0.98em',
+                    color: '#5eead4',
+                    textAlign: 'center',
+                    overflowX: 'auto',
+                  }}
+                >
+                  {formula}
+                </div>
               );
             }
-            return ip.split('\n').map((line, k, arr) => (
-              <React.Fragment key={`${j}-${k}`}>
-                {line}
-                {k < arr.length - 1 && <br />}
-              </React.Fragment>
-            ));
+
+            // 3. Inline Math \( ... \) and Inline Code `...`
+            const inlineMathParts = mbPart.split(/(\\\([\s\S]*?\\\))/g);
+
+            return inlineMathParts.map((imPart, imIdx) => {
+              if (imPart.startsWith('\\(') && imPart.endsWith('\\)')) {
+                return (
+                  <span
+                    key={`im-${imIdx}`}
+                    style={{
+                      color: '#5eead4',
+                      fontWeight: 500,
+                      fontFamily: 'Consolas, monospace',
+                      padding: '0 2px',
+                    }}
+                  >
+                    {cleanMathLatex(imPart)}
+                  </span>
+                );
+              }
+
+              // Process standard inline code `...`
+              const inlineCodeParts = imPart.split(/(`[^`]+`)/g);
+
+              return inlineCodeParts.map((ip, j) => {
+                if (ip.startsWith('`') && ip.endsWith('`')) {
+                  return (
+                    <code key={`code-${j}`} className="wb-inline-code">
+                      {ip.slice(1, -1)}
+                    </code>
+                  );
+                }
+
+                // Clean stray LaTeX artifacts from text outside math blocks
+                const cleanedText = cleanMathLatex(ip);
+
+                return cleanedText.split('\n').map((line, k, arr) => (
+                  <React.Fragment key={`${imIdx}-${j}-${k}`}>
+                    {line}
+                    {k < arr.length - 1 && <br />}
+                  </React.Fragment>
+                ));
+              });
+            });
           })}
         </span>
       );

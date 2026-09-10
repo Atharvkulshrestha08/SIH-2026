@@ -55,8 +55,15 @@ async def run_orchestrated_task(request: TaskRequest) -> TaskResponse:
         augmented_prompt = (
             f"Relevant Sovereign SOPs:\n{sop_context}\n\n"
             f"User Query:\n{request.prompt}\n\n"
-            f"Please provide an accurate engineering response citing the relevant standard."
+            f"Please provide an accurate engineering response citing the relevant standard. "
+            f"Present formulas and calculations in clean, readable notation (e.g., S_h = (P * D) / (2 * t) = 180 MPa) rather than raw LaTeX backslash syntax."
         )
+    elif route.task_type == TaskType.CODE_MATH:
+        augmented_prompt = (
+            f"{request.prompt}\n\n"
+            f"[Guidance: Present mathematical formulas and step-by-step calculations in clean, readable notation (e.g., S_h = (P * D) / (2 * t) = 180 MPa) rather than raw LaTeX backslash codes like \\[ or \\frac.]"
+        )
+
 
     # 3. Model Query
     text_response = await query_model(chosen_model, augmented_prompt)

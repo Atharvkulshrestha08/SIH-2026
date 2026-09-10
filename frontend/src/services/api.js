@@ -17,7 +17,7 @@ export const BACKEND_HOST = "127.0.0.1:8000";
  */
 function createBackendError(endpoint, originalError) {
   const err = new Error(
-    `Backend unavailable: Unable to reach the local Max AI service at ${BACKEND_HOST}. ` +
+    `Backend unavailable: Unable to reach the local AeroSovereign service at ${BACKEND_HOST}. ` +
     `Ensure FastAPI is running (uvicorn app.main:app --reload). Details: ${originalError?.message || originalError}`
   );
   err.isBackendOffline = true;
@@ -30,26 +30,37 @@ function createBackendError(endpoint, originalError) {
  */
 export async function checkBackendHealth() {
   try {
-    const res = await fetch(`${API_BASE}/status`, {
+    const res = await fetch(`${API_BASE}/status/`, {
       method: "GET",
-      signal: AbortSignal.timeout(2500),
+      signal: AbortSignal.timeout(3000),
     });
-    return res.ok;
+    if (res.ok) return true;
+    const fallback = await fetch(`${API_BASE}/status`, {
+      method: "GET",
+      signal: AbortSignal.timeout(3000),
+    });
+    return fallback.ok;
   } catch {
     return false;
   }
 }
 
 /**
- * GET /api/v1/status
+ * GET /api/v1/status/
  * Fetches real platform, CPU %, memory %, and network egress telemetry from backend
  */
 export async function getStatus() {
   try {
-    const res = await fetch(`${API_BASE}/status`, {
+    let res = await fetch(`${API_BASE}/status/`, {
       method: "GET",
-      signal: AbortSignal.timeout(4000),
+      signal: AbortSignal.timeout(5000),
     });
+    if (!res.ok) {
+      res = await fetch(`${API_BASE}/status`, {
+        method: "GET",
+        signal: AbortSignal.timeout(5000),
+      });
+    }
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     }
@@ -66,6 +77,7 @@ export async function getStatus() {
     };
   }
 }
+
 
 /**
  * POST /api/v1/orchestrate/
@@ -110,21 +122,36 @@ export async function orchestrate(prompt, model = "auto", sessionId = "default-s
 }
 
 /**
- * POST /api/v1/ask
+ * POST /api/v1/ask/
  * Thin wrapper over orchestrator pipeline
  */
 export async function askModel(prompt, model = "auto", sessionId = "default-session") {
   try {
-    const res = await fetch(`${API_BASE}/ask`, {
+    let res = await fetch(`${API_BASE}/ask/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         prompt,
+        task_type: "reasoning",
         model: model || "auto",
         session_id: sessionId,
       }),
       signal: AbortSignal.timeout(60000),
     });
+
+    if (!res.ok) {
+      res = await fetch(`${API_BASE}/ask`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+          task_type: "reasoning",
+          model: model || "auto",
+          session_id: sessionId,
+        }),
+        signal: AbortSignal.timeout(60000),
+      });
+    }
 
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
@@ -143,17 +170,26 @@ export async function askModel(prompt, model = "auto", sessionId = "default-sess
 }
 
 /**
- * POST /api/v1/execute
+ * POST /api/v1/execute/
  * Executes Python code inside AST-checked local sandbox
  */
 export async function executeCode(code, language = "python") {
   try {
-    const res = await fetch(`${API_BASE}/execute`, {
+    let res = await fetch(`${API_BASE}/execute/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code, language }),
       signal: AbortSignal.timeout(10000),
     });
+
+    if (!res.ok) {
+      res = await fetch(`${API_BASE}/execute`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, language }),
+        signal: AbortSignal.timeout(10000),
+      });
+    }
 
     if (!res.ok) {
       const errText = await res.text().catch(() => "");
@@ -174,7 +210,7 @@ export async function executeCode(code, language = "python") {
 }
 
 /**
- * POST /api/v1/upload
+ * POST /api/v1/upload/
  * Saves file locally, extracts text via local parser, records in DB
  */
 export async function uploadFile(file) {
@@ -182,15 +218,24 @@ export async function uploadFile(file) {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await fetch(`${API_BASE}/upload`, {
+    let res = await fetch(`${API_BASE}/upload/`, {
       method: "POST",
       body: formData,
       signal: AbortSignal.timeout(15000),
     });
 
     if (!res.ok) {
+      res = await fetch(`${API_BASE}/upload`, {
+        method: "POST",
+        body: formData,
+        signal: AbortSignal.timeout(15000),
+      });
+    }
+
+    if (!res.ok) {
       throw new Error(`Upload failed ${res.status}: ${res.statusText}`);
     }
+
 
     const data = await res.json();
     return {
