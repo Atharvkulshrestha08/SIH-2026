@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { ShieldCheck, Cpu, Terminal, Menu, X, ArrowUpRight, Activity } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ShieldCheck, Cpu, Terminal, Menu, X, ArrowUpRight, Activity, ArrowRight } from "lucide-react";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 40) {
+      if (window.scrollY > 30) {
         setScrolled(true);
       } else {
         setScrolled(false);
@@ -40,15 +39,25 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Kore.ai Style Top Announcement Strip */}
+      <div className="top-announcement-bar">
+        <span className="badge-new">MRPL PS-26117</span>
+        <span>100% On-Premise Air-Gapped Sovereign AI Architecture</span>
+        <Link to="/workbench">
+          <span>Evaluate Sovereign Node</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+
       <header
-        className={`main-navbar ${scrolled ? "scrolled" : "at-top"}`}
+        className={`main-navbar ${scrolled ? "scrolled" : ""}`}
         role="banner"
       >
         <div className="nav-container">
           {/* Brand Logo */}
           <Link to="/" className="nav-brand" aria-label="AeroSovereign Home">
             <div className="nav-logo-icon">
-              <ShieldCheck className="w-5 h-5 text-cyan-400" />
+              <ShieldCheck className="w-5 h-5" />
             </div>
             <div className="nav-brand-text">
               <span className="brand-name">AeroSovereign</span>
@@ -74,7 +83,7 @@ export default function Navbar() {
           <div className="nav-actions">
             <div className="airgap-pill" title="Hardware Firewall: Zero Outbound Egress Guaranteed">
               <span className="airgap-indicator"></span>
-              <span className="airgap-text">AIR-GAPPED</span>
+              <span>0 KB EGRESS • AIR-GAPPED</span>
             </div>
 
             <Link
@@ -84,7 +93,7 @@ export default function Navbar() {
             >
               <Terminal className="w-4 h-4" />
               <span>Launch Workbench</span>
-              <ArrowUpRight className="w-3.5 h-3.5 ml-0.5 opacity-75" />
+              <ArrowUpRight className="w-3.5 h-3.5 ml-0.5 opacity-80" />
             </Link>
 
             {/* Mobile Hamburger Button */}
@@ -114,7 +123,7 @@ export default function Navbar() {
           <div className="drawer-header">
             <div className="nav-brand">
               <div className="nav-logo-icon">
-                <ShieldCheck className="w-5 h-5 text-cyan-400" />
+                <ShieldCheck className="w-5 h-5" />
               </div>
               <span className="brand-name">AeroSovereign</span>
             </div>
@@ -129,7 +138,7 @@ export default function Navbar() {
 
           <div className="drawer-body">
             <div className="drawer-security-status">
-              <Activity className="w-4 h-4 text-emerald-400" />
+              <Activity className="w-4 h-4" />
               <span>Network Egress: 0 KB / Strict Local GPU</span>
             </div>
 
@@ -146,13 +155,13 @@ export default function Navbar() {
               ))}
             </nav>
 
-            <div className="drawer-cta-wrapper">
+            <div className="drawer-cta-wrapper" style={{ marginTop: "auto" }}>
               <Link
                 to="/workbench"
                 className="drawer-cta-btn"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <Terminal className="w-5 h-5" />
+                <Terminal className="w-4 h-4" />
                 <span>Launch Interactive Workbench</span>
               </Link>
             </div>

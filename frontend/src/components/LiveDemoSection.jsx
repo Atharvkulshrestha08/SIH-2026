@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Terminal, Cpu, Play, CheckCircle2, ArrowRight, ShieldCheck, Sparkles, RefreshCw } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Terminal, Cpu, Play, ArrowRight, Sparkles, RefreshCw } from "lucide-react";
 import { askModel } from "../services/api";
 
 const PRESET_QUERIES = [
@@ -25,6 +25,7 @@ export default function LiveDemoSection() {
   const [inputQuery, setInputQuery] = useState(PRESET_QUERIES[0].query);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const navigate = useNavigate();
 
   const handleRun = async (queryText = inputQuery) => {
     if (!queryText.trim()) return;
@@ -39,12 +40,16 @@ export default function LiveDemoSection() {
     }
   };
 
+  const handleOpenInWorkbench = () => {
+    navigate(`/workbench?prompt=${encodeURIComponent(inputQuery)}`);
+  };
+
   return (
     <section className="live-demo-section" id="live-demo" aria-label="Interactive Demo">
       <div className="section-container">
         <div className="section-header-centered">
           <div className="section-eyebrow">
-            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <Sparkles className="w-4 h-4" />
             <span>INTERACTIVE PREVIEW</span>
           </div>
           <h2 className="section-title">
@@ -58,7 +63,7 @@ export default function LiveDemoSection() {
         <div className="demo-card">
           {/* Preset Buttons */}
           <div className="preset-bar">
-            <span className="preset-label">Test Refinery Presets:</span>
+            <span className="preset-label">Refinery Presets:</span>
             <div className="preset-btn-group">
               {PRESET_QUERIES.map((item, idx) => (
                 <button
@@ -77,20 +82,18 @@ export default function LiveDemoSection() {
 
           {/* Interactive Input Form */}
           <div className="demo-input-container">
-            <div className="input-field-wrapper">
-              <textarea
-                value={inputQuery}
-                onChange={(e) => setInputQuery(e.target.value)}
-                placeholder="Enter an industrial query, calculation, or P&D request..."
-                rows={3}
-                className="demo-textarea"
-                aria-label="Prompt Input"
-              />
-            </div>
+            <textarea
+              value={inputQuery}
+              onChange={(e) => setInputQuery(e.target.value)}
+              placeholder="Enter an industrial query, calculation, or P&D request..."
+              rows={3}
+              className="demo-textarea"
+              aria-label="Prompt Input"
+            />
 
             <div className="demo-input-actions">
               <div className="demo-model-indicator">
-                <Cpu className="w-4 h-4 text-cyan-400" />
+                <Cpu className="w-4 h-4 text-teal-600" />
                 <span>Router Mode: <strong>Dynamic Autonomous Dispatch</strong></span>
               </div>
 
@@ -153,11 +156,11 @@ export default function LiveDemoSection() {
               <h4>Ready to test full Python sandboxing, OCR upload, and Word generation?</h4>
               <p>Access the complete sovereign suite with full file I/O and live system telemetry.</p>
             </div>
-            <Link to="/workbench" className="btn-launch-full">
+            <button onClick={handleOpenInWorkbench} className="btn-launch-full">
               <Terminal className="w-4 h-4" />
-              <span>Launch Interactive Workbench</span>
+              <span>Open in Full Workbench</span>
               <ArrowRight className="w-4 h-4 ml-1" />
-            </Link>
+            </button>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FileText, Cpu, CheckCircle2, ChevronRight, Activity, Code, ShieldCheck, Download } from "lucide-react";
+import { FileText, Cpu, Activity, ShieldCheck } from "lucide-react";
 
 export default function IndustrialUseCases() {
   const [selectedCase, setSelectedCase] = useState(0);
@@ -78,7 +78,7 @@ export default function IndustrialUseCases() {
       <div className="section-container">
         <div className="section-header-centered">
           <div className="section-eyebrow">
-            <Activity className="w-4 h-4 text-cyan-400" />
+            <Activity className="w-4 h-4" />
             <span>REAL-WORLD DEPLOYMENT SCENARIOS</span>
           </div>
           <h2 className="section-title">
@@ -113,7 +113,7 @@ export default function IndustrialUseCases() {
               <div className="case-badge-row">
                 <span className="case-badge">{current.badge}</span>
                 <span className="case-model-chip">
-                  <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+                  <Cpu className="w-3.5 h-3.5 text-teal-600" />
                   <span>{current.model}</span>
                 </span>
               </div>
@@ -127,7 +127,7 @@ export default function IndustrialUseCases() {
               </div>
 
               <div className="case-output-meta">
-                <FileText className="w-4 h-4 text-emerald-400" />
+                <FileText className="w-4 h-4 text-emerald-600" />
                 <span>Deliverable: {current.outputType}</span>
               </div>
             </div>
@@ -151,7 +151,7 @@ export default function IndustrialUseCases() {
               </div>
 
               <div className="exec-footer-bar">
-                <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                <ShieldCheck className="w-4 h-4 text-teal-600" />
                 <span>All calculations and tokens verified on local NVIDIA VRAM.</span>
               </div>
             </div>

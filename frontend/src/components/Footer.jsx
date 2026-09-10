@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ShieldCheck, Cpu, Lock, Terminal, Heart } from "lucide-react";
+import { ShieldCheck, Terminal } from "lucide-react";
 
 export default function Footer() {
   const scrollToTop = (e) => {
@@ -16,18 +16,18 @@ export default function Footer() {
           <div className="footer-brand-col">
             <div className="footer-brand-header">
               <div className="footer-brand-icon">
-                <ShieldCheck className="w-5 h-5 text-cyan-400" />
+                <ShieldCheck className="w-5 h-5 text-teal-600" />
               </div>
               <span className="footer-brand-title">AeroSovereign</span>
             </div>
             <p className="footer-desc">
-              Sovereign On-Premise Agentic AI Workbench using Open-Weight Multimodal LLMs for Confidential Industrial Work.
+              Sovereign On-Premise Agentic AI Workbench using Open-Weight Multimodal LLMs for Confidential Industrial Operations.
             </p>
             <div className="footer-badge-wrap">
               <span className="footer-org-badge">
                 Developed for Mangalore Refinery and Petrochemicals Limited (MRPL)
               </span>
-              <span className="footer-ps-badge">Problem Statement ID: 26117</span>
+              <span className="footer-ps-badge">Smart India Hackathon • PS-26117</span>
             </div>
           </div>
 
@@ -35,33 +35,33 @@ export default function Footer() {
           <div className="footer-links-col">
             <span className="footer-col-title">NAVIGATION</span>
             <ul className="footer-nav-list">
-              <li><a href="#hero" onClick={scrollToTop}>Overview</a></li>
-              <li><a href="#hardware-reveal">Hardware &amp; GPU Reveal</a></li>
-              <li><a href="#features">Agent Capabilities</a></li>
+              <li><a href="#hero" onClick={scrollToTop}>Platform Overview</a></li>
+              <li><a href="#hardware-reveal">Workstation Hardware Reveal</a></li>
+              <li><a href="#features">Autonomous Agent Pillars</a></li>
               <li><a href="#sovereignty">Zero Network Egress Proof</a></li>
-              <li><a href="#industrial">Refinery Use Cases</a></li>
+              <li><a href="#industrial">Refinery Engineering Cases</a></li>
               <li><a href="#live-demo">Interactive Simulation</a></li>
             </ul>
           </div>
 
-          {/* Technical Specs & Compatibility */}
+          {/* Technical Specs & Compliance */}
           <div className="footer-links-col">
             <span className="footer-col-title">HARDWARE COMPLIANCE</span>
             <ul className="footer-specs-list">
               <li>
-                <strong>Target GPU:</strong> Single Workstation (RTX 4090 / 5090 / A5000)
+                <strong>Target Machine:</strong> Single Workstation (RTX 3050 / 4090 / A5000)
               </li>
               <li>
-                <strong>Open Weights:</strong> DeepSeek-R1, Qwen 2.5 Coder, Llama 3.2
+                <strong>Open Weights:</strong> Qwen 2.5 Coder, DeepSeek-R1, Llama 3.2 Vision
               </li>
               <li>
-                <strong>Inference Runtime:</strong> Local vLLM / Ollama Air-Gapped
+                <strong>Inference Runtime:</strong> Local Model Runner (100% Air-Gapped)
               </li>
               <li>
-                <strong>RAG Engine:</strong> Local ChromaDB / Vector SQLite
+                <strong>Vector Knowledge:</strong> Local ChromaDB / SQLite SOP Embeddings
               </li>
               <li>
-                <strong>Egress Policy:</strong> 0.0.0.0/0 Kernel Drop (0 Bytes External)
+                <strong>Egress Policy:</strong> 0.0.0.0/0 Drop (0 Bytes Exfiltrated)
               </li>
             </ul>
           </div>
@@ -81,11 +81,11 @@ export default function Footer() {
 
         <div className="footer-bottom-bar">
           <div className="footer-copy">
-            &copy; {new Date().getFullYear()} AeroSovereign. Sovereign On-Premise Industrial AI Workbench.
+            &copy; {new Date().getFullYear()} AeroSovereign • MRPL Sovereign AI Platform.
           </div>
           <div className="footer-meta">
             <span className="status-live-dot"></span>
-            <span>100% AIR-GAPPED &bull; ZERO EXTERNAL TELEMETRY</span>
+            <span>100% AIR-GAPPED • MATHEMATICAL ZERO EGRESS GUARANTEE</span>
           </div>
         </div>
       </div>

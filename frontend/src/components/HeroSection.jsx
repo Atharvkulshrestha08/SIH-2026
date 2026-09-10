@@ -1,118 +1,104 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Shield, ChevronDown, Lock, Terminal, Cpu } from "lucide-react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Shield, Lock, Terminal, Cpu, ArrowRight, Sparkles, Search } from "lucide-react";
 
 export default function HeroSection() {
-  const scrollToDrop = (e) => {
-    e.preventDefault();
-    const section = document.getElementById("hardware-reveal");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+
+  const presetQueries = [
+    { label: "⚡ FCCU Mass Balance", text: "Calculate FCCU catalyst circulation rate and carbon burning rate from regenerator delta T" },
+    { label: "📐 ASME Sec VIII Hoop Stress", text: "Calculate internal hoop stress for a 600mm cylindrical shell at 14.5 MPa with 24.5mm wall thickness" },
+    { label: "🔍 P&ID Safety Valve Check", text: "Verify thermal relief valve PSV-104 sizing according to API 520 on P&ID 04-P-12" },
+    { label: "📄 CAPEX Approval Memo", text: "Draft an executive board approval note for crude distillation column turnaround" },
+  ];
+
+  const handleLaunch = (e) => {
+    if (e) e.preventDefault();
+    const targetPrompt = query.trim() || presetQueries[0].text;
+    navigate(`/workbench?prompt=${encodeURIComponent(targetPrompt)}`);
+  };
+
+  const handleChipClick = (chipText) => {
+    setQuery(chipText);
   };
 
   return (
     <section className="hero-section" id="hero" aria-label="Introduction">
       <div className="hero-container">
-        {/* Left Column: Clear, Non-Overwhelming Introduction */}
         <div className="hero-content">
+          {/* Kore.ai Style Eyebrow */}
           <div className="hero-eyebrow">
             <span className="eyebrow-dot"></span>
-            <span>MRPL • PROBLEM STATEMENT 26117</span>
+            <span>ENTERPRISE AGENTIC AI PLATFORM FOR INDUSTRIAL CONFIDENTIALITY</span>
           </div>
 
           <h1 className="hero-title">
-            Aero<span className="title-highlight">Sovereign</span>
+            Deploy Autonomous AI Agents with <span className="title-highlight">100% Confidentiality</span> &amp; Zero Egress
           </h1>
 
           <p className="hero-tagline">
-            Sovereign On-Premise Agentic AI Workbench using Open-Weight Multimodal LLMs for Confidential Industrial Work.
+            The sovereign on-premise AI platform engineered for Mangalore Refinery &amp; Petrochemicals Limited (MRPL) and critical industrial infrastructure.
           </p>
 
           <p className="hero-subtext">
-            Engineered for refineries, defence units, and PSUs. Analyze confidential P&amp;IDs, execute ASME engineering calculations, and generate approval memos entirely within your private GPU server.
+            Analyze confidential P&amp;ID schematics, compute ASME &amp; API engineering equations in a sandboxed Python runtime, and compile ready-to-sign executive memos—executed entirely on private local GPU hardware.
           </p>
 
-          <div className="hero-buttons">
-            <a
-              href="#hardware-reveal"
-              onClick={scrollToDrop}
-              className="btn-primary"
-            >
-              <span>Explore Architecture</span>
-              <ChevronDown className="w-4 h-4 animate-bounce" />
-            </a>
+          {/* Interactive Enterprise Query Bar (Kore.ai Style) */}
+          <form className="hero-query-composer" onSubmit={handleLaunch}>
+            <div className="hero-composer-input-row">
+              <Search className="w-5 h-5 text-stone-400 flex-shrink-0" />
+              <input
+                type="text"
+                className="hero-composer-input"
+                placeholder="Ask anything across refinery SOPs, P&amp;ID standards, or ASME calculations..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <button type="submit" className="hero-composer-btn">
+                <span>Launch in Workbench</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
 
-            <Link to="/workbench" className="btn-secondary">
-              <Terminal className="w-4 h-4" />
-              <span>Launch Workbench</span>
-            </Link>
-          </div>
+            <div className="hero-prompt-chips">
+              <span className="prompt-chips-label">Try Prompts:</span>
+              {presetQueries.map((item, idx) => (
+                <button
+                  type="button"
+                  key={idx}
+                  className="hero-prompt-chip"
+                  onClick={() => handleChipClick(item.text)}
+                >
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </form>
 
+          {/* Trust Indicators */}
           <div className="hero-trust-indicators">
             <div className="trust-item">
-              <Lock className="w-4 h-4 text-emerald-400" />
-              <span>Strict Air-Gap (0 Egress)</span>
+              <Lock className="w-4 h-4 text-emerald-600" />
+              <span>0.00 KB Network Egress (Air-Gapped)</span>
             </div>
             <div className="trust-divider"></div>
             <div className="trust-item">
-              <Cpu className="w-4 h-4 text-cyan-400" />
-              <span>Open-Weight LLMs</span>
+              <Cpu className="w-4 h-4 text-teal-600" />
+              <span>NVIDIA RTX Local Tensor Execution</span>
             </div>
             <div className="trust-divider"></div>
             <div className="trust-item">
-              <Shield className="w-4 h-4 text-blue-400" />
-              <span>Mangalore Refinery</span>
+              <Shield className="w-4 h-4 text-emerald-600" />
+              <span>MRPL PS-26117 PSU Specification</span>
+            </div>
+            <div className="trust-divider"></div>
+            <div className="trust-item">
+              <Sparkles className="w-4 h-4 text-amber-600" />
+              <span>Multi-Model Dynamic Routing</span>
             </div>
           </div>
-        </div>
-
-        {/* Right Column: Emblem / Logo / Side Image Showcase */}
-        <div className="hero-visual" aria-hidden="true">
-          <div className="hero-logo-frame">
-            {/* Ambient Background Glow */}
-            <div className="hero-glow-ring"></div>
-
-            {/* Emblem / Product Card */}
-            <div className="hero-emblem-card">
-              <div className="emblem-inner">
-                <div className="emblem-icon-wrapper">
-                  <Shield className="w-16 h-16 text-cyan-400 emblem-shield" />
-                  <Cpu className="w-8 h-8 text-blue-300 emblem-chip" />
-                </div>
-                <div className="emblem-caption">
-                  <div className="emblem-brand">AEROSOVEREIGN</div>
-                  <div className="emblem-code">SECURE INDUSTRIAL CORE • V1.0</div>
-                </div>
-                <div className="emblem-specs-grid">
-                  <div className="spec-tile">
-                    <span className="spec-lbl">ISOLATION</span>
-                    <span className="spec-val text-emerald-400">AIR-GAPPED</span>
-                  </div>
-                  <div className="spec-tile">
-                    <span className="spec-lbl">INFERENCE</span>
-                    <span className="spec-val text-cyan-400">LOCAL GPU</span>
-                  </div>
-                  <div className="spec-tile">
-                    <span className="spec-lbl">ORG</span>
-                    <span className="spec-val">MRPL PSU</span>
-                  </div>
-                  <div className="spec-tile">
-                    <span className="spec-lbl">NETWORK</span>
-                    <span className="spec-val text-emerald-400">0 KB LEAK</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Scroll Down Hint */}
-      <div className="scroll-indicator" onClick={scrollToDrop}>
-        <span className="scroll-text">Scroll to reveal workstation hardware</span>
-        <div className="scroll-mouse">
-          <div className="scroll-wheel"></div>
         </div>
       </div>
     </section>
