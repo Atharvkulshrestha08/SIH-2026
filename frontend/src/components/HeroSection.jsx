@@ -1,10 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Shield, Lock, Terminal, Cpu, ArrowRight, Sparkles, Search } from "lucide-react";
+import { Shield, Lock, Terminal, Cpu, ArrowRight, Sparkles, Search, Mic, MicOff } from "lucide-react";
+import { VoiceRecorderVAD } from "../services/voiceService";
 
 export default function HeroSection() {
   const [query, setQuery] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
   const navigate = useNavigate();
+  const vadRecorderRef = useRef(null);
+
+  useEffect(() => {
+    vadRecorderRef.current = new VoiceRecorderVAD({
+      onTranscription: (transcript) => {
+        setQuery(transcript);
+      },
+      onStatusChange: (status) => {
+        setIsRecording(status === 'listening');
+      },
+      onError: () => setIsRecording(false),
+    });
+
+    return () => {
+      vadRecorderRef.current?.stop(true);
+    };
+  }, []);
+
+  function toggleVoice() {
+    if (isRecording) {
+      vadRecorderRef.current?.stop(false);
+    } else {
+      vadRecorderRef.current?.start(query);
+    }
+  }
 
   const presetQueries = [
     { label: "⚡ FCCU Mass Balance", text: "Calculate FCCU catalyst circulation rate and carbon burning rate from regenerator delta T" },
@@ -15,6 +42,9 @@ export default function HeroSection() {
 
   const handleLaunch = (e) => {
     if (e) e.preventDefault();
+    if (isRecording) {
+      vadRecorderRef.current?.stop(false);
+    }
     const targetPrompt = query.trim() || presetQueries[0].text;
     navigate(`/workbench?prompt=${encodeURIComponent(targetPrompt)}`);
   };
@@ -52,10 +82,18 @@ export default function HeroSection() {
               <input
                 type="text"
                 className="hero-composer-input"
-                placeholder="Ask anything across refinery SOPs, P&amp;ID standards, or ASME calculations..."
+                placeholder={isRecording ? "Listening... Speak your engineering query..." : "Ask anything across refinery SOPs, P&ID standards, or ASME calculations..."}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
+              <button
+                type="button"
+                className={`hero-composer-mic-btn ${isRecording ? 'recording' : ''}`}
+                onClick={toggleVoice}
+                title={isRecording ? "Listening... Click to stop" : "Speak to ask query"}
+              >
+                {isRecording ? <MicOff className="w-4 h-4 text-red-500 animate-pulse" /> : <Mic className="w-4 h-4 text-stone-500 hover:text-stone-700" />}
+              </button>
               <button type="submit" className="hero-composer-btn">
                 <span>Launch in Workbench</span>
                 <ArrowRight className="w-4 h-4" />

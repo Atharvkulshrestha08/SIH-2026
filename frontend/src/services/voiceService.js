@@ -358,29 +358,150 @@ class SpeechSynthesizer {
 export const speechSynthesizer = new SpeechSynthesizer();
 
 // ═══════════════════════════════════════════════════════════════════
-// 4. Voice Activity Detection (VAD) & Audio Recorder
+// 4. Voice Activity Detection (VAD) & Dual-Pipeline Audio Recorder
 // ═══════════════════════════════════════════════════════════════════
 
+export function isSpeechRecognitionSupported() {
+  if (typeof window === 'undefined') return false;
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+
+function flattenAndDownsample(chunks, inputSampleRate, targetSampleRate = 16000) {
+  let totalLength = 0;
+  for (const chunk of chunks) totalLength += chunk.length;
+  const merged = new Float32Array(totalLength);
+  let offset = 0;
+  for (const chunk of chunks) {
+    merged.set(chunk, offset);
+    offset += chunk.length;
+  }
+
+  if (inputSampleRate === targetSampleRate) return merged;
+
+  const ratio = inputSampleRate / targetSampleRate;
+  const newLength = Math.round(totalLength / ratio);
+  const result = new Float32Array(newLength);
+  let offsetResult = 0;
+  let offsetSource = 0;
+
+  while (offsetResult < result.length) {
+    const nextOffsetSource = Math.round((offsetResult + 1) * ratio);
+    let accum = 0;
+    let count = 0;
+    for (let i = offsetSource; i < nextOffsetSource && i < merged.length; i++) {
+      accum += merged[i];
+      count++;
+    }
+    result[offsetResult] = count > 0 ? accum / count : 0;
+    offsetResult++;
+    offsetSource = nextOffsetSource;
+  }
+
+  return result;
+}
+
+function encodeWAV(samples, sampleRate = 16000) {
+  const buffer = new ArrayBuffer(44 + samples.length * 2);
+  const view = new DataView(buffer);
+
+  function writeString(view, offset, string) {
+    for (let i = 0; i < string.length; i++) {
+      view.setUint8(offset + i, string.charCodeAt(i));
+    }
+  }
+
+  writeString(view, 0, 'RIFF');
+  view.setUint32(4, 36 + samples.length * 2, true);
+  writeString(view, 8, 'WAVE');
+  writeString(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true); // Linear PCM
+  view.setUint16(22, 1, true); // Mono channel
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true); // byte rate (sampleRate * 2)
+  view.setUint16(32, 2, true); // block align
+  view.setUint16(34, 16, true); // bits per sample
+  writeString(view, 36, 'data');
+  view.setUint32(40, samples.length * 2, true);
+
+  let offset = 44;
+  for (let i = 0; i < samples.length; i++, offset += 2) {
+    const s = Math.max(-1, Math.min(1, samples[i]));
+    view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+  }
+
+  return new Blob([view], { type: 'audio/wav' });
+}
+
+export async function sendAudioToBackend(wavBlob, language = 'en-US') {
+  try {
+    const formData = new FormData();
+    formData.append('file', wavBlob, 'recording.wav');
+    formData.append('language', language);
+
+    let res = await fetch('/api/v1/voice/transcribe', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      res = await fetch('/api/voice/transcribe', {
+        method: 'POST',
+        body: formData,
+      });
+    }
+
+    if (!res.ok) {
+      console.warn('Backend transcription returned status:', res.status);
+      return '';
+    }
+
+    const data = await res.json();
+    return data?.transcript || '';
+  } catch (err) {
+    console.error('Backend audio transcription network error:', err);
+    return '';
+  }
+}
+
 export class VoiceRecorderVAD {
-  constructor({ onTranscription, onVolumeChange, onStatusChange, onError }) {
+  constructor({
+    onTranscription,
+    onVolumeChange,
+    onStatusChange,
+    onError,
+    language = 'en-US',
+    autoStopSilenceMs = 1800,
+    initialText = '',
+  } = {}) {
     this.onTranscription = onTranscription;
     this.onVolumeChange = onVolumeChange;
     this.onStatusChange = onStatusChange;
     this.onError = onError;
+    this.language = language;
+    this.autoStopSilenceMs = autoStopSilenceMs;
+    this.initialText = initialText || '';
 
     this.isRecording = false;
     this.audioContext = null;
     this.mediaStream = null;
     this.analyser = null;
+    this.processorNode = null;
+    this.audioChunks = [];
     this.silenceTimer = null;
     this.recognition = null;
     this.hasSpoken = false;
+    this.hasWebSpeechProducedText = false;
     this.silenceStart = null;
     this.recordStartTime = 0;
+    this.accumulatedTranscript = '';
   }
 
-  async start() {
+  async start(prefixText = '') {
     if (this.isRecording) return;
+    this.accumulatedTranscript = prefixText || this.initialText || '';
+    this.hasWebSpeechProducedText = false;
+    this.audioChunks = [];
 
     try {
       this.mediaStream = await navigator.mediaDevices.getUserMedia({
@@ -393,10 +514,29 @@ export class VoiceRecorderVAD {
 
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       this.audioContext = new AudioCtx();
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
+      }
       const source = this.audioContext.createMediaStreamSource(this.mediaStream);
+
+      // 1. Analyser for volume visualization & silence detection
       this.analyser = this.audioContext.createAnalyser();
       this.analyser.fftSize = 256;
       source.connect(this.analyser);
+
+      // 2. Audio recording node to capture PCM samples for backend transcription fallback
+      try {
+        this.processorNode = this.audioContext.createScriptProcessor(4096, 1, 1);
+        this.processorNode.onaudioprocess = (e) => {
+          if (!this.isRecording) return;
+          const input = e.inputBuffer.getChannelData(0);
+          this.audioChunks.push(new Float32Array(input));
+        };
+        source.connect(this.processorNode);
+        this.processorNode.connect(this.audioContext.destination);
+      } catch (procErr) {
+        console.warn('ScriptProcessor init warning:', procErr);
+      }
 
       this.isRecording = true;
       this.hasSpoken = false;
@@ -405,50 +545,78 @@ export class VoiceRecorderVAD {
 
       if (this.onStatusChange) this.onStatusChange('listening');
 
-      // Initialize Web Speech Recognition for zero-egress live STT
+      // 3. Initialize Web Speech Recognition for instant live text streaming
       this._initSpeechRecognition();
 
-      // Start VAD Silence Detection Loop (from Varta: 450ms trailing silence trigger)
+      // 4. Start VAD volume loop
       this._startVADLoop();
     } catch (err) {
       console.error('Microphone initialization error:', err);
       this.isRecording = false;
-      if (this.onError) this.onError(err.message || 'Microphone access denied');
+      const msg = err.name === 'NotAllowedError'
+        ? 'Microphone permission denied. Please allow microphone access in your browser settings.'
+        : (err.message || 'Microphone access error');
+      if (this.onError) this.onError(msg);
+      if (this.onStatusChange) this.onStatusChange('error');
     }
   }
 
   _initSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
-      this.recognition = new SpeechRecognition();
-      this.recognition.continuous = true;
-      this.recognition.interimResults = true;
-      this.recognition.lang = 'en-US';
-
-      this.recognition.onresult = (event) => {
-        let transcript = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
-        }
-        if (transcript.trim()) {
-          this.hasSpoken = true;
-          this.silenceStart = null; // reset silence counter while words are arriving
-          if (this.onTranscription) {
-            this.onTranscription(transcript.trim(), event.results[event.results.length - 1].isFinal);
-          }
-        }
-      };
-
-      this.recognition.onerror = (e) => {
-        if (e.error !== 'no-speech') {
-          console.warn('SpeechRecognition warning:', e.error);
-        }
-      };
-
       try {
+        this.recognition = new SpeechRecognition();
+        this.recognition.continuous = true;
+        this.recognition.interimResults = true;
+        this.recognition.lang = this.language || 'en-US';
+
+        this.recognition.onresult = (event) => {
+          let interimChunk = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const res = event.results[i];
+            if (res.isFinal) {
+              const piece = res[0].transcript.trim();
+              if (piece) {
+                this.accumulatedTranscript = (this.accumulatedTranscript ? this.accumulatedTranscript + ' ' : '') + piece;
+              }
+            } else {
+              interimChunk += res[0].transcript;
+            }
+          }
+
+          let full = this.accumulatedTranscript;
+          if (interimChunk.trim()) {
+            full = (full ? full + ' ' : '') + interimChunk.trim();
+          }
+
+          if (full.trim()) {
+            this.hasSpoken = true;
+            this.hasWebSpeechProducedText = true;
+            this.silenceStart = null;
+            if (this.onTranscription) {
+              this.onTranscription(full.trim(), !interimChunk.trim());
+            }
+          }
+        };
+
+        this.recognition.onerror = (e) => {
+          if (e.error !== 'no-speech') {
+            console.warn('SpeechRecognition warning:', e.error);
+          }
+          // If Web Speech fails with network or not-allowed, backend fallback handles audio!
+        };
+
+        this.recognition.onend = () => {
+          if (this.isRecording && this.recognition) {
+            try {
+              this.recognition.start();
+            } catch (e) {}
+          }
+        };
+
         this.recognition.start();
       } catch (e) {
-        console.warn('Recognition start caught:', e);
+        console.warn('Recognition start exception:', e);
       }
     }
   }
@@ -471,26 +639,23 @@ export class VoiceRecorderVAD {
       const elapsed = Date.now() - this.recordStartTime;
 
       if (avgEnergy > 8) {
-        // Active speaking detected
         this.hasSpoken = true;
         this.silenceStart = null;
       } else if (!this.hasSpoken) {
-        // Initial silence: if no speech after 3.5 seconds, auto-close
-        if (elapsed >= 3500) {
+        if (elapsed >= 10000) {
           this.stop(true);
         }
       } else if (this.hasSpoken) {
-        // Post-speech trailing silence: low-latency 550ms auto-completion
         if (!this.silenceStart) {
           this.silenceStart = Date.now();
-        } else if (Date.now() - this.silenceStart >= 550) {
+        } else if (Date.now() - this.silenceStart >= this.autoStopSilenceMs) {
           this.stop(false);
         }
       }
-    }, 50);
+    }, 60);
   }
 
-  stop(cancelled = false) {
+  async stop(cancelled = false) {
     if (!this.isRecording) return;
     this.isRecording = false;
 
@@ -501,10 +666,21 @@ export class VoiceRecorderVAD {
 
     if (this.recognition) {
       try {
+        this.recognition.onend = null;
         this.recognition.stop();
       } catch (e) {}
       this.recognition = null;
     }
+
+    // Disconnect audio nodes
+    if (this.processorNode) {
+      try {
+        this.processorNode.disconnect();
+      } catch (e) {}
+      this.processorNode = null;
+    }
+
+    const sampleRate = this.audioContext?.sampleRate || 44100;
 
     if (this.mediaStream) {
       this.mediaStream.getTracks().forEach((track) => track.stop());
@@ -516,6 +692,27 @@ export class VoiceRecorderVAD {
         this.audioContext.close();
       } catch (e) {}
       this.audioContext = null;
+    }
+
+    // Backend Fallback Transcription:
+    // If Web Speech API didn't produce final text or accumulated text is empty, process recorded WAV:
+    if (!cancelled && (!this.hasWebSpeechProducedText || !this.accumulatedTranscript.trim()) && this.audioChunks.length > 2) {
+      if (this.onStatusChange) this.onStatusChange('transcribing');
+      try {
+        const pcm16k = flattenAndDownsample(this.audioChunks, sampleRate, 16000);
+        const wavBlob = encodeWAV(pcm16k, 16000);
+        console.log(`[Voice] Submitting ${wavBlob.size} bytes WAV to local transcription backend...`);
+        const transcript = await sendAudioToBackend(wavBlob, this.language);
+        if (transcript && transcript.trim()) {
+          const finalFull = (this.accumulatedTranscript ? this.accumulatedTranscript + ' ' : '') + transcript.trim();
+          this.accumulatedTranscript = finalFull;
+          if (this.onTranscription) {
+            this.onTranscription(finalFull, true);
+          }
+        }
+      } catch (backendErr) {
+        console.warn('Backend audio fallback error:', backendErr);
+      }
     }
 
     if (this.onStatusChange) {
