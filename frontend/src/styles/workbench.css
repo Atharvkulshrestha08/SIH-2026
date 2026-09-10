@@ -3476,7 +3476,7 @@
   background: #EFECE6;
 }
 
-.wb-clean-user-profile {
+.wb-clean-station-badge {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -3486,29 +3486,31 @@
   border-radius: 8px;
 }
 
-.wb-clean-avatar {
+.wb-clean-station-icon-wrap {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  background: #00C9A7; /* Minty Aqua */
-  color: #FFFFFF;
-  font-weight: 700;
-  font-size: 11px;
+  border-radius: 6px;
+  background: rgba(0, 201, 167, 0.12);
+  border: 1px solid rgba(0, 201, 167, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.wb-clean-user-info {
+.wb-clean-station-shield {
+  color: #00A88B;
+}
+
+.wb-clean-station-info {
   display: flex;
   flex-direction: column;
   overflow: hidden;
   flex: 1;
 }
 
-.wb-clean-user-name {
-  font-size: 12px;
+.wb-clean-station-title {
+  font-size: 11.5px;
   font-weight: 600;
   color: #1C1917;
   white-space: nowrap;
@@ -3516,15 +3518,10 @@
   text-overflow: ellipsis;
 }
 
-.wb-clean-user-role {
+.wb-clean-station-sub {
   font-size: 9.5px;
   color: #78716C;
   white-space: nowrap;
-}
-
-.wb-clean-user-lock {
-  color: #00C9A7;
-  flex-shrink: 0;
 }
 
 /* Main Area */
@@ -4125,16 +4122,25 @@
   border-top: 1px solid #1E2C42;
 }
 
-[data-theme="dark"] .wb-clean-user-profile {
+[data-theme="dark"] .wb-clean-station-badge {
   background: #141C2C;
   border: 1px solid #1E2C42;
 }
 
-[data-theme="dark"] .wb-clean-user-name {
+[data-theme="dark"] .wb-clean-station-icon-wrap {
+  background: rgba(0, 201, 167, 0.15);
+  border: 1px solid rgba(0, 201, 167, 0.4);
+}
+
+[data-theme="dark"] .wb-clean-station-shield {
+  color: #00C9A7;
+}
+
+[data-theme="dark"] .wb-clean-station-title {
   color: #F8FAFC;
 }
 
-[data-theme="dark"] .wb-clean-user-role {
+[data-theme="dark"] .wb-clean-station-sub {
   color: #64748B;
 }
 

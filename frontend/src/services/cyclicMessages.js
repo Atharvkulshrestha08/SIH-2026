@@ -41,7 +41,7 @@ const STORAGE_KEY_VISIT_INDEX = "aerosovereign_visitor_cycle_index";
  * Get the current cyclic message for this visitor session.
  * Increments or retrieves the cyclic visitor counter.
  */
-export function getCyclicMessage(operatorName = "Atharv") {
+export function getCyclicMessage() {
   let currentIndex = 0;
   try {
     const stored = localStorage.getItem(STORAGE_KEY_VISIT_INDEX);
@@ -62,7 +62,7 @@ export function getCyclicMessage(operatorName = "Atharv") {
   return {
     ...msgObj,
     cycleNumber: cyclicIndex + 1,
-    personalizedHeading: operatorName ? `${msgObj.heading}` : msgObj.heading,
+    personalizedHeading: msgObj.heading,
   };
 }
 

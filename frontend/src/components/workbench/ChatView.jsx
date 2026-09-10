@@ -30,7 +30,7 @@ export default function ChatView({
       return '';
     }
   });
-  const [cyclicMsg, setCyclicMsg] = useState(() => getCyclicMessage('Atharv'));
+  const [cyclicMsg, setCyclicMsg] = useState(() => getCyclicMessage());
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);

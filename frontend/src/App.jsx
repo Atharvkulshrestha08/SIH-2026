@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
-import LandingPage from "./pages/LandingPage";
 import Workbench from "./pages/Workbench";
 
 function App() {
@@ -9,8 +8,8 @@ function App() {
     <ThemeProvider>
       <Router>
         <Routes>
-          {/* Landing Page at / */}
-          <Route path="/" element={<LandingPage />} />
+          {/* Direct to Sovereign Workbench Application (Offline Air-Gapped) */}
+          <Route path="/" element={<Workbench initialView="chat" />} />
 
           {/* Workbench Application routes */}
           <Route path="/workbench" element={<Workbench initialView="chat" />} />
