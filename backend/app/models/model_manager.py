@@ -62,6 +62,13 @@ SOVEREIGN_SYSTEM_PROMPT = (
 
 async def query_model(task_type: str, prompt: str) -> str:
     model = MODEL_MAP.get(task_type, MODEL_MAP["reasoning"])
+    
+    # Dynamic token budget: short general queries finish fast, while calculations retain full depth
+    if task_type == "general" and len(prompt.split()) < 25:
+        tokens_budget = 200
+    else:
+        tokens_budget = 650
+
     try:
         response = await client.chat.completions.create(
             model=model,
@@ -70,7 +77,7 @@ async def query_model(task_type: str, prompt: str) -> str:
                 {"role": "user", "content": prompt},
             ],
             temperature=0.1,  # Low temperature ensures deterministic, factual output
-            max_tokens=650,
+            max_tokens=tokens_budget,
         )
         content = response.choices[0].message.content
         if content:

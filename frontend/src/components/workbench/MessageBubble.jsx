@@ -221,19 +221,26 @@ export default function MessageBubble({ message }) {
         label: 'Native system action evaluated against whitelist',
         status: 'done',
       });
-    } else if (msg.task_type === 'CODE_MATH') {
+    } else if (msg.task_type === 'FAST_PATH' || msg.model_used === 'fast-path') {
       steps.push({
-        id: 'exec',
-        label: 'Sandboxed Python calculation executed',
+        id: 'fast',
+        label: 'Direct sovereign fast-path response (<5ms)',
+        status: 'done',
+      });
+    } else {
+      if (msg.task_type === 'CODE_MATH') {
+        steps.push({
+          id: 'exec',
+          label: 'Sandboxed Python calculation executed',
+          status: 'done',
+        });
+      }
+      steps.push({
+        id: 'infer',
+        label: `Qwen local inference (${msg.model_used || 'ai/qwen2.5:7B-Q4_K_M'})`,
         status: 'done',
       });
     }
-
-    steps.push({
-      id: 'infer',
-      label: `Qwen local inference (${msg.model_used || 'ai/qwen2.5:7B-Q4_K_M'})`,
-      status: 'done',
-    });
 
     if (msg.output_files && msg.output_files.length > 0) {
       steps.push({

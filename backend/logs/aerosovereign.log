@@ -76,3 +76,11 @@ print(socket.gethostname())... | Model: general | Latency: 6358.4ms (SUCCESS)
 2026-09-10 23:54:24 | INFO     | security.audit | AUDIT [TASK_SYSTEM_ACTION]: Prompt: launch Vs code... | Action: open_app | Result: success (SUCCESS)
 2026-09-11 00:08:54 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
 2026-09-11 00:08:54 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: hlo... | Model: general | Latency: 54798.3ms (SUCCESS)
+2026-09-11 00:18:05 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: hlo... | Mode: fast-path | Latency: 0.2ms (SUCCESS)
+2026-09-11 00:18:33 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: who are you... | Mode: fast-path | Latency: 0.0ms (SUCCESS)
+2026-09-11 00:18:33 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: status... | Mode: fast-path | Latency: 0.0ms (SUCCESS)
+2026-09-11 00:18:33 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: thanks... | Mode: fast-path | Latency: 0.0ms (SUCCESS)
+2026-09-11 00:18:33 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: what can you do... | Mode: fast-path | Latency: 0.0ms (SUCCESS)
+2026-09-11 00:18:33 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: hi... | Mode: fast-path | Latency: 0.0ms (SUCCESS)
+2026-09-11 00:20:10 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 00:20:10 | INFO     | security.audit | AUDIT [TASK_CODE_MATH]: Prompt: Calculate hoop stress for an ASME pressure vessel ... | Model: code | Latency: 85291.5ms (SUCCESS)
