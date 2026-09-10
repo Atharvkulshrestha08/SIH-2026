@@ -3187,14 +3187,14 @@
 .font-mono { font-family: monospace !important; }
 
 /* ==========================================================================
-   CHATGPT-INSPIRED MINIMALIST DECLUTTERED WORKBENCH (AEROSOVEREIGN)
+   AEROSOVEREIGN — WHITE, BEIGE & MINTY AQUA DESIGN SYSTEM
    ========================================================================== */
 
 .wb-clean-app {
   height: 100vh;
   width: 100vw;
-  background: #000000;
-  color: #f4f4f5;
+  background: #F7F5F0; /* Warm Beige */
+  color: #1C1917;      /* Rich Charcoal */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -3204,12 +3204,12 @@
 /* Topbar */
 .wb-clean-topbar {
   height: 48px;
-  background: #000000;
+  background: #EFECE6; /* Light Sand / Beige */
   display: flex;
   align-items: center;
   justify-content: center; /* dead center for toggle */
   padding: 0 16px;
-  border-bottom: 1px solid #141414;
+  border-bottom: 1px solid #E2DDD5;
   flex-shrink: 0;
   z-index: 40;
   position: relative;
@@ -3225,8 +3225,8 @@
 
 .wb-clean-topbar-title {
   font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
+  font-weight: 700;
+  color: #1C1917;
   letter-spacing: -0.01em;
 }
 
@@ -3237,8 +3237,8 @@
 }
 
 .wb-clean-pill-toggle {
-  background: #171717;
-  border: 1px solid #262626;
+  background: #E5E0D5;
+  border: 1px solid #D8D2C5;
   border-radius: 20px;
   padding: 3px;
   display: flex;
@@ -3248,7 +3248,7 @@
 .wb-pill-opt {
   background: transparent;
   border: none;
-  color: #a1a1aa;
+  color: #78716C;
   font-size: 12px;
   font-weight: 500;
   padding: 4px 14px;
@@ -3258,60 +3258,14 @@
 }
 
 .wb-pill-opt:hover {
-  color: #ffffff;
+  color: #1C1917;
 }
 
 .wb-pill-opt.active {
-  background: #262626;
-  color: #ffffff;
+  background: #FFFFFF;
+  color: #00A88B; /* Minty Aqua */
   font-weight: 600;
-}
-
-.wb-clean-topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.wb-clean-model-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #171717;
-  border: 1px solid #262626;
-  padding: 4px 10px;
-  border-radius: 16px;
-  cursor: pointer;
-  color: #a1a1aa;
-  font-size: 11.5px;
-  font-family: monospace;
-  transition: all 0.15s ease;
-}
-
-.wb-clean-model-btn:hover {
-  background: #212121;
-  color: #f4f4f5;
-}
-
-.wb-model-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #38bdf8;
-}
-
-.wb-clean-sov-pill {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  color: #10b981;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 4px 9px;
-  border-radius: 14px;
-  font-family: monospace;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 /* Shell */
@@ -3320,7 +3274,7 @@
   flex: 1;
   height: calc(100vh - 48px);
   width: 100vw;
-  background: #000000;
+  background: #F7F5F0;
   overflow: hidden;
 }
 
@@ -3329,8 +3283,8 @@
   width: 250px;
   min-width: 250px;
   height: 100%;
-  background: #0d0d0d;
-  border-right: 1px solid #1a1a1a;
+  background: #EFECE6; /* Warm Beige / Sand */
+  border-right: 1px solid #E2DDD5;
   display: flex;
   flex-direction: column;
   transition: width 0.2s ease, min-width 0.2s ease, opacity 0.2s ease;
@@ -3355,18 +3309,13 @@
 .wb-clean-brand-name {
   font-size: 14px;
   font-weight: 700;
-  color: #ffffff;
-}
-
-.wb-clean-header-actions {
-  display: flex;
-  align-items: center;
+  color: #1C1917;
 }
 
 .wb-clean-icon-btn {
   background: none;
   border: none;
-  color: #737373;
+  color: #78716C;
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
@@ -3376,8 +3325,8 @@
 }
 
 .wb-clean-icon-btn:hover {
-  color: #ffffff;
-  background: #1f1f1f;
+  color: #1C1917;
+  background: #E5E0D5;
 }
 
 .wb-clean-new-chat-wrap {
@@ -3388,21 +3337,23 @@
   width: 100%;
   padding: 8px 12px;
   border-radius: 8px;
-  background: #171717;
-  border: 1px solid #262626;
-  color: #e5e5e5;
+  background: #FFFFFF; /* Crisp White */
+  border: 1px solid #DCD6CA;
+  color: #1C1917;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   transition: all 0.15s ease;
 }
 
 .wb-clean-new-chat-btn:hover {
-  background: #212121;
-  border-color: #383838;
+  background: #F9F8F5;
+  border-color: #00C9A7; /* Mint Aqua */
+  color: #00A88B;
 }
 
 .wb-clean-nav-list {
@@ -3421,7 +3372,7 @@
   padding: 7px 10px;
   border-radius: 6px;
   font-size: 12.5px;
-  color: #a3a3a3;
+  color: #57534E;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -3430,32 +3381,34 @@
 }
 
 .wb-clean-nav-btn:hover {
-  background: #1a1a1a;
-  color: #f5f5f5;
+  background: #E5E0D5;
+  color: #1C1917;
 }
 
 .wb-clean-nav-btn.active {
-  background: #1f1f1f;
-  color: #ffffff;
+  background: #E3F8F4; /* Soft Mint Aqua tint */
+  color: #00A88B;      /* Mint Aqua text */
   font-weight: 600;
+  border-left: 2px solid #00C9A7;
 }
 
 .wb-clean-nav-icon {
   flex-shrink: 0;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .wb-clean-recents-section {
   margin-top: 14px;
   padding-top: 10px;
-  border-top: 1px solid #1a1a1a;
+  border-top: 1px solid #E2DDD5;
 }
 
 .wb-clean-recents-header {
   font-size: 11px;
-  font-weight: 600;
-  color: #525252;
+  font-weight: 700;
+  color: #A8A29E;
   padding: 4px 10px 6px;
+  letter-spacing: 0.03em;
 }
 
 .wb-clean-recents-list {
@@ -3466,7 +3419,7 @@
 
 .wb-clean-no-recents {
   font-size: 11.5px;
-  color: #404040;
+  color: #A8A29E;
   padding: 6px 10px;
 }
 
@@ -3477,19 +3430,20 @@
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 12px;
-  color: #737373;
+  color: #78716C;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .wb-clean-recent-item:hover {
-  background: #171717;
-  color: #d4d4d8;
+  background: #E5E0D5;
+  color: #1C1917;
 }
 
 .wb-clean-recent-item.active {
-  background: #1a1a1a;
-  color: #ffffff;
+  background: #FFFFFF;
+  color: #00A88B;
+  font-weight: 500;
 }
 
 .wb-recent-title {
@@ -3502,7 +3456,7 @@
 .wb-recent-del-btn {
   background: none;
   border: none;
-  color: #525252;
+  color: #A8A29E;
   cursor: pointer;
   opacity: 0;
   padding: 2px;
@@ -3513,13 +3467,13 @@
 }
 
 .wb-recent-del-btn:hover {
-  color: #ef4444;
+  color: #EF4444;
 }
 
 .wb-clean-sidebar-footer {
   padding: 10px;
-  border-top: 1px solid #1a1a1a;
-  background: #0d0d0d;
+  border-top: 1px solid #E2DDD5;
+  background: #EFECE6;
 }
 
 .wb-clean-user-profile {
@@ -3527,8 +3481,8 @@
   align-items: center;
   gap: 10px;
   padding: 8px 10px;
-  background: #141414;
-  border: 1px solid #1f1f1f;
+  background: #FFFFFF;
+  border: 1px solid #DCD6CA;
   border-radius: 8px;
 }
 
@@ -3536,8 +3490,8 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #059669;
-  color: #ffffff;
+  background: #00C9A7; /* Minty Aqua */
+  color: #FFFFFF;
   font-weight: 700;
   font-size: 11px;
   display: flex;
@@ -3556,7 +3510,7 @@
 .wb-clean-user-name {
   font-size: 12px;
   font-weight: 600;
-  color: #f5f5f5;
+  color: #1C1917;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3564,12 +3518,12 @@
 
 .wb-clean-user-role {
   font-size: 9.5px;
-  color: #737373;
+  color: #78716C;
   white-space: nowrap;
 }
 
 .wb-clean-user-lock {
-  color: #10b981;
+  color: #00C9A7;
   flex-shrink: 0;
 }
 
@@ -3580,7 +3534,7 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  background: #000000;
+  background: #F7F5F0; /* Warm Beige */
   position: relative;
 }
 
@@ -3591,7 +3545,7 @@
   height: 100%;
   width: 100%;
   position: relative;
-  background: #000000;
+  background: #F7F5F0;
 }
 
 /* Empty Hero */
@@ -3610,15 +3564,15 @@
 
 .wb-chat-clean-title {
   font-size: 32px;
-  font-weight: 600;
-  color: #ffffff;
+  font-weight: 700;
+  color: #1C1917;
   margin: 0 0 10px 0;
   letter-spacing: -0.025em;
 }
 
 .wb-chat-clean-subtitle {
-  font-size: 14.5px;
-  color: #737373;
+  font-size: 15px;
+  color: #78716C;
   margin: 0 0 32px 0;
   max-width: 580px;
   line-height: 1.5;
@@ -3627,31 +3581,31 @@
 /* Pill Composer — Spacious, Open & Stretchable */
 .wb-clean-composer-box {
   width: 100%;
-  background: #171717;
-  border: 1px solid #282828;
+  background: #FFFFFF; /* Crisp White */
+  border: 1px solid #DCD6CA;
   border-radius: 20px;
   padding: 10px 16px;
+  box-shadow: 0 8px 30px rgba(50, 45, 35, 0.06);
   transition: border-color 0.15s ease, box-shadow 0.15s ease, max-width 0.2s ease;
 }
 
 .wb-clean-composer-box.open-mode {
   max-width: 920px;
-  padding: 12px 18px 10px;
+  padding: 14px 18px 10px;
   border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
 }
 
 .wb-clean-composer-box:focus-within {
-  border-color: #444444;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  border-color: #00C9A7; /* Mint Aqua focus border */
+  box-shadow: 0 10px 32px rgba(0, 201, 167, 0.12);
 }
 
 .wb-clean-attached-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #242424;
-  color: #e5e5e5;
+  background: #E3F8F4;
+  color: #00A88B;
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 11px;
@@ -3661,14 +3615,14 @@
 .wb-clean-attached-pill .remove-btn {
   background: none;
   border: none;
-  color: #888;
+  color: #78716C;
   cursor: pointer;
   padding: 0;
   display: flex;
 }
 
 .wb-clean-attached-pill .remove-btn:hover {
-  color: #fff;
+  color: #EF4444;
 }
 
 .wb-clean-composer-row {
@@ -3679,7 +3633,7 @@
 
 .wb-clean-composer-row.stretchable {
   display: flex;
-  align-items: flex-end; /* allows textarea to expand upwards/smoothly */
+  align-items: flex-end;
   gap: 12px;
 }
 
@@ -3692,9 +3646,9 @@
   max-height: 32px;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  background: #262626;
-  border: none;
-  color: #a3a3a3;
+  background: #F2EFE9;
+  border: 1px solid #DCD6CA;
+  color: #78716C;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3707,8 +3661,9 @@
 }
 
 .wb-clean-plus-btn:hover {
-  background: #333333;
-  color: #ffffff;
+  background: #E8E3D8;
+  color: #00A88B;
+  border-color: #00C9A7;
 }
 
 .wb-clean-textarea {
@@ -3716,7 +3671,7 @@
   background: transparent;
   border: none;
   outline: none;
-  color: #f5f5f5;
+  color: #1C1917;
   font-size: 15px;
   line-height: 1.5;
   resize: none;
@@ -3731,7 +3686,7 @@
 }
 
 .wb-clean-textarea::placeholder {
-  color: #555555;
+  color: #A8A29E;
 }
 
 .wb-clean-controls-right {
@@ -3743,12 +3698,12 @@
 }
 
 .wb-clean-model-tag {
-  background: #262626;
-  border: none;
+  background: #F2EFE9;
+  border: 1px solid #DCD6CA;
   border-radius: 14px;
   padding: 5px 11px;
   font-size: 11px;
-  color: #a3a3a3;
+  color: #57534E;
   font-family: monospace;
   display: flex;
   align-items: center;
@@ -3758,8 +3713,9 @@
 }
 
 .wb-clean-model-tag:hover {
-  background: #333333;
-  color: #ffffff;
+  background: #E3F8F4;
+  color: #00A88B;
+  border-color: #00C9A7;
 }
 
 .wb-clean-send-btn {
@@ -3771,9 +3727,9 @@
   max-height: 32px;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  background: #ffffff;
+  background: #00C9A7; /* Minty Aqua */
   border: none;
-  color: #000000;
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3781,16 +3737,19 @@
   flex-shrink: 0;
   padding: 0;
   box-sizing: border-box;
-  transition: opacity 0.15s ease, background 0.15s ease;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 201, 167, 0.35);
 }
 
 .wb-clean-send-btn:hover:not(:disabled) {
-  background: #e5e5e5;
+  background: #00B594;
+  transform: translateY(-1px);
 }
 
 .wb-clean-send-btn:disabled {
-  background: #262626;
-  color: #525252;
+  background: #E5E0D5;
+  color: #A8A29E;
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -3800,7 +3759,7 @@
   justify-content: center;
   gap: 6px;
   font-size: 11.5px;
-  color: #525252;
+  color: #A8A29E;
   margin-top: 16px;
 }
 
@@ -3819,7 +3778,7 @@
   margin: 0 auto;
 }
 
-/* ---- Bottom-Right Sovereignty & Model Dock ---- */
+/* Bottom-Right Sovereignty & Model Dock */
 .wb-bottom-right-dock {
   position: absolute;
   bottom: 16px;
@@ -3835,37 +3794,213 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(23, 23, 23, 0.85);
-  backdrop-filter: blur(8px);
-  border: 1px solid #282828;
+  background: #FFFFFF;
+  border: 1px solid #DCD6CA;
   padding: 5px 11px;
   border-radius: 16px;
   cursor: pointer;
-  color: #a3a3a3;
+  color: #57534E;
   font-size: 11.5px;
   font-family: monospace;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.15s ease;
 }
 
 .wb-dock-model-btn:hover {
-  background: #242424;
-  color: #ffffff;
-  border-color: #3f3f46;
+  background: #F9F8F5;
+  color: #00A88B;
+  border-color: #00C9A7;
+}
+
+.wb-model-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00C9A7;
 }
 
 .wb-dock-sov-pill {
   display: flex;
   align-items: center;
   gap: 5px;
-  background: rgba(16, 185, 129, 0.1);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(16, 185, 129, 0.28);
-  color: #10b981;
+  background: #E3F8F4;
+  border: 1px solid #A7F3D0;
+  color: #00A88B;
   font-size: 10.5px;
   font-weight: 600;
   padding: 5px 10px;
   border-radius: 16px;
   font-family: monospace;
+}
+
+/* Message Bubbles for Light Theme */
+.wb-message-row.user .wb-message-bubble {
+  background: #EFECE6;
+  color: #1C1917;
+  border: 1px solid #DCD6CA;
+}
+
+.wb-message-row.assistant .wb-message-bubble {
+  background: #FFFFFF;
+  color: #1C1917;
+  border: 1px solid #E2DDD5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.wb-agent-timeline-container {
+  background: #F7F5F0;
+  border: 1px solid #E5E0D5;
+}
+
+.wb-timeline-toggle-title {
+  color: #1C1917;
+}
+
+.wb-timeline-step-label {
+  color: #292524;
+}
+
+.wb-deliverable-card {
+  background: #F3FAF8;
+  border: 1px solid #A7F3D0;
+}
+
+.wb-deliverable-title {
+  color: #1C1917;
+}
+
+.wb-deliverable-download-btn {
+  background: #00C9A7;
+  color: #FFFFFF;
+}
+
+.wb-meta-sovereignty-badge {
+  color: #00A88B;
+}
+
+.wb-meta-chip {
+  background: #F3EFE9;
+  border: 1px solid #DCD6CA;
+  color: #57534E;
+}
+
+.wb-meta-chip-task {
+  color: #00A88B;
+  background: #E3F8F4;
+  border-color: #A7F3D0;
+}
+
+.wb-card {
+  background: #FFFFFF;
+  border: 1px solid #E2DDD5;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.wb-card-title {
+  color: #1C1917;
+}
+
+.wb-stat-card {
+  background: #FFFFFF;
+  border: 1px solid #E2DDD5;
+}
+
+.wb-stat-val {
+  color: #1C1917;
+}
+
+.wb-table-wrapper {
+  background: #FFFFFF;
+  border: 1px solid #E2DDD5;
+}
+
+.wb-table th {
+  background: #F7F5F0;
+  color: #78716C;
+  border-bottom: 1px solid #E2DDD5;
+}
+
+.wb-table td {
+  border-bottom: 1px solid #F0ECE4;
+  color: #292524;
+}
+
+.wb-table-row:hover {
+  background: #FAF8F5;
+}
+
+.wb-task-title-text {
+  color: #1C1917;
+}
+
+.wb-view-title {
+  color: #1C1917;
+}
+
+.wb-drawer {
+  background: #FFFFFF;
+  border-left: 1px solid #E2DDD5;
+}
+
+.wb-drawer-title {
+  color: #1C1917;
+}
+
+.wb-drawer-prompt-box,
+.wb-drawer-text-box {
+  background: #F7F5F0;
+  border: 1px solid #E5E0D5;
+  color: #1C1917;
+}
+
+.wb-drawer-output-box {
+  background: #FAF8F5;
+  border: 1px solid #E5E0D5;
+  color: #1C1917;
+}
+
+.wb-drawer-audit-meta {
+  background: #F7F5F0;
+  border: 1px solid #E5E0D5;
+}
+
+.wb-active-model-hero {
+  background: #FFFFFF;
+  border: 1px solid #DCD6CA;
+}
+
+.wb-active-model-name {
+  color: #1C1917;
+}
+
+.wb-active-model-metrics {
+  background: #F7F5F0;
+  border: 1px solid #E5E0D5;
+}
+
+.wb-active-metric .val {
+  color: #1C1917;
+}
+
+.wb-active-model-cmd {
+  background: #F7F5F0;
+  border: 1px solid #E5E0D5;
+  color: #57534E;
+}
+
+.wb-info-banner {
+  background: #F4FAF8;
+  border: 1px solid #A7F3D0;
+  color: #065F46;
+}
+
+.wb-info-banner-text {
+  color: #065F46;
+}
+
+.wb-info-banner-text code {
+  background: #E6F7F2;
+  color: #047857;
 }
 
 

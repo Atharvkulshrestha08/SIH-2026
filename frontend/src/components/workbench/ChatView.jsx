@@ -22,7 +22,14 @@ export default function ChatView({
   selectedTool,
   onSelectTool,
 }) {
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState(() => {
+    try {
+      const p = new URLSearchParams(window.location.search).get('prompt');
+      return p ? decodeURIComponent(p) : '';
+    } catch {
+      return '';
+    }
+  });
   const [cyclicMsg, setCyclicMsg] = useState(() => getCyclicMessage('Atharv'));
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
