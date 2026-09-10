@@ -5,8 +5,8 @@ DOCS_DIR = os.path.abspath("docs")
 os.makedirs(DOCS_DIR, exist_ok=True)
 
 HTML_FRONTEND_DOC = os.path.join(DOCS_DIR, "frontend_documentation.html")
-PDF_FRONTEND_DOC = os.path.join(DOCS_DIR, "AEROSOVEREIGN_FRONTEND_DOCUMENTATION.pdf")
-MD_FRONTEND_DOC = os.path.join(DOCS_DIR, "AEROSOVEREIGN_FRONTEND_DOCUMENTATION.md")
+PDF_FRONTEND_DOC = os.path.join(DOCS_DIR, "MAX_FRONTEND_DOCUMENTATION.pdf")
+MD_FRONTEND_DOC = os.path.join(DOCS_DIR, "MAX_FRONTEND_DOCUMENTATION.md")
 
 HTML_INTEGRATION_DOC = os.path.join(DOCS_DIR, "cross_branch_integration_guide.html")
 PDF_INTEGRATION_DOC = os.path.join(DOCS_DIR, "CROSS_BRANCH_INTEGRATION_GUIDE.pdf")

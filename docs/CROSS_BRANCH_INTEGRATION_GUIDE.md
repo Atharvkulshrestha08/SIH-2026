@@ -1,4 +1,4 @@
-# AeroSovereign: Cross-Branch Backend & Frontend Integration Guide
+# MAX: Cross-Branch Backend & Frontend Integration Guide
 **Mangalore Refinery and Petrochemicals Limited (MRPL)**  
 **Problem Statement PS-26117**: Sovereign On-Premise Agentic AI Workbench  
 **Document Version**: 1.0.0 | **Audience**: Full-Stack Developers & System Integrators

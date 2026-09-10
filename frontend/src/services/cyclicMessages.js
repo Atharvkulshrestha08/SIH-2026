@@ -35,7 +35,7 @@ export const CYCLIC_MESSAGES = [
   },
 ];
 
-const STORAGE_KEY_VISIT_INDEX = "aerosovereign_visitor_cycle_index";
+const STORAGE_KEY_VISIT_INDEX = "max_visitor_cycle_index";
 
 /**
  * Get the current cyclic message for this visitor session.

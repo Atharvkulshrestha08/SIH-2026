@@ -9,7 +9,7 @@ from app.documents.extract import extract_text
 
 router = APIRouter()
 
-UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/tmp/aerosovereign/uploads")
+UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/tmp/max/uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 

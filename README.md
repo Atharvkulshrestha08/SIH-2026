@@ -23,7 +23,7 @@ Built for the Smart India Hackathon (SIH), then extended into a production-grade
 ## 🏗️ Architecture
 
 ```
-aerosovereign/
+MAX/
 ├── backend/
 │   ├── gateway/          # API, task router, STT/TTS
 │   ├── agents/            # router, engineering, RAG, document, vision, orchestrator
@@ -65,7 +65,7 @@ aerosovereign/
 ```bash
 # Clone the repo
 git clone <repo-url>
-cd aerosovereign
+cd MAX
 
 # Run setup script (installs deps, prepares environment)
 ./scripts/setup.sh

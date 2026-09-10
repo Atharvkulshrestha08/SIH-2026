@@ -1,4 +1,4 @@
-"""Local PostgreSQL client for AeroSovereign — replaces Supabase entirely.
+"""Local PostgreSQL client for MAX — replaces Supabase entirely.
 All data stays on-premises; no external network calls."""
 import os
 # pyrefly: ignore [missing-import]

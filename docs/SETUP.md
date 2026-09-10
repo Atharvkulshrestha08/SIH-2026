@@ -1,4 +1,4 @@
-# AeroSovereign — Setup Guide
+# MAX — Setup Guide
 
 ## Prerequisites
 - Docker ≥ 24 & Docker Compose v2
@@ -11,7 +11,7 @@
 
 ```bash
 git clone <repo-url>
-cd aerosovereign
+cd MAX
 
 # Backend env
 cp backend/.env.example backend/.env
@@ -45,7 +45,7 @@ bash scripts/download_models.sh
 
 Or manually:
 ```bash
-docker exec -it aerosovereign-model ollama pull llama3
+docker exec -it max-model ollama pull llama3
 ```
 
 ---
