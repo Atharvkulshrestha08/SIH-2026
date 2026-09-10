@@ -1,5 +1,6 @@
 import React from 'react';
 import { PanelLeft } from 'lucide-react';
+import ThemeToggle from '../ThemeToggle';
 
 export default function TopBar({
   activeView = 'chat',
@@ -39,6 +40,11 @@ export default function TopBar({
             + Work
           </button>
         </div>
+      </div>
+
+      {/* Right: Light / Dark Mode Toggle */}
+      <div className="wb-clean-topbar-right">
+        <ThemeToggle size={14} />
       </div>
     </header>
   );
