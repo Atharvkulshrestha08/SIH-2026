@@ -103,7 +103,7 @@ FAST_GREETINGS = {
 }
 
 FAST_IDENTITY = {
-    "who are you", "what are you", "what is aerosovereign", "what can you do",
+    "who are you", "what are you", "what is max", "what is aerosovereign", "what can you do",
     "help", "how to use", "commands", "features", "what is this", "capabilities",
     "tell me about yourself", "who made you"
 }
@@ -146,7 +146,7 @@ def classify_fast_path(prompt: str) -> Optional[str]:
         len(cleaned_no_punct.split()) <= 3 and any(cleaned_no_punct.startswith(g) for g in ["hi", "hello", "hey", "hlo"])
     ):
         return (
-            "Hello! I am AeroSovereign, your air-gapped sovereign industrial engineering assistant.\n\n"
+            "Hello! I am MAX, your air-gapped sovereign industrial engineering assistant.\n\n"
             "How can I assist your operations today? You can ask me to:\n"
             "- Perform engineering calculations (e.g., hoop stress, Reynolds number)\n"
             "- Query industrial SOPs & standards (ASME B31.3, API 610, ISO)\n"
@@ -157,7 +157,7 @@ def classify_fast_path(prompt: str) -> Optional[str]:
     # 2. Identity & Capabilities
     if cleaned_no_punct in FAST_IDENTITY:
         return (
-            "I am AeroSovereign — an air-gapped sovereign engineering assistant operating under strict zero-external-egress protocols.\n\n"
+            "I am MAX — an air-gapped sovereign engineering assistant operating under strict zero-external-egress protocols.\n\n"
             "Core Capabilities:\n"
             "1. Technical Calculations: Deterministic stress analysis, fluid mechanics, and thermodynamic limits.\n"
             "2. SOP Knowledge Base: Offline retrieval of plant operating procedures and safety standards.\n"

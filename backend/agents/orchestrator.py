@@ -1,4 +1,4 @@
-"""Multi-Agent Orchestrator for AeroSovereign operations."""
+"""Multi-Agent Orchestrator for MAX operations."""
 import time
 import logging
 from typing import Optional

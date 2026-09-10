@@ -1,6 +1,6 @@
-# AeroSovereign (MRPL-Workbench)
+# MAX (MRPL-Workbench)
 
-A **sovereign, offline-first, multi-model AI workbench** for engineering and inspection operations. AeroSovereign combines specialized local LLMs, retrieval-augmented search, document automation, voice, and vision into a single system that runs entirely on local infrastructure — with zero external API calls.
+A **sovereign, offline-first, multi-model AI workbench** for engineering and inspection operations. MAX combines specialized local LLMs, retrieval-augmented search, document automation, voice, and vision into a single system that runs entirely on local infrastructure — with zero external API calls.
 
 Built for the Smart India Hackathon (SIH), then extended into a production-grade 12-week product.
 
@@ -97,7 +97,7 @@ docker compose -f docker/docker-compose.yml up
 
 ## 🔒 Sovereignty & Security
 
-AeroSovereign is designed to run **fully offline**:
+MAX is designed to run **fully offline**:
 - Real-time network egress monitoring (0 external calls, verifiable live)
 - Comprehensive audit logging for every AI operation
 - Sandboxed code execution with resource limits

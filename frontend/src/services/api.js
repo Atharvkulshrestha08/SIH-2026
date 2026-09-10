@@ -1,5 +1,5 @@
 /**
- * AeroSovereign API Service Layer
+ * MAX API Service Layer
  * Connects directly to local air-gapped FastAPI backend (Base URL: http://127.0.0.1:8000/api/v1)
  *
  * AIR-GAP GUARANTEE:
@@ -17,7 +17,7 @@ export const BACKEND_HOST = "127.0.0.1:8000";
  */
 function createBackendError(endpoint, originalError) {
   const err = new Error(
-    `Backend unavailable: Unable to reach the local AeroSovereign service at ${BACKEND_HOST}. ` +
+    `Backend unavailable: Unable to reach the local MAX service at ${BACKEND_HOST}. ` +
     `Ensure FastAPI is running (uvicorn app.main:app --reload). Details: ${originalError?.message || originalError}`
   );
   err.isBackendOffline = true;

@@ -87,3 +87,8 @@ print(socket.gethostname())... | Model: general | Latency: 6358.4ms (SUCCESS)
 2026-09-11 00:21:50 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: hlo... | Mode: fast-path | Latency: 0.3ms (SUCCESS)
 2026-09-11 00:22:14 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
 2026-09-11 00:22:14 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: what is my name... | Model: general | Latency: 9851.8ms (SUCCESS)
+2026-09-11 00:37:18 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: who are you... | Mode: fast-path | Latency: 0.2ms (SUCCESS)
+2026-09-11 00:38:48 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: hlo... | Mode: fast-path | Latency: 0.0ms (SUCCESS)
+2026-09-11 00:43:10 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: hlo... | Mode: fast-path | Latency: 0.0ms (SUCCESS)
+2026-09-11 00:44:47 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 00:44:47 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: who is indias biggest celebrity... | Model: general | Latency: 72112.1ms (SUCCESS)

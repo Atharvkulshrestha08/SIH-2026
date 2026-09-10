@@ -1,4 +1,4 @@
-"""Test suite for AeroSovereign backend services."""
+"""Test suite for MAX backend services."""
 import pytest
 from fastapi.testclient import TestClient
 import sys
@@ -17,7 +17,7 @@ def test_root_endpoint():
     res = client.get("/")
     assert res.status_code == 200
     data = res.json()
-    assert data["system"] == "AeroSovereign"
+    assert data["system"] == "MAX"
     assert data["status"] == "ONLINE"
 
 

@@ -1,4 +1,4 @@
-"""Shared schemas and data models for AeroSovereign."""
+"""Shared schemas and data models for MAX."""
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 from enum import Enum

@@ -29,7 +29,7 @@ def _offline_fallback(prompt: str, model_name: str) -> str:
     p = prompt.lower()
     if any(k in p for k in ("calc", "pump", "stress", "flow")):
         return (
-            f"[AeroSovereign {model_name} - Offline Engine]\n\n"
+            f"[MAX {model_name} - Offline Engine]\n\n"
             f"Engineering Assessment for: \"{prompt}\"\n\n"
             "1. Standard Operating Range Verified: Within API 610 / ASME B31.3 tolerances.\n"
             "2. Formula Applied: Q = A * v (Flow Rate) / S = P*D/(2*t) (Hoop Stress).\n"
@@ -37,21 +37,21 @@ def _offline_fallback(prompt: str, model_name: str) -> str:
         )
     elif any(k in p for k in ("sop", "inspect", "standard")):
         return (
-            f"[AeroSovereign {model_name} - SOP Specialist]\n\n"
+            f"[MAX {model_name} - SOP Specialist]\n\n"
             "Referencing Standard Operating Procedure:\n"
             "- Pre-requisite: Isolate supply and depressurize system to 0 barg.\n"
             "- Verification: Ultrasonic thickness measurement, seal leak detection, vibration analysis.\n"
             "- Sign-off: Shift In-Charge and Level-II Inspector."
         )
     return (
-        f"[AeroSovereign {model_name} - Offline Engine]\n\n"
+        f"[MAX {model_name} - Offline Engine]\n\n"
         f"Model server unreachable. Prompt received locally: \"{prompt}\"\n"
         "No external network calls were made."
     )
 
 
 SOVEREIGN_SYSTEM_PROMPT = (
-    "You are AeroSovereign, an air-gapped sovereign industrial engineering assistant.\n"
+    "You are MAX, an air-gapped sovereign industrial engineering assistant.\n"
     "ANTI-HALLUCINATION & FACTUAL ACCURACY PROTOCOL:\n"
     "1. Strict Factual Grounding: Base technical specifications, formulas, and operating limits strictly on verified engineering standards (ASME, API, ISO) or provided SOP context.\n"
     "2. No Fabrications: Never invent non-existent standard clauses, equipment tags, or safety thresholds. If a parameter or value is unknown or unprovided, explicitly state that it is not specified rather than guessing.\n"

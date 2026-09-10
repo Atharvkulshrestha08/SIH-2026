@@ -56,12 +56,12 @@ export default function Navbar() {
       >
         <div className="nav-container">
           {/* Brand Logo */}
-          <Link to="/" className="nav-brand" aria-label="AeroSovereign Home">
+          <Link to="/" className="nav-brand" aria-label="MAX Home">
             <div className="nav-logo-icon">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div className="nav-brand-text">
-              <span className="brand-name">AeroSovereign</span>
+              <span className="brand-name">MAX</span>
               <span className="brand-badge">MRPL PS-26117</span>
             </div>
           </Link>
@@ -128,7 +128,7 @@ export default function Navbar() {
               <div className="nav-logo-icon">
                 <ShieldCheck className="w-5 h-5" />
               </div>
-              <span className="brand-name">AeroSovereign</span>
+              <span className="brand-name">MAX</span>
             </div>
             <button
               className="drawer-close-btn"
