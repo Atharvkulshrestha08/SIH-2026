@@ -16,3 +16,8 @@
 2026-09-11 03:13:05 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (169346 bytes) | Lang: en-US | Latency: 111.6ms (SUCCESS)
 2026-09-11 03:47:33 | INFO     | app.routes.voice | No audible speech detected in audio payload
 2026-09-11 03:47:33 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (16044 bytes) | Lang: auto | Latency: 563.3ms (SUCCESS)
+2026-09-11 03:51:27 | INFO     | app.routes.voice | Transcribed audio successfully: remix Telugu
+2026-09-11 03:51:27 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (376876 bytes) | Lang: en-US | Latency: 1157.4ms (SUCCESS)
+2026-09-11 03:51:42 | INFO     | app.routes.voice | Transcribed audio successfully: open PPT open PPT
+2026-09-11 03:51:42 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (117462 bytes) | Lang: en-US | Latency: 767.4ms (SUCCESS)
+2026-09-11 03:51:45 | INFO     | security.audit | AUDIT [TASK_SYSTEM_ACTION]: Prompt: open PPT open PPT... | Action: open_file | Result: denied (DENIED)
