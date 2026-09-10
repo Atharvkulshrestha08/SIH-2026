@@ -10,18 +10,20 @@ export default function TopBar({
 }) {
   return (
     <header className="wb-clean-topbar">
-      {/* Left: Sidebar toggle & Brand Title */}
+      {/* Left: Sidebar toggle & Brand Title (shown when sidebar is collapsed) */}
       <div className="wb-clean-topbar-left">
         {sidebarCollapsed && (
-          <button
-            className="wb-clean-icon-btn"
-            onClick={onToggleSidebar}
-            title="Open sidebar"
-          >
-            <PanelLeft size={16} />
-          </button>
+          <>
+            <button
+              className="wb-clean-icon-btn"
+              onClick={onToggleSidebar}
+              title="Open sidebar"
+            >
+              <PanelLeft size={16} />
+            </button>
+            <span className="wb-clean-topbar-title">AeroSovereign</span>
+          </>
         )}
-        <span className="wb-clean-topbar-title">AeroSovereign</span>
       </div>
 
       {/* Dead-Center: ChatGPT-style segmented toggle pill */}
