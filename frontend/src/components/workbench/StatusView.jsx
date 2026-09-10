@@ -80,25 +80,33 @@ export default function StatusView() {
         <div className="wb-card">
           <div className="wb-card-header">
             <h2 className="wb-card-title">Inference Engine</h2>
-            <span className="wb-card-tag text-green">LOCAL RUNTIME</span>
+            <span className={`wb-card-tag ${statusData ? 'text-green' : 'text-amber'}`}>
+              {statusData ? 'LOCAL RUNTIME' : 'OFFLINE'}
+            </span>
           </div>
           <div className="wb-card-metric-list">
             <div className="wb-metric-row">
               <span className="label">Inference Mode</span>
-              <span className="val text-green font-mono">LOCAL (Docker Model Runner)</span>
+              <span className={`val font-mono ${statusData ? 'text-green' : 'text-amber'}`}>
+                {statusData ? 'LOCAL (Docker Model Runner)' : 'Backend Unreachable'}
+              </span>
             </div>
             <div className="wb-metric-row">
               <span className="label">Active Model</span>
-              <span className="val font-mono">ai/qwen2.5:7B-Q4_K_M</span>
+              <span className="val font-mono">
+                {statusData?.active_model || statusData?.model || (statusData ? 'ai/qwen2.5:7B-Q4_K_M' : '—')}
+              </span>
             </div>
             <div className="wb-metric-row">
               <span className="label">Model Footprint</span>
-              <span className="val font-mono">4.36 GiB (4-bit Quantized)</span>
+              <span className="val font-mono">
+                {statusData?.model_footprint || (statusData ? '4.36 GiB (4-bit)' : '—')}
+              </span>
             </div>
             <div className="wb-metric-row">
               <span className="label">Model Host URL</span>
               <span className="val font-mono">
-                {statusData?.model_host || 'http://localhost:12434/engines/v1'}
+                {statusData?.model_host || (statusData ? 'http://localhost:12434/engines/v1' : '—')}
               </span>
             </div>
             <div className="wb-metric-row">
@@ -112,28 +120,36 @@ export default function StatusView() {
         <div className="wb-card">
           <div className="wb-card-header">
             <h2 className="wb-card-title">Workstation Hardware</h2>
-            <span className="wb-card-tag text-accent">NVIDIA RTX 3050</span>
+            <span className="wb-card-tag text-accent">
+              {statusData?.gpu_name || (statusData ? 'NVIDIA RTX 3050' : 'OFFLINE')}
+            </span>
           </div>
           <div className="wb-card-metric-list">
             <div className="wb-metric-row">
               <span className="label">Target GPU</span>
-              <span className="val font-mono">NVIDIA GeForce RTX 3050</span>
+              <span className="val font-mono">
+                {statusData?.gpu_name || (statusData ? 'NVIDIA GeForce RTX 3050' : '—')}
+              </span>
             </div>
             <div className="wb-metric-row">
               <span className="label">Total GPU VRAM</span>
-              <span className="val font-mono">6.00 GiB</span>
+              <span className="val font-mono">{statusData?.vram_total || (statusData ? '6.00 GiB' : '—')}</span>
             </div>
             <div className="wb-metric-row">
               <span className="label">Model VRAM Usage</span>
-              <span className="val text-green font-mono">4.36 GiB (72.7% Allocated)</span>
+              <span className="val text-green font-mono">
+                {statusData?.vram_usage || (statusData ? '4.36 GiB (72.7% Allocated)' : '—')}
+              </span>
             </div>
             <div className="wb-metric-row">
               <span className="label">Available VRAM Headroom</span>
-              <span className="val font-mono">1.64 GiB (Safe Margin)</span>
+              <span className="val font-mono">
+                {statusData?.vram_headroom || (statusData ? '1.64 GiB' : '—')}
+              </span>
             </div>
             <div className="wb-metric-row">
               <span className="label">Host Platform</span>
-              <span className="val font-mono">{statusData?.platform || 'Windows'}</span>
+              <span className="val font-mono">{statusData?.platform || '—'}</span>
             </div>
           </div>
         </div>

@@ -22,32 +22,7 @@ export default function DocumentsView() {
   const [error, setError] = useState(null);
 
   // Session-generated document registry
-  const [documentsHistory, setDocumentsHistory] = useState([
-    {
-      id: 'DOC-INIT-1',
-      title: 'Centrifugal Pump P-102 Overhaul Inspection Memo',
-      filename: 'centrifugal_pump_p102_overhaul_memo.docx',
-      format: 'docx',
-      author: 'Lead Inspection Engineer, MRPL',
-      timestamp: new Date(Date.now() - 1000 * 60 * 35).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      sovereign_status: 'PASS_0_EXTERNAL_EGRESS',
-    },
-    {
-      id: 'DOC-INIT-2',
-      title: 'Fractionator Column Ultrasonic Thickness Workbook',
-      filename: 'fractionator_column_thickness_data.xlsx',
-      format: 'xlsx',
-      author: 'NDT Level-III Supervisor',
-      timestamp: new Date(Date.now() - 1000 * 60 * 80).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      sovereign_status: 'PASS_0_EXTERNAL_EGRESS',
-    },
-  ]);
+  const [documentsHistory, setDocumentsHistory] = useState([]);
 
   async function handleGenerate(e) {
     e.preventDefault();
@@ -226,7 +201,16 @@ export default function DocumentsView() {
           </div>
 
           <div className="wb-doc-list">
-            {documentsHistory.map((doc) => (
+            {documentsHistory.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '32px 20px', color: '#78716C' }}>
+                <FileText size={26} style={{ margin: '0 auto 8px', opacity: 0.5 }} />
+                <div style={{ fontWeight: 600, fontSize: '13px', marginBottom: 4 }}>No deliverables generated yet</div>
+                <div style={{ fontSize: '12px', opacity: 0.8 }}>
+                  Fill out the form above to generate signed inspection memorandums (.docx) or calculation workbooks (.xlsx).
+                </div>
+              </div>
+            ) : (
+              documentsHistory.map((doc) => (
               <div key={doc.id} className="wb-doc-item">
                 <div className="wb-doc-item-icon">
                   {doc.format === 'xlsx' ? (
@@ -256,8 +240,9 @@ export default function DocumentsView() {
                   <Download size={14} />
                 </a>
               </div>
-            ))}
-          </div>
+            ))
+          )}
+        </div>
         </div>
       </div>
     </div>

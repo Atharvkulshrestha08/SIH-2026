@@ -1,5 +1,6 @@
 import React from 'react';
 import { PanelLeft } from 'lucide-react';
+import ThemeToggle from '../ThemeToggle';
 
 export default function TopBar({
   activeView = 'chat',
@@ -9,18 +10,20 @@ export default function TopBar({
 }) {
   return (
     <header className="wb-clean-topbar">
-      {/* Left: Sidebar toggle & Brand Title */}
+      {/* Left: Sidebar toggle & Brand Title (shown when sidebar is collapsed) */}
       <div className="wb-clean-topbar-left">
         {sidebarCollapsed && (
-          <button
-            className="wb-clean-icon-btn"
-            onClick={onToggleSidebar}
-            title="Open sidebar"
-          >
-            <PanelLeft size={16} />
-          </button>
+          <>
+            <button
+              className="wb-clean-icon-btn"
+              onClick={onToggleSidebar}
+              title="Open sidebar"
+            >
+              <PanelLeft size={16} />
+            </button>
+            <span className="wb-clean-topbar-title">Max AI Workbench</span>
+          </>
         )}
-        <span className="wb-clean-topbar-title">AeroSovereign</span>
       </div>
 
       {/* Dead-Center: ChatGPT-style segmented toggle pill */}
@@ -39,6 +42,11 @@ export default function TopBar({
             + Work
           </button>
         </div>
+      </div>
+
+      {/* Right: Light / Dark Mode Toggle */}
+      <div className="wb-clean-topbar-right">
+        <ThemeToggle size={14} />
       </div>
     </header>
   );

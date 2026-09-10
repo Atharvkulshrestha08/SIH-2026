@@ -22,16 +22,12 @@ const PRESET_QUERIES = [
 ];
 
 export default function RAGView() {
-  const [query, setQuery] = useState('pump vibration thresholds');
+  const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
   const [backendError, setBackendError] = useState(false);
-
-  // Initial load
-  useEffect(() => {
-    handleSearch('pump vibration thresholds');
-  }, []);
+  const [searched, setSearched] = useState(false);
 
   async function handleSearch(searchQuery) {
     const q = searchQuery !== undefined ? searchQuery : query;
@@ -39,6 +35,7 @@ export default function RAGView() {
 
     setLoading(true);
     setBackendError(false);
+    setSearched(true);
 
     try {
       const res = await searchRag(q, 3);
@@ -46,28 +43,11 @@ export default function RAGView() {
         setResults(res.results || []);
       } else {
         setBackendError(true);
-        // Display default built-in SOP records for inspection
-        setResults([
-          {
-            id: 'MRPL-SOP-001',
-            title: 'Centrifugal Pump Operating Envelope & Vibration Thresholds',
-            content:
-              'Standard API 610 / ISO 10816-3 guidelines for horizontal split-case pumps:\n- Overall vibration velocity RMS shall not exceed 2.8 mm/s in newly overhauled units.\n- Alarm trigger threshold is 4.5 mm/s RMS; emergency shutdown trip at 7.1 mm/s RMS.\n- Mechanical seal flush plan API Plan 11/53B must maintain barrier fluid differential pressure of +1.5 bar over stuffing box pressure.',
-            tags: ['pump', 'vibration', 'api610', 'mechanical seal'],
-            source: 'MRPL_FCCU_Operating_Manual_Rev4.pdf',
-          },
-          {
-            id: 'MRPL-SOP-002',
-            title: 'Pressure Vessel Hydrostatic & Ultrasonic Wall Thickness Inspection',
-            content:
-              'ASME Section VIII Div 1 rules for refinery column inspection:\n- Nominal shell thickness: 24.5 mm. Minimum allowable wall thickness (MAWT): 18.2 mm.\n- If ultrasonic thickness gauge measures below 19.0 mm, de-rate design pressure or initiate immediate sleeve replacement.\n- Hydrostatic test pressure must equal 1.3 times the maximum allowable working pressure (MAWP).',
-            tags: ['pressure vessel', 'thickness', 'asme', 'ndt', 'hydrostatic'],
-            source: 'ASME_Section_VIII_Div_1_2024.pdf',
-          },
-        ]);
+        setResults([]);
       }
     } catch {
       setBackendError(true);
+      setResults([]);
     } finally {
       setLoading(false);
     }
@@ -158,7 +138,20 @@ export default function RAGView() {
         </div>
 
         <div className="wb-rag-results-list">
-          {results.map((item, idx) => (
+          {results.length === 0 ? (
+            <div className="wb-rag-card" style={{ textAlign: 'center', padding: '32px 20px', color: '#78716C' }}>
+              <BookOpen size={28} style={{ margin: '0 auto 8px', opacity: 0.5 }} />
+              <div style={{ fontWeight: 600, fontSize: '13.5px', marginBottom: 4 }}>
+                {searched ? 'No SOP documents found' : 'Ready to search on-premise knowledge'}
+              </div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>
+                {searched
+                  ? 'Try refining your query terms or check that the local vector store is populated.'
+                  : 'Enter an engineering query above or choose a preset query to retrieve procedures with zero external network egress.'}
+              </div>
+            </div>
+          ) : (
+            results.map((item, idx) => (
             <div key={item.id || idx} className="wb-rag-card">
               <div className="wb-rag-card-header">
                 <div className="wb-rag-card-title-group">
@@ -202,7 +195,8 @@ export default function RAGView() {
                 </div>
               </div>
             </div>
-          ))}
+          )))
+        }
         </div>
       </div>
     </div>

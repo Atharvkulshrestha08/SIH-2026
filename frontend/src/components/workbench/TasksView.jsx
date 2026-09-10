@@ -20,63 +20,8 @@ export default function TasksView({ tasks = [], onSelectTaskForChat }) {
   const [selectedTask, setSelectedTask] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Built-in recent tasks demonstration data if session has not run tasks yet
-  const defaultTasks = [
-    {
-      id: 'TASK-104',
-      title: 'Centrifugal pump P-102 vibration analysis & threshold verification',
-      task_type: 'SOP_RAG',
-      status: 'COMPLETED',
-      model_used: 'ai/qwen2.5:7B-Q4_K_M',
-      execution_time_ms: 382,
-      timestamp: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
-      deliverable: null,
-      reasoning: 'Referenced MRPL-SOP-001 (API 610) continuous vibration limits (2.8 mm/s RMS)',
-      response: 'SOP record MRPL-SOP-001 verified. Overall vibration velocity RMS is 2.8 mm/s in overhauled units. Alarm trigger set at 4.5 mm/s RMS.',
-      sovereign_status: 'PASS_0_EXTERNAL_EGRESS',
-    },
-    {
-      id: 'TASK-103',
-      title: 'Hydrostatic hoop stress calculation for Fractionator column shell',
-      task_type: 'CODE_MATH',
-      status: 'COMPLETED',
-      model_used: 'ai/qwen2.5:7B-Q4_K_M',
-      execution_time_ms: 245,
-      timestamp: new Date(Date.now() - 1000 * 60 * 42).toISOString(),
-      deliverable: null,
-      reasoning: 'Executed AST-checked Barlow formula script in Python sandbox',
-      response: 'Calculated hoop stress S_h = 177.55 MPa inside isolated AST sandbox. Meets ASME Section VIII Div 1 safety factor.',
-      sovereign_status: 'PASS_0_EXTERNAL_EGRESS',
-    },
-    {
-      id: 'TASK-102',
-      title: 'Draft technical approval memorandum for FCCU overhaul inspection',
-      task_type: 'REPORT_GENERATION',
-      status: 'COMPLETED',
-      model_used: 'ai/qwen2.5:7B-Q4_K_M',
-      execution_time_ms: 812,
-      timestamp: new Date(Date.now() - 1000 * 60 * 95).toISOString(),
-      deliverable: 'approval_memo_fccu_inspection.docx',
-      reasoning: 'Generated signed technical memorandum via python-docx compiler',
-      response: 'Generated signed .docx memo: approval_memo_fccu_inspection.docx with zero external network egress.',
-      sovereign_status: 'PASS_0_EXTERNAL_EGRESS',
-    },
-    {
-      id: 'TASK-101',
-      title: 'Open local calculation utility for engineering team',
-      task_type: 'SYSTEM_ACTION',
-      status: 'COMPLETED',
-      model_used: 'System Action Controller',
-      execution_time_ms: 12,
-      timestamp: new Date(Date.now() - 1000 * 60 * 140).toISOString(),
-      deliverable: null,
-      reasoning: 'Whitelisted desktop target matched: calculator.exe',
-      response: '[SUCCESS] Opened calculator',
-      sovereign_status: 'PASS_0_EXTERNAL_EGRESS',
-    },
-  ];
-
-  const allTasks = tasks.length > 0 ? [...tasks, ...defaultTasks] : defaultTasks;
+  // Active tasks from runtime sessions (no fake mock records)
+  const allTasks = tasks || [];
 
   const filteredTasks = allTasks.filter((t) => {
     const matchesType = filterType === 'ALL' || t.task_type === filterType;
@@ -171,8 +116,8 @@ export default function TasksView({ tasks = [], onSelectTaskForChat }) {
           <tbody>
             {filteredTasks.length === 0 ? (
               <tr>
-                <td colSpan={8} className="wb-table-empty">
-                  No matching tasks found
+                <td colSpan={8} className="wb-table-empty" style={{ textAlign: 'center', padding: '32px 20px', color: '#78716C' }}>
+                  No tasks recorded yet. Run an engineering query in the chat to track execution telemetry.
                 </td>
               </tr>
             ) : (

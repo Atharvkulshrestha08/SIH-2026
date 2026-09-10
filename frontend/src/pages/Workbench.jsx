@@ -77,10 +77,6 @@ export default function Workbench({ initialView = 'chat' }) {
 
     // Advance visitor cycle on initial load
     advanceCyclicVisitor();
-
-    if (isFirstVisit()) {
-      setShowDownloadModal(true);
-    }
   }, []);
 
   // Keyboard shortcut: Ctrl+K for new chat

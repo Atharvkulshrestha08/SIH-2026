@@ -17,34 +17,7 @@ import { uploadFile } from '../../services/api';
 import BackendBanner from './BackendBanner';
 
 export default function FilesView() {
-  const [filesList, setFilesList] = useState([
-    {
-      document_id: 'DOC-UPLOAD-1',
-      filename: 'MRPL_FCCU_Operating_Manual_Rev4.pdf',
-      file_type: 'PDF',
-      char_count: 14250,
-      status: 'done',
-      created_at: new Date(Date.now() - 1000 * 60 * 120).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      text_preview:
-        'MANGALORE REFINERY AND PETROCHEMICALS LIMITED\nFLUID CATALYTIC CRACKING UNIT (FCCU) REV 4\nSection 4.1: Operating limits for main fractionator column overhead receiver 101-V.\nAll pressure safety relief valves (PSV-104) inspected and verified against ASME Sec VIII.',
-    },
-    {
-      document_id: 'DOC-UPLOAD-2',
-      filename: 'ASME_Section_VIII_Div_1_Inspection_Checklist.docx',
-      file_type: 'DOCX',
-      char_count: 8940,
-      status: 'done',
-      created_at: new Date(Date.now() - 1000 * 60 * 240).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      text_preview:
-        'Pressure Vessel Hydrostatic & Ultrasonic Wall Thickness Inspection Guidelines.\nNominal shell thickness: 24.5 mm. Minimum allowable wall thickness (MAWT): 18.2 mm.\nInspection procedure ultrasonic transducer 5MHz longitudinal wave.',
-    },
-  ]);
+  const [filesList, setFilesList] = useState([]);
 
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(null);
@@ -187,7 +160,14 @@ export default function FilesView() {
               </tr>
             </thead>
             <tbody>
-              {filesList.map((f, idx) => (
+              {filesList.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '32px 20px', color: '#78716C' }}>
+                    No files ingested in local workspace yet. Drag and drop or browse files above to parse locally.
+                  </td>
+                </tr>
+              ) : (
+                filesList.map((f, idx) => (
                 <tr key={f.document_id || idx} className="wb-table-row">
                   <td className="wb-table-cell-title">
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -222,8 +202,9 @@ export default function FilesView() {
                     </button>
                   </td>
                 </tr>
-              ))}
-            </tbody>
+              ))
+            )}
+          </tbody>
           </table>
         </div>
       </div>

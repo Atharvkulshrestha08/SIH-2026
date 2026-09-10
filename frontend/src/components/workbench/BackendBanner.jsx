@@ -14,7 +14,7 @@ export default function BackendBanner({ onRetry, retrying = false }) {
             Backend Service Unavailable
           </div>
           <div className="wb-backend-alert-desc">
-            Unable to reach the local AeroSovereign service at <code>{BACKEND_HOST}</code>.
+            Unable to reach the local Max AI service at <code>{BACKEND_HOST}</code>.
             Make sure FastAPI is running on your workstation.
           </div>
           <div className="wb-backend-alert-cmd">

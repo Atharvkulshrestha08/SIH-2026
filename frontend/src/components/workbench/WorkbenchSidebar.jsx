@@ -42,7 +42,7 @@ export default function WorkbenchSidebar({
       {/* Top Brand & Collapse Icon */}
       <div className="wb-clean-sidebar-header">
         <div className="wb-clean-brand">
-          <span className="wb-clean-brand-name">AeroSovereign</span>
+          <span className="wb-clean-brand-name">Max AI Workbench</span>
         </div>
         <div className="wb-clean-header-actions">
           <button
@@ -113,15 +113,16 @@ export default function WorkbenchSidebar({
         </div>
       </nav>
 
-      {/* Bottom User Avatar Section */}
+      {/* Bottom Offline Terminal Indicator (Air-Gapped / No Online Auth) */}
       <div className="wb-clean-sidebar-footer">
-        <div className="wb-clean-user-profile">
-          <div className="wb-clean-avatar">AK</div>
-          <div className="wb-clean-user-info">
-            <span className="wb-clean-user-name">Atharv Kulshrestha</span>
-            <span className="wb-clean-user-role">MRPL Operator • Air-Gapped</span>
+        <div className="wb-clean-station-badge" title="100% Offline • Air-Gapped Station • Zero Egress">
+          <div className="wb-clean-station-icon-wrap">
+            <Shield size={14} className="wb-clean-station-shield" />
           </div>
-          <Lock size={12} className="wb-clean-user-lock" />
+          <div className="wb-clean-station-info">
+            <span className="wb-clean-station-title">Air-Gapped Terminal</span>
+            <span className="wb-clean-station-sub">100% Offline • Zero Egress</span>
+          </div>
         </div>
       </div>
     </aside>

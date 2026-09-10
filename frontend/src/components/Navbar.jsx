@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ShieldCheck, Cpu, Terminal, Menu, X, ArrowUpRight, Activity, ArrowRight } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -79,8 +80,10 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Right Action: Air-Gap Status & Workbench Launch CTA */}
+          {/* Right Action: Theme Switch, Air-Gap Status & Workbench Launch CTA */}
           <div className="nav-actions">
+            <ThemeToggle />
+
             <div className="airgap-pill" title="Hardware Firewall: Zero Outbound Egress Guaranteed">
               <span className="airgap-indicator"></span>
               <span>0 KB EGRESS • AIR-GAPPED</span>

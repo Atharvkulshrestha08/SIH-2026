@@ -23,7 +23,7 @@ export default function DownloadModal({ onDismiss }) {
     <div className="wb-modal-overlay">
       <div className="wb-modal">
         <div className="wb-modal-icon">🛡️</div>
-        <h2 className="wb-modal-title">AeroSovereign Local Runtime</h2>
+        <h2 className="wb-modal-title">Max AI Local Runtime</h2>
         <p className="wb-modal-desc">
           Air-gapped on-premise AI environment configured for Mangalore Refinery and Petrochemicals Limited (MRPL).
         </p>
