@@ -1,24 +1,17 @@
-"""Sovereignty Audit and Telemetry Route."""
+import logging
 from fastapi import APIRouter
-from security.audit import get_audit_logs
-from security.monitor import get_egress_metrics
 
+from security.audit import get_audit_logs
+
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
 @router.get("")
-@router.get("/")
-async def get_audit_trail(limit: int = 50):
-    """
-    Retrieve sovereign audit trail events and zero-egress hardware telemetry.
-    Route: GET /api/v1/audit
-    """
+async def get_audit(limit: int = 20):
     logs = get_audit_logs(limit=limit)
-    metrics = get_egress_metrics()
     return {
         "count": len(logs),
-        "audit_logs": logs,
         "logs": logs,
-        "network_metrics": metrics,
         "sovereign_status": "PASS_0_EXTERNAL_EGRESS",
     }

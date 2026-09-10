@@ -2,13 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import sys
-import os
 import asyncio
-
-backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if backend_dir not in sys.path:
-    sys.path.insert(0, backend_dir)
-
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
@@ -26,7 +20,6 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Enable CORS for frontend workbench and landing page
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -39,19 +32,9 @@ app.include_router(router)
 
 @app.on_event("startup")
 async def startup():
-    try:
-        await init_pool()
-    except Exception as e:
-        # Graceful fallback if Postgres is not running during local inspection
-        pass
+    await init_pool()
 
 
 @app.get("/")
 async def root():
-    return {
-        "system": "AeroSovereign",
-        "status": "ONLINE",
-        "message": "AeroSovereign backend is running",
-        "docs_url": "/docs",
-        "api_v1": "/api/v1",
-    }
+    return {"message": "AeroSovereign backend is running"}
