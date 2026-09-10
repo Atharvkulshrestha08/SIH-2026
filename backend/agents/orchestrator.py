@@ -56,13 +56,16 @@ async def run_orchestrated_task(request: TaskRequest) -> TaskResponse:
             f"Relevant Sovereign SOPs:\n{sop_context}\n\n"
             f"User Query:\n{request.prompt}\n\n"
             f"Please provide an accurate engineering response citing the relevant standard. "
+            f"Ground your response strictly in the provided SOP context above. Do not invent unverified thresholds or non-existent clauses; if a specific parameter is missing, state that it requires verification. "
             f"Present formulas and calculations in clean, readable notation (e.g., S_h = (P * D) / (2 * t) = 180 MPa) rather than raw LaTeX backslash syntax."
         )
     elif route.task_type == TaskType.CODE_MATH:
         augmented_prompt = (
             f"{request.prompt}\n\n"
-            f"[Guidance: Present mathematical formulas and step-by-step calculations in clean, readable notation (e.g., S_h = (P * D) / (2 * t) = 180 MPa) rather than raw LaTeX backslash codes like \\[ or \\frac.]"
+            f"[Guidance: Present mathematical formulas and step-by-step calculations in clean, readable notation (e.g., S_h = (P * D) / (2 * t) = 180 MPa) rather than raw LaTeX backslash codes like \\[ or \\frac. "
+            f"Show exact arithmetic substitutions with units so calculations are verifiable and free of hallucinations. Do not invent arbitrary constants.]"
         )
+
 
 
     # 3. Model Query

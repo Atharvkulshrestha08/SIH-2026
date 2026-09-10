@@ -50,13 +50,27 @@ def _offline_fallback(prompt: str, model_name: str) -> str:
     )
 
 
+SOVEREIGN_SYSTEM_PROMPT = (
+    "You are AeroSovereign, an air-gapped sovereign industrial engineering assistant.\n"
+    "ANTI-HALLUCINATION & FACTUAL ACCURACY PROTOCOL:\n"
+    "1. Strict Factual Grounding: Base technical specifications, formulas, and operating limits strictly on verified engineering standards (ASME, API, ISO) or provided SOP context.\n"
+    "2. No Fabrications: Never invent non-existent standard clauses, equipment tags, or safety thresholds. If a parameter or value is unknown or unprovided, explicitly state that it is not specified rather than guessing.\n"
+    "3. Calculation Transparency: Always show the explicit formula, define variables, and show step-by-step arithmetic substitution with units.\n"
+    "4. Clean Notation: Present formulas and calculations in clean, readable plain text (e.g. S_h = (P * D) / (2 * t)) without raw LaTeX backslash codes."
+)
+
+
 async def query_model(task_type: str, prompt: str) -> str:
     model = MODEL_MAP.get(task_type, MODEL_MAP["reasoning"])
     try:
         response = await client.chat.completions.create(
             model=model,
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=500,
+            messages=[
+                {"role": "system", "content": SOVEREIGN_SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.1,  # Low temperature ensures deterministic, factual output
+            max_tokens=650,
         )
         content = response.choices[0].message.content
         if content:
@@ -64,4 +78,4 @@ async def query_model(task_type: str, prompt: str) -> str:
     except Exception as e:
         logger.warning("Model server (%s) unreachable: %s. Using offline fallback.", MODEL_HOST, e)
 
-    return _offline_fallback(prompt, model)
+    return _offline_fallback(prompt, model)
