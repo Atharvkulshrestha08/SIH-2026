@@ -37,60 +37,11 @@ export default function AuditView() {
         setNetworkMetrics(res.network_metrics || null);
       } else {
         setBackendError(true);
-        // Clean default audit entries as fallback demonstration
-        setLogs([
-          {
-            id: 1,
-            time: '18:42:11',
-            timestamp: new Date().toISOString(),
-            event_type: 'ORCHESTRATE',
-            event: 'SOP_RAG',
-            model: 'ai/qwen2.5:7B-Q4_K_M',
-            network_egress: '0 bytes',
-            status: 'SUCCESS',
-            sovereign_check: 'PASS_0_EXTERNAL_EGRESS',
-            details: 'Query: centrifugal pump vibration limits | Retr: MRPL-SOP-001 | 380ms',
-          },
-          {
-            id: 2,
-            time: '18:38:05',
-            timestamp: new Date(Date.now() - 1000 * 60 * 4).toISOString(),
-            event_type: 'TASK_CODE_MATH',
-            event: 'SANDBOX_EXEC',
-            model: 'ai/qwen2.5:7B-Q4_K_M',
-            network_egress: '0 bytes',
-            status: 'SUCCESS',
-            sovereign_check: 'PASS_0_EXTERNAL_EGRESS',
-            details: 'Calculated hoop stress S_h = 177.55 MPa inside isolated AST sandbox',
-          },
-          {
-            id: 3,
-            time: '18:31:22',
-            timestamp: new Date(Date.now() - 1000 * 60 * 11).toISOString(),
-            event_type: 'DELIVERABLE_GENERATED',
-            event: 'DOC_COMPILATION',
-            model: 'Local Document Compiler',
-            network_egress: '0 bytes',
-            status: 'SUCCESS',
-            sovereign_check: 'PASS_0_EXTERNAL_EGRESS',
-            details: 'Generated centrifugal_pump_p102_memo.docx for Lead Inspection Engineer',
-          },
-          {
-            id: 4,
-            time: '18:25:40',
-            timestamp: new Date(Date.now() - 1000 * 60 * 17).toISOString(),
-            event_type: 'NETWORK_BOUNDARY_CHECK',
-            event: 'EGRESS_VERIFICATION',
-            model: 'Host Firewall Monitor',
-            network_egress: '0 bytes (LOCKED)',
-            status: 'SUCCESS',
-            sovereign_check: 'PASS_0_EXTERNAL_EGRESS',
-            details: 'Zero outbound sockets permitted; strict local socket loopback verified',
-          },
-        ]);
+        setLogs([]);
       }
     } catch {
       setBackendError(true);
+      setLogs([]);
     } finally {
       setLoading(false);
     }
