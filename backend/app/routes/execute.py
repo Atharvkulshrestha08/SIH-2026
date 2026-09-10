@@ -10,6 +10,7 @@ class ExecuteRequest(BaseModel):
     language: str = "python"
 
 
+@router.post("")
 @router.post("/")
 async def execute(request: ExecuteRequest):
     """Run code inside the sandbox and return stdout/stderr."""
