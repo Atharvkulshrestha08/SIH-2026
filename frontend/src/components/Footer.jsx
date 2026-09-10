@@ -18,7 +18,7 @@ export default function Footer() {
               <div className="footer-brand-icon">
                 <ShieldCheck className="w-5 h-5 text-teal-600" />
               </div>
-              <span className="footer-brand-title">AeroSovereign</span>
+              <span className="footer-brand-title">MAX</span>
             </div>
             <p className="footer-desc">
               Sovereign On-Premise Agentic AI Workbench using Open-Weight Multimodal LLMs for Confidential Industrial Operations.
@@ -81,7 +81,7 @@ export default function Footer() {
 
         <div className="footer-bottom-bar">
           <div className="footer-copy">
-            &copy; {new Date().getFullYear()} AeroSovereign • MRPL Sovereign AI Platform.
+            &copy; {new Date().getFullYear()} MAX • MRPL Sovereign AI Platform.
           </div>
           <div className="footer-meta">
             <span className="status-live-dot"></span>

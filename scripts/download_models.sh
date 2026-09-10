@@ -11,7 +11,7 @@ done
 
 for MODEL in "${MODELS[@]}"; do
   echo "Pulling model: $MODEL"
-  docker exec aerosovereign-model ollama pull "$MODEL"
+  docker exec max-model ollama pull "$MODEL"
 done
 
 echo "All models downloaded successfully."

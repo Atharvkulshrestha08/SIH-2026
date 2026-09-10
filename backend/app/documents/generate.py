@@ -33,7 +33,7 @@ def generate_docx_memo(title: str, findings: str, author: str = "Lead Inspector"
 
     title_p = doc.add_paragraph()
     title_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = title_p.add_run("AEROSOVEREIGN ENGINEERING MEMORANDUM")
+    run = title_p.add_run("MAX ENGINEERING MEMORANDUM")
     run.bold = True
     run.font.size = Pt(16)
     run.font.color.rgb = RGBColor(16, 44, 87)
@@ -71,7 +71,7 @@ def generate_docx_memo(title: str, findings: str, author: str = "Lead Inspector"
 
     doc.add_heading("3. Approval & Sign-Off", level=2)
     sig_p = doc.add_paragraph()
-    sig_run = sig_p.add_run(f"Digitally Approved By: {author}\nSystem: AeroSovereign Verified")
+    sig_run = sig_p.add_run(f"Digitally Approved By: {author}\nSystem: MAX Verified")
     sig_run.italic = True
 
     filename = f"Memo_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.docx"
@@ -91,7 +91,7 @@ def generate_xlsx_sheet(title: str, records: Optional[list] = None) -> str:
 
     ws.merge_cells("A1:E1")
     title_cell = ws["A1"]
-    title_cell.value = f"AeroSovereign Calculation Sheet: {title}"
+    title_cell.value = f"MAX Calculation Sheet: {title}"
     title_cell.font = Font(size=14, bold=True, color="FFFFFF")
     title_cell.fill = PatternFill(start_color="1E3A8A", end_color="1E3A8A", fill_type="solid")
     title_cell.alignment = Alignment(horizontal="center")

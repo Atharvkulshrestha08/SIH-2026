@@ -1,9 +1,9 @@
-"""Multi-Agent Orchestrator for AeroSovereign operations."""
+"""Multi-Agent Orchestrator for MAX operations."""
 import time
 import logging
 from typing import Optional
 from shared.schemas import TaskRequest, TaskResponse, TaskType
-from agents.router_agent import classify_task, classify_action_intent
+from agents.router_agent import classify_task, classify_action_intent, classify_fast_path
 from agents.action_executor import execute_action
 from rag.retriever import search_knowledge_base
 from app.models.model_manager import query_model
@@ -16,6 +16,7 @@ async def run_orchestrated_task(request: TaskRequest) -> TaskResponse:
     """
     Main orchestration loop:
     0. System action check (open app/file — no model call needed)
+    0.5 Fast-path check (conversational/status bypass — sub-5ms)
     1. Fast intent routing (<100ms)
     2. Context augmentation via RAG if needed
     3. Specialized model invocation
@@ -38,6 +39,25 @@ async def run_orchestrated_task(request: TaskRequest) -> TaskResponse:
             task_type=TaskType.SYSTEM_ACTION,
             model_used="none",
             text_response=result["detail"],
+            execution_time_ms=round(elapsed_ms, 2),
+            output_files=[],
+            sovereign_status="PASS_0_EXTERNAL_EGRESS",
+        )
+
+    # 0.5 Fast-Path Check — instant response for greetings, identity, status & acks (< 5ms)
+    fast_response = classify_fast_path(request.prompt)
+    if fast_response:
+        elapsed_ms = (time.perf_counter() - start_time) * 1000.0
+        log_event(
+            event_type="TASK_FAST_PATH",
+            details=f"Prompt: {request.prompt[:50]}... | Mode: fast-path | Latency: {elapsed_ms:.1f}ms",
+            status="SUCCESS",
+        )
+        return TaskResponse(
+            session_id=request.session_id or "default-session",
+            task_type=TaskType.FAST_PATH,
+            model_used="fast-path",
+            text_response=fast_response,
             execution_time_ms=round(elapsed_ms, 2),
             output_files=[],
             sovereign_status="PASS_0_EXTERNAL_EGRESS",

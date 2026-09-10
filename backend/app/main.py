@@ -15,8 +15,8 @@ from app.db.client import init_pool
 setup_logging()
 
 app = FastAPI(
-    title="AeroSovereign API",
-    description="Backend API for AeroSovereign AI platform",
+    title="MAX API",
+    description="Backend API for MAX AI platform",
     version="1.0.0",
 )
 
@@ -37,4 +37,4 @@ async def startup():
 
 @app.get("/")
 async def root():
-    return {"message": "AeroSovereign backend is running"}
+    return {"message": "MAX backend is running"}

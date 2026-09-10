@@ -1,4 +1,4 @@
-"""Main API router combining all AeroSovereign services."""
+"""Main API router combining all MAX services."""
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 import os

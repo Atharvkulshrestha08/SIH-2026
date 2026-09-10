@@ -14,6 +14,7 @@ import ModelsView from '../components/workbench/ModelsView';
 import SandboxView from '../components/workbench/SandboxView';
 import DownloadModal from '../components/workbench/DownloadModal';
 import { ShieldCheck } from 'lucide-react';
+import { speechSynthesizer } from '../services/voiceService';
 
 import {
   getAllSessions,
@@ -43,6 +44,9 @@ export default function Workbench({ initialView = 'chat' }) {
   // Selected tool & model
   const [selectedModel, setSelectedModel] = useState('auto');
   const [selectedTool, setSelectedTool] = useState('auto');
+
+  // Auto TTS state
+  const [autoTTS, setAutoTTS] = useState(() => localStorage.getItem('max_auto_tts') !== 'false');
 
   // File attachment state
   const [attachedFile, setAttachedFile] = useState(null);
@@ -193,6 +197,11 @@ export default function Workbench({ initialView = 'chat' }) {
         setMessages((prev) => [...prev, assistantMsg]);
         setBackendOnline(true);
         refreshSessions();
+
+        // Auto-TTS: Speak the LLM's response aloud
+        if (autoTTS && assistantMsg.content) {
+          speechSynthesizer.speak(assistantMsg.content);
+        }
       } catch (err) {
         setBackendOnline(false);
 
@@ -276,6 +285,15 @@ export default function Workbench({ initialView = 'chat' }) {
         onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
         backendOnline={backendOnline}
         onOpenModels={() => setActiveView('models')}
+        autoTTS={autoTTS}
+        onToggleAutoTTS={() => {
+          setAutoTTS((prev) => {
+            const next = !prev;
+            localStorage.setItem('max_auto_tts', String(next));
+            if (!next) speechSynthesizer.stop();
+            return next;
+          });
+        }}
       />
 
       {/* Main Workbench Shell */}

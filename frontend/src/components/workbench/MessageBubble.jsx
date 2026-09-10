@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Shield,
   Clock,
@@ -12,13 +12,38 @@ import {
   FileText,
   Terminal,
   ExternalLink,
+  Volume2,
+  Square,
 } from 'lucide-react';
 import { getDownloadUrl } from '../../services/api';
+import { speechSynthesizer } from '../../services/voiceService';
 
 export default function MessageBubble({ message }) {
   const isUser = message.role === 'user';
   const [copied, setCopied] = useState(false);
   const [showTimeline, setShowTimeline] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      // Clean up speech if component unmounts
+      if (isSpeaking) {
+        speechSynthesizer.stop();
+      }
+    };
+  }, [isSpeaking]);
+
+  function handleToggleSpeak() {
+    if (isSpeaking) {
+      speechSynthesizer.stop();
+      setIsSpeaking(false);
+    } else {
+      speechSynthesizer.onStateChange = (speaking) => {
+        setIsSpeaking(speaking);
+      };
+      speechSynthesizer.speak(message.content);
+    }
+  }
 
   function handleCopy(text) {
     if (navigator.clipboard) {
@@ -221,19 +246,26 @@ export default function MessageBubble({ message }) {
         label: 'Native system action evaluated against whitelist',
         status: 'done',
       });
-    } else if (msg.task_type === 'CODE_MATH') {
+    } else if (msg.task_type === 'FAST_PATH' || msg.model_used === 'fast-path') {
       steps.push({
-        id: 'exec',
-        label: 'Sandboxed Python calculation executed',
+        id: 'fast',
+        label: 'Direct sovereign fast-path response (<5ms)',
+        status: 'done',
+      });
+    } else {
+      if (msg.task_type === 'CODE_MATH') {
+        steps.push({
+          id: 'exec',
+          label: 'Sandboxed Python calculation executed',
+          status: 'done',
+        });
+      }
+      steps.push({
+        id: 'infer',
+        label: `Qwen local inference (${msg.model_used || 'ai/qwen2.5:7B-Q4_K_M'})`,
         status: 'done',
       });
     }
-
-    steps.push({
-      id: 'infer',
-      label: `Qwen local inference (${msg.model_used || 'ai/qwen2.5:7B-Q4_K_M'})`,
-      status: 'done',
-    });
 
     if (msg.output_files && msg.output_files.length > 0) {
       steps.push({
@@ -351,6 +383,36 @@ export default function MessageBubble({ message }) {
           </div>
 
           <div className="wb-meta-right">
+            {!isUser && (
+              <button
+                type="button"
+                className={`wb-meta-voice-btn ${isSpeaking ? 'speaking' : ''}`}
+                onClick={handleToggleSpeak}
+                title={isSpeaking ? 'Stop reading' : 'Read aloud with math naturalization'}
+              >
+                {isSpeaking ? (
+                  <>
+                    <Square size={10} className="wb-voice-stop-icon" />
+                    <span>Stop</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2 size={11} />
+                    <span>Listen</span>
+                  </>
+                )}
+              </button>
+            )}
+
+            <button
+              type="button"
+              className="wb-meta-copy-btn"
+              onClick={() => handleCopy(message.content)}
+              title="Copy message text"
+            >
+              {copied ? <Check size={11} className="wb-copy-check" /> : <Copy size={11} />}
+            </button>
+
             {message.latency_ms > 0 && (
               <span className="wb-meta-time">
                 <Clock size={11} />

@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.routes import ask, upload, execute, status, orchestrate, audit, rag, documents
+from app.routes import ask, upload, execute, status, orchestrate, audit, rag, documents, voice
 
 router = APIRouter(prefix="/api/v1")
 
@@ -11,3 +11,4 @@ router.include_router(orchestrate.router, prefix="/orchestrate", tags=["Orchestr
 router.include_router(audit.router, prefix="/audit", tags=["Audit"])
 router.include_router(rag.router, prefix="/rag", tags=["RAG"])
 router.include_router(documents.router, prefix="/documents", tags=["Documents"])
+router.include_router(voice.router, prefix="/voice", tags=["Voice"])

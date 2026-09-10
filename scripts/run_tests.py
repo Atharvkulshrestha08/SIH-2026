@@ -1,4 +1,4 @@
-"""Test runner script for AeroSovereign backend."""
+"""Test runner script for MAX backend."""
 import sys
 import os
 
@@ -7,15 +7,18 @@ if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
 from fastapi.testclient import TestClient
-from gateway.main import app
+try:
+    from gateway.main import app  # pyright: ignore [missing-import]
+except ImportError:
+    from backend.gateway.main import app  # type: ignore
 
 def run():
     client = TestClient(app)
-    print("Testing AeroSovereign Backend API...")
+    print("Testing MAX Backend API...")
     
     # Test 1: Root
     r = client.get("/")
-    assert r.status_code == 200 and r.json()["system"] == "AeroSovereign"
+    assert r.status_code == 200 and r.json()["system"] == "MAX"
     print("  [PASS] Root endpoint")
 
     # Test 2: Status

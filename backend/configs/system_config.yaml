@@ -1,4 +1,4 @@
-# AeroSovereign System Configuration
+# MAX System Configuration
 network:
   node1_gateway:
     host: "127.0.0.1"
