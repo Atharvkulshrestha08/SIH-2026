@@ -21,7 +21,7 @@ export default function TopBar({
             >
               <PanelLeft size={16} />
             </button>
-            <span className="wb-clean-topbar-title">AeroSovereign</span>
+            <span className="wb-clean-topbar-title">Max AI Workbench</span>
           </>
         )}
       </div>

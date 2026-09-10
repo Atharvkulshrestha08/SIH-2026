@@ -42,7 +42,7 @@ export default function WorkbenchSidebar({
       {/* Top Brand & Collapse Icon */}
       <div className="wb-clean-sidebar-header">
         <div className="wb-clean-brand">
-          <span className="wb-clean-brand-name">AeroSovereign</span>
+          <span className="wb-clean-brand-name">Max AI Workbench</span>
         </div>
         <div className="wb-clean-header-actions">
           <button

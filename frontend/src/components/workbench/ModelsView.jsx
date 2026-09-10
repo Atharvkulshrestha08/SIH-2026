@@ -294,7 +294,7 @@ export default function ModelsView({ onOpenModelModal }) {
               <div className="wb-modal-notice-box">
                 <div className="wb-notice-title">Local Runtime Architecture</div>
                 <p className="wb-notice-text">
-                  The AeroSovereign backend intentionally does NOT expose an unauthenticated remote model-download endpoint to prevent unauthorized weight execution and network egress violations.
+                  The Max AI backend intentionally does NOT expose an unauthenticated remote model-download endpoint to prevent unauthorized weight execution and network egress violations.
                 </p>
                 <p className="wb-notice-text">
                   To load or warm up this model on your workstation, run the local Docker Model Runner command:
