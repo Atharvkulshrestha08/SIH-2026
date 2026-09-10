@@ -85,7 +85,7 @@ export default function ChatInput({
     if (isRecording) {
       vadRecorderRef.current?.stop(false);
     } else {
-      vadRecorderRef.current?.start();
+      vadRecorderRef.current?.start(text);
     }
   }
 

@@ -27,7 +27,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from app.routes import voice
+
 app.include_router(router)
+app.include_router(voice.router, prefix="/api/voice", tags=["Voice Direct"])
 
 
 @app.on_event("startup")

@@ -1,5 +1,6 @@
 """Sovereign Voice (STT / TTS) routing and offline processing for MAX."""
 import os
+import io
 import time
 import logging
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
@@ -52,17 +53,46 @@ async def transcribe_audio(
     if len(audio_bytes) == 0:
         raise HTTPException(status_code=400, detail="Empty audio payload received")
 
-    # In strict sovereign mode, transcription is performed locally without external API calls
-    # Check if local faster-whisper is installed and loaded
     transcript = ""
-    engine_used = "sovereign-audio-decoder"
+    engine_used = "speech-recognition"
 
     try:
-        # Fallback local decode heuristic / metadata
-        transcript = f"[Voice Input: {file.filename} ({len(audio_bytes)} bytes received locally)]"
+        import speech_recognition as sr
+
+        r = sr.Recognizer()
+        r.energy_threshold = 300
+        r.dynamic_energy_threshold = True
+
+        wav_io = None
+        if audio_bytes[:4] == b"RIFF" and audio_bytes[8:12] == b"WAVE":
+            wav_io = io.BytesIO(audio_bytes)
+        else:
+            try:
+                from pydub import AudioSegment
+                seg = AudioSegment.from_file(io.BytesIO(audio_bytes))
+                wav_io = io.BytesIO()
+                seg.export(wav_io, format="wav")
+                wav_io.seek(0)
+            except Exception as conv_err:
+                logger.warning("Audio format conversion warning: %s", conv_err)
+                wav_io = io.BytesIO(audio_bytes)
+
+        with sr.AudioFile(wav_io) as source:
+            audio_data = r.record(source)
+
+        target_lang = language or "en-US"
+        try:
+            transcript = r.recognize_google(audio_data, language=target_lang)
+            logger.info("Transcribed audio successfully: %s", transcript)
+        except sr.UnknownValueError:
+            logger.info("No audible speech detected in audio payload")
+            transcript = ""
+        except sr.RequestError as req_err:
+            logger.error("Speech recognition service unreachable: %s", req_err)
+            transcript = ""
     except Exception as e:
         logger.error("Local audio transcription error: %s", e)
-        transcript = "Could not decode audio locally."
+        transcript = ""
 
     elapsed_ms = (time.perf_counter() - start_time) * 1000.0
 

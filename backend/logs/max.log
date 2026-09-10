@@ -1,1 +1,18 @@
 2026-09-11 02:01:52 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 02:10:33 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: yo... | Mode: fast-path | Latency: 0.2ms (SUCCESS)
+2026-09-11 02:33:16 | ERROR    | app.routes.voice | Local audio transcription error: name 'io' is not defined
+2026-09-11 02:33:16 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: test.wav (16044 bytes) | Lang: auto | Latency: 44.0ms (SUCCESS)
+2026-09-11 02:39:47 | ERROR    | app.routes.voice | Local audio transcription error: name 'io' is not defined
+2026-09-11 02:39:47 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (344108 bytes) | Lang: en-US | Latency: 1.3ms (SUCCESS)
+2026-09-11 02:40:07 | ERROR    | app.routes.voice | Local audio transcription error: name 'io' is not defined
+2026-09-11 02:40:07 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (292226 bytes) | Lang: en-US | Latency: 40.7ms (SUCCESS)
+2026-09-11 02:40:41 | ERROR    | app.routes.voice | Local audio transcription error: name 'io' is not defined
+2026-09-11 02:40:41 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (368684 bytes) | Lang: en-US | Latency: 8.9ms (SUCCESS)
+2026-09-11 02:42:01 | ERROR    | app.routes.voice | Local audio transcription error: name 'io' is not defined
+2026-09-11 02:42:01 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (245804 bytes) | Lang: en-US | Latency: 4.1ms (SUCCESS)
+2026-09-11 03:12:54 | ERROR    | app.routes.voice | Local audio transcription error: name 'io' is not defined
+2026-09-11 03:12:55 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (172076 bytes) | Lang: en-US | Latency: 81.5ms (SUCCESS)
+2026-09-11 03:13:05 | ERROR    | app.routes.voice | Local audio transcription error: name 'io' is not defined
+2026-09-11 03:13:05 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (169346 bytes) | Lang: en-US | Latency: 111.6ms (SUCCESS)
+2026-09-11 03:47:33 | INFO     | app.routes.voice | No audible speech detected in audio payload
+2026-09-11 03:47:33 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (16044 bytes) | Lang: auto | Latency: 563.3ms (SUCCESS)
