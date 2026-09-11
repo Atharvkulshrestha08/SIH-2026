@@ -1,4 +1,4 @@
-# AeroSovereign — Architecture
+# MAX — Architecture
 
 ```
 ┌─────────────────────────────────────────────────────┐

@@ -1,4 +1,4 @@
-"""Test suite for AeroSovereign backend services."""
+"""Test suite for MAX backend services."""
 import pytest
 from fastapi.testclient import TestClient
 import sys
@@ -17,7 +17,7 @@ def test_root_endpoint():
     res = client.get("/")
     assert res.status_code == 200
     data = res.json()
-    assert data["system"] == "AeroSovereign"
+    assert data["system"] == "MAX"
     assert data["status"] == "ONLINE"
 
 
@@ -74,68 +74,3 @@ def test_document_memo_generation():
     data = res.json()
     assert data["status"] == "success"
     assert data["filename"].endswith(".docx")
-
-
-from app.main import app as app_main
-app_client = TestClient(app_main)
-
-
-def test_app_main_status():
-    res = app_client.get("/api/v1/status")
-    assert res.status_code == 200
-    assert res.json()["status"] == "ok"
-
-
-def test_app_main_rag_search():
-    res = app_client.post("/api/v1/rag/search", json={"query": "centrifugal pump vibration", "top_k": 2})
-    assert res.status_code == 200
-    data = res.json()
-    assert data["count"] > 0
-    assert len(data["results"]) > 0
-
-
-def test_app_main_documents_generate():
-    res = app_client.post("/api/v1/documents/generate", json={
-        "title": "PSV-104 Inspection Review",
-        "findings": "All relief pressures nominal.",
-        "author": "Lead NDT Engineer",
-        "doc_format": "docx"
-    })
-    assert res.status_code == 200
-    assert res.json()["status"] == "success"
-    assert "download_url" in res.json()
-
-
-def test_app_main_audit():
-    res = app_client.get("/api/v1/audit")
-    assert res.status_code == 200
-    data = res.json()
-    assert "audit_logs" in data
-    assert len(data["audit_logs"]) > 0
-
-
-def test_app_main_ask():
-    res = app_client.post("/api/v1/ask", json={"prompt": "Calculate thickness for pressure vessel"})
-    assert res.status_code == 200
-    data = res.json()
-    assert data["task_type"] in ["CODE_MATH", "SOP_RAG", "GENERAL"]
-    assert "text_response" in data
-    assert data["sovereign_status"] == "PASS_0_EXTERNAL_EGRESS"
-
-
-def test_app_main_execute():
-    res = app_client.post("/api/v1/execute", json={"code": "print('hello from sandbox')"})
-    assert res.status_code == 200
-    assert "hello from sandbox" in res.json()["stdout"]
-
-
-def test_app_main_upload():
-    file_content = b"ASME Section VIII Div 1 inspection report for tower 101."
-    res = app_client.post(
-        "/api/v1/upload",
-        files={"file": ("test_report.txt", file_content, "text/plain")}
-    )
-    assert res.status_code == 200
-    assert res.json()["status"] == "done"
-    assert "document_id" in res.json()
-

@@ -1,4 +1,4 @@
-"""AeroSovereign Gateway Service Entry Point."""
+"""MAX Gateway Service Entry Point."""
 import sys
 import os
 
@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from gateway.router import router
 
 app = FastAPI(
-    title="AeroSovereign Sovereign AI Workbench",
+    title="MAX Sovereign AI Workbench",
     description="Offline-first, Zero-Cloud-Egress Multi-Model Engineering Platform (Node 1/2 Orchestrator)",
     version="2.1.0",
 )
@@ -32,7 +32,7 @@ app.include_router(router)
 @app.get("/")
 async def root():
     return {
-        "system": "AeroSovereign",
+        "system": "MAX",
         "version": "2.1.0",
         "mode": "100% On-Premise Air-Gapped",
         "status": "ONLINE",

@@ -1,4 +1,4 @@
-# AeroSovereign: Frontend Architecture & Comprehensive Specification
+# MAX: Frontend Architecture & Comprehensive Specification
 **Mangalore Refinery and Petrochemicals Limited (MRPL)**  
 **Problem Statement PS-26117**: Sovereign On-Premise Agentic AI Workbench using Open-Weight Multimodal LLMs for Confidential Industrial Work  
 **Document Version**: 1.0.0 | **Classification**: Confidential Industrial PSU
@@ -7,7 +7,7 @@
 
 ## 1. Executive Summary
 
-AeroSovereign is an air-gapped, on-premise industrial AI workbench engineered specifically for confidential PSU engineering environments (refineries, petrochemical units, and defence installations). The frontend provides a mission-critical, high-assurance web interface that enables plant engineers to:
+MAX is an air-gapped, on-premise industrial AI workbench engineered specifically for confidential PSU engineering environments (refineries, petrochemical units, and defence installations). The frontend provides a mission-critical, high-assurance web interface that enables plant engineers to:
 1. Conduct multi-step engineering calculations verified against **ASME Section VIII** and **API 610** standards.
 2. Interrogate confidential P&IDs, metallurgical schematics, and equipment inspection logs using self-hosted vision and multimodal models.
 3. Query plant standard operating procedures (SOPs) through an on-premise vector database (RAG).
@@ -49,7 +49,7 @@ The application defines a dual-surface routing architecture in `frontend/src/App
 ## 4. Landing Page (`/`): Component Breakdown
 
 ### 4.1 Navbar (`Navbar.jsx`)
-- **Brand Title**: `AeroSovereign` with industrial cyan accents.
+- **Brand Title**: `MAX` with industrial cyan accents.
 - **Organization Emblem**: Tagged with MRPL Problem Statement 26117.
 - **Sovereign Status Pill**: Real-time status badge showing `AIR-GAPPED 0 KB/s EGRESS`.
 - **Navigation Anchors**: Smooth scroll to `#hardware-reveal`, `#capabilities`, `#architecture`, `#use-cases`, and `#live-demo`.
@@ -57,7 +57,7 @@ The application defines a dual-surface routing architecture in `frontend/src/App
 
 ### 4.2 Hero Section (`HeroSection.jsx`)
 - **Eyebrow Badge**: `MRPL • PROBLEM STATEMENT 26117`.
-- **Main Heading**: "AeroSovereign: Sovereign On-Premise Agentic AI Workbench".
+- **Main Heading**: "MAX: Sovereign On-Premise Agentic AI Workbench".
 - **Mission Statement**: Explicitly highlights local air-gapped GPU inference for confidential refinery P&IDs, ASME code calculations, and zero external network leakage.
 - **CTAs**: "Launch Sovereign Workbench" (`/workbench`) and "Inspect Private GPU Node" (scrolls to hardware reveal).
 - **Industrial Security Emblem**: Interactive 3D shield and chip badge detailing:
@@ -90,7 +90,7 @@ Features 4 core industrial capability cards with icons, metrics, and security ba
 ### 4.5 Sovereignty Architecture Section (`SovereigntyArchSection.jsx`)
 - **Direct Side-by-Side Comparison**:
   - *Public Cloud AI (Commercial APIs)*: Data leaves refinery premises, shared tenant risks, subject to internet downtime and external subpoenas.
-  - *AeroSovereign On-Premise Core*: Physically isolated network, zero egress bytes, private GPU server racks, local weights only.
+  - *MAX On-Premise Core*: Physically isolated network, zero egress bytes, private GPU server racks, local weights only.
 - **Architecture Pipeline Diagram**: Visual pipeline showing User Request -> Air-Gapped Firewall -> Local Model Router (Qwen/DeepSeek/Llama) -> Code Sandbox / Vector DB -> Cryptographic Hash -> Verified Response.
 
 ### 4.6 Industrial Use Cases (`IndustrialUseCases.jsx`)
@@ -162,7 +162,7 @@ Located at `frontend/.env`:
 VITE_API_URL=http://localhost:8000/api/v1
 
 # Application Identity
-VITE_APP_TITLE="AeroSovereign AI Workbench"
+VITE_APP_TITLE="MAX AI Workbench"
 VITE_ORGANIZATION="Mangalore Refinery and Petrochemicals Limited (MRPL)"
 VITE_PROBLEM_STATEMENT="PS-26117"
 

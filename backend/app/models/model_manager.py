@@ -29,7 +29,7 @@ def _offline_fallback(prompt: str, model_name: str) -> str:
     p = prompt.lower()
     if any(k in p for k in ("calc", "pump", "stress", "flow")):
         return (
-            f"[AeroSovereign {model_name} - Offline Engine]\n\n"
+            f"[MAX {model_name} - Offline Engine]\n\n"
             f"Engineering Assessment for: \"{prompt}\"\n\n"
             "1. Standard Operating Range Verified: Within API 610 / ASME B31.3 tolerances.\n"
             "2. Formula Applied: Q = A * v (Flow Rate) / S = P*D/(2*t) (Hoop Stress).\n"
@@ -37,26 +37,47 @@ def _offline_fallback(prompt: str, model_name: str) -> str:
         )
     elif any(k in p for k in ("sop", "inspect", "standard")):
         return (
-            f"[AeroSovereign {model_name} - SOP Specialist]\n\n"
+            f"[MAX {model_name} - SOP Specialist]\n\n"
             "Referencing Standard Operating Procedure:\n"
             "- Pre-requisite: Isolate supply and depressurize system to 0 barg.\n"
             "- Verification: Ultrasonic thickness measurement, seal leak detection, vibration analysis.\n"
             "- Sign-off: Shift In-Charge and Level-II Inspector."
         )
     return (
-        f"[AeroSovereign {model_name} - Offline Engine]\n\n"
+        f"[MAX {model_name} - Offline Engine]\n\n"
         f"Model server unreachable. Prompt received locally: \"{prompt}\"\n"
         "No external network calls were made."
     )
 
 
+SOVEREIGN_SYSTEM_PROMPT = (
+    "You are MAX, an air-gapped sovereign industrial engineering assistant.\n"
+    "ANTI-HALLUCINATION & FACTUAL ACCURACY PROTOCOL:\n"
+    "1. Strict Factual Grounding: Base technical specifications, formulas, and operating limits strictly on verified engineering standards (ASME, API, ISO) or provided SOP context.\n"
+    "2. No Fabrications: Never invent non-existent standard clauses, equipment tags, or safety thresholds. If a parameter or value is unknown or unprovided, explicitly state that it is not specified rather than guessing.\n"
+    "3. Calculation Transparency: Always show the explicit formula, define variables, and show step-by-step arithmetic substitution with units.\n"
+    "4. Clean Notation: Present formulas and calculations in clean, readable plain text (e.g. S_h = (P * D) / (2 * t)) without raw LaTeX backslash codes."
+)
+
+
 async def query_model(task_type: str, prompt: str) -> str:
     model = MODEL_MAP.get(task_type, MODEL_MAP["reasoning"])
+    
+    # Dynamic token budget: short general queries finish fast, while calculations retain full depth
+    if task_type == "general" and len(prompt.split()) < 25:
+        tokens_budget = 200
+    else:
+        tokens_budget = 650
+
     try:
         response = await client.chat.completions.create(
             model=model,
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=500,
+            messages=[
+                {"role": "system", "content": SOVEREIGN_SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.1,  # Low temperature ensures deterministic, factual output
+            max_tokens=tokens_budget,
         )
         content = response.choices[0].message.content
         if content:
@@ -64,4 +85,4 @@ async def query_model(task_type: str, prompt: str) -> str:
     except Exception as e:
         logger.warning("Model server (%s) unreachable: %s. Using offline fallback.", MODEL_HOST, e)
 
-    return _offline_fallback(prompt, model)
+    return _offline_fallback(prompt, model)

@@ -1,4 +1,4 @@
-# AeroSovereign — API Reference
+# MAX — API Reference
 
 Base URL: `http://localhost:8000/api/v1`
 

@@ -9,7 +9,10 @@ import {
   X,
   FileText,
   ChevronDown,
+  Mic,
+  MicOff,
 } from 'lucide-react';
+import { VoiceRecorderVAD } from '../../services/voiceService';
 
 const TOOLS_LIST = [
   { id: 'auto', label: 'Auto (Intent Routing)' },
@@ -31,9 +34,60 @@ export default function ChatInput({
 }) {
   const [text, setText] = useState('');
   const [showToolDropdown, setShowToolDropdown] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [micStatus, setMicStatus] = useState('');
+  const [micVolume, setMicVolume] = useState(0);
+
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
   const toolDropdownRef = useRef(null);
+  const vadRecorderRef = useRef(null);
+
+  // Initialize VAD Recorder
+  useEffect(() => {
+    vadRecorderRef.current = new VoiceRecorderVAD({
+      onTranscription: (transcript, isFinal) => {
+        setText(transcript);
+        if (isFinal) {
+          setMicStatus('Transcribed');
+        }
+      },
+      onVolumeChange: (vol) => setMicVolume(vol),
+      onStatusChange: (status) => {
+        if (status === 'listening') {
+          setIsRecording(true);
+          setMicStatus('Listening...');
+        } else if (status === 'completed') {
+          setIsRecording(false);
+          setMicStatus('');
+          setMicVolume(0);
+        } else if (status === 'cancelled') {
+          setIsRecording(false);
+          setMicStatus('');
+          setMicVolume(0);
+        }
+      },
+      onError: (err) => {
+        console.warn('VAD Mic error:', err);
+        setIsRecording(false);
+        setMicStatus('Mic Error');
+      },
+    });
+
+    return () => {
+      if (vadRecorderRef.current) {
+        vadRecorderRef.current.stop(true);
+      }
+    };
+  }, []);
+
+  function toggleRecording() {
+    if (isRecording) {
+      vadRecorderRef.current?.stop(false);
+    } else {
+      vadRecorderRef.current?.start(text);
+    }
+  }
 
   // Auto-resize textarea
   useEffect(() => {
@@ -177,8 +231,26 @@ export default function ChatInput({
             </button>
           </div>
 
-          {/* Send Button */}
+          {/* Send & Voice Controls */}
           <div className="wb-composer-controls-right">
+            {/* Voice Input Button with VAD Energy Indicator */}
+            <button
+              type="button"
+              className={`wb-composer-mic-btn ${isRecording ? 'recording' : ''}`}
+              onClick={toggleRecording}
+              title={isRecording ? 'Listening (Click to stop / auto-submits on 450ms silence)' : 'Voice Input (Hands-free voice RAG)'}
+            >
+              {isRecording ? (
+                <>
+                  <span className="wb-mic-pulse-ring" style={{ transform: `scale(${1 + (micVolume || 10) * 0.01})` }} />
+                  <MicOff size={14} className="wb-mic-active-icon" />
+                  <span className="wb-mic-status-text">{micStatus || 'Listening...'}</span>
+                </>
+              ) : (
+                <Mic size={15} />
+              )}
+            </button>
+
             <button
               type="button"
               className={`wb-composer-send-btn ${loading ? 'loading' : ''}`}

@@ -1,6 +1,6 @@
 # Product Requirements Document (PRD)
 
-# AeroSovereign / MRPL-Workbench
+# MAX / MRPL-Workbench
 ### Sovereign Multi-Model Agentic AI Workbench for Industrial Operations
 
 **Version:** 2.1  
@@ -12,7 +12,7 @@
 # 1. Product Overview
 
 ## 1.1 Vision
-AeroSovereign is a **100% on-premise, zero-cloud-egress, multi-model Agentic AI workbench** designed for industrial environments where data sovereignty, safety, and auditability are non-negotiable.
+MAX is a **100% on-premise, zero-cloud-egress, multi-model Agentic AI workbench** designed for industrial environments where data sovereignty, safety, and auditability are non-negotiable.
 
 Instead of a generic single-model chatbot, the platform orchestrates a **dynamic collection of specialized open-weight models** running on consumer hardware (Dual 6GB GPUs: RTX 4050 & RTX 3050).
 

@@ -1,10 +1,9 @@
-"""Multi-Agent Orchestrator and System Action Controller for AeroSovereign."""
+"""Multi-Agent Orchestrator for MAX operations."""
 import time
 import logging
-from typing import Optional, Dict, Any
-
+from typing import Optional
 from shared.schemas import TaskRequest, TaskResponse, TaskType
-from agents.router_agent import classify_task, classify_action_intent
+from agents.router_agent import classify_task, classify_action_intent, classify_fast_path
 from agents.action_executor import execute_action
 from rag.retriever import search_knowledge_base
 from app.models.model_manager import query_model
@@ -15,104 +14,98 @@ logger = logging.getLogger(__name__)
 
 async def run_orchestrated_task(request: TaskRequest) -> TaskResponse:
     """
-    Main orchestration pipeline:
-    1. Check for whitelisted native system actions (open apps, files, sites)
-    2. Route task intent (<10ms)
-    3. SOP RAG augmentation if needed
-    4. Query local model with safe fallback
-    5. Immutable sovereign audit logging
+    Main orchestration loop:
+    0. System action check (open app/file — no model call needed)
+    0.5 Fast-path check (conversational/status bypass — sub-5ms)
+    1. Fast intent routing (<100ms)
+    2. Context augmentation via RAG if needed
+    3. Specialized model invocation
+    4. Audit logging
     """
     start_time = time.perf_counter()
 
-    # 1. Check for desktop / browser actions
-    action_intent = classify_action_intent(request.prompt)
-    if action_intent:
-        res = execute_action(action_intent["action"], action_intent["target"])
-        elapsed_ms = round((time.perf_counter() - start_time) * 1000.0, 2)
-        message = f"[{res['status'].upper()}] {res['detail']}"
+    # 0. System Action Check — bypasses model entirely if matched
+    action_match = classify_action_intent(request.prompt)
+    if action_match:
+        result = execute_action(action_match["action"], action_match["target"])
+        elapsed_ms = (time.perf_counter() - start_time) * 1000.0
         log_event(
             event_type="TASK_SYSTEM_ACTION",
-            details=f"Prompt: {request.prompt[:50]}... | Action: {action_intent['action']} | Result: {res['status']}",
-            status="SUCCESS" if res["status"] == "success" else "DENIED",
-            model="Local System Controller",
+            details=f"Prompt: {request.prompt[:50]}... | Action: {action_match['action']} | Result: {result['status']}",
+            status="SUCCESS" if result["status"] == "success" else "DENIED",
         )
         return TaskResponse(
             session_id=request.session_id or "default-session",
             task_type=TaskType.SYSTEM_ACTION,
-            model_used="System Action Controller",
-            text_response=message,
-            response=message,
-            reasoning=f"User intent classified as system action: {action_intent['action']} -> {action_intent['target']}",
-            execution_time_ms=elapsed_ms,
-            latency_ms=elapsed_ms,
+            model_used="none",
+            text_response=result["detail"],
+            execution_time_ms=round(elapsed_ms, 2),
             output_files=[],
             sovereign_status="PASS_0_EXTERNAL_EGRESS",
-            egress_bytes=0,
         )
 
-    # 2. Route classification
+    # 0.5 Fast-Path Check — instant response for greetings, identity, status & acks (< 5ms)
+    fast_response = classify_fast_path(request.prompt)
+    if fast_response:
+        elapsed_ms = (time.perf_counter() - start_time) * 1000.0
+        log_event(
+            event_type="TASK_FAST_PATH",
+            details=f"Prompt: {request.prompt[:50]}... | Mode: fast-path | Latency: {elapsed_ms:.1f}ms",
+            status="SUCCESS",
+        )
+        return TaskResponse(
+            session_id=request.session_id or "default-session",
+            task_type=TaskType.FAST_PATH,
+            model_used="fast-path",
+            text_response=fast_response,
+            execution_time_ms=round(elapsed_ms, 2),
+            output_files=[],
+            sovereign_status="PASS_0_EXTERNAL_EGRESS",
+        )
+
+    # 1. Route Decision
     route = classify_task(request.prompt)
+    chosen_model = request.model if (request.model and request.model != "auto") else route.target_model
 
-    # Determine model mapping
-    if request.model and request.model != "auto":
-        chosen_internal_key = request.model
-        model_display = request.model
-    else:
-        chosen_internal_key = route.target_model
-        if route.task_type == TaskType.CODE_MATH:
-            model_display = "Qwen2.5-Coder-7B (Code & Sandbox Engine)"
-        elif route.task_type == TaskType.SOP_RAG:
-            model_display = "DeepSeek-R1-14B (SOP Knowledge Specialist)"
-        elif route.task_type == TaskType.REPORT_GENERATION:
-            model_display = "DeepSeek-R1-14B (Technical Memo Drafter)"
-        else:
-            model_display = "DeepSeek-R1-14B (Sovereign Reasoning)"
-
-    # 3. Context gathering via RAG
+    # 2. Context Gathering (RAG)
     augmented_prompt = request.prompt
-    if route.requires_rag or any(k in request.prompt.lower() for k in ["sop", "standard", "asme", "api 610", "iso"]):
+    if route.requires_rag or "sop" in request.prompt.lower():
         sop_results = search_knowledge_base(request.prompt, top_k=2)
-        if sop_results:
-            sop_context = "\n\n".join([f"[{d['id']} - {d['title']}]:\n{d['content']}" for d in sop_results])
-            augmented_prompt = (
-                f"RELEVANT INDUSTRIAL SOPS:\n{sop_context}\n\n"
-                f"ENGINEERING QUERY:\n{request.prompt}\n\n"
-                f"Provide a verified engineering assessment referencing the standards above."
-            )
-
-    # 4. Model query
-    try:
-        text_response = await query_model(chosen_internal_key, augmented_prompt)
-    except Exception as exc:
-        logger.warning(f"Inference error: {exc}")
-        text_response = (
-            f"[AIR-GAPPED ON-PREMISE RESPONSE]\n\n"
-            f"Engineering Analysis for: \"{request.prompt}\"\n\n"
-            f"1. Verification: Verified against local refinery standards (ASME / API).\n"
-            f"2. Security: 0 KB external telemetry generated. Pure on-premise execution.\n"
-            f"3. Recommendation: System operating within acceptable nominal envelope."
+        sop_context = "\n\n".join([f"[{d['id']} - {d['title']}]: {d['content']}" for d in sop_results])
+        augmented_prompt = (
+            f"Relevant Sovereign SOPs:\n{sop_context}\n\n"
+            f"User Query:\n{request.prompt}\n\n"
+            f"Please provide an accurate engineering response citing the relevant standard. "
+            f"Ground your response strictly in the provided SOP context above. Do not invent unverified thresholds or non-existent clauses; if a specific parameter is missing, state that it requires verification. "
+            f"Present formulas and calculations in clean, readable notation (e.g., S_h = (P * D) / (2 * t) = 180 MPa) rather than raw LaTeX backslash syntax."
+        )
+    elif route.task_type == TaskType.CODE_MATH:
+        augmented_prompt = (
+            f"{request.prompt}\n\n"
+            f"[Guidance: Present mathematical formulas and step-by-step calculations in clean, readable notation (e.g., S_h = (P * D) / (2 * t) = 180 MPa) rather than raw LaTeX backslash codes like \\[ or \\frac. "
+            f"Show exact arithmetic substitutions with units so calculations are verifiable and free of hallucinations. Do not invent arbitrary constants.]"
         )
 
-    elapsed_ms = round((time.perf_counter() - start_time) * 1000.0, 2)
 
-    # 5. Audit Logging
+
+    # 3. Model Query
+    text_response = await query_model(chosen_model, augmented_prompt)
+
+    elapsed_ms = (time.perf_counter() - start_time) * 1000.0
+
+    # 4. Audit Log
     log_event(
         event_type=f"TASK_{route.task_type.value}",
-        details=f"Query: {request.prompt[:60]}... | Model: {model_display} | Time: {elapsed_ms}ms",
+        details=f"Prompt: {request.prompt[:50]}... | Model: {chosen_model} | Latency: {elapsed_ms:.1f}ms",
         status="SUCCESS",
-        model=model_display,
     )
 
     return TaskResponse(
         session_id=request.session_id or "default-session",
         task_type=route.task_type,
-        model_used=model_display,
+        model_used=chosen_model,
         text_response=text_response,
-        response=text_response,
-        reasoning=route.reasoning,
-        execution_time_ms=elapsed_ms,
-        latency_ms=elapsed_ms,
+        execution_time_ms=round(elapsed_ms, 2),
         output_files=[],
         sovereign_status="PASS_0_EXTERNAL_EGRESS",
-        egress_bytes=0,
     )

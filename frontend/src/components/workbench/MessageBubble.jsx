@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Shield,
   Clock,
@@ -12,13 +12,38 @@ import {
   FileText,
   Terminal,
   ExternalLink,
+  Volume2,
+  Square,
 } from 'lucide-react';
 import { getDownloadUrl } from '../../services/api';
+import { speechSynthesizer } from '../../services/voiceService';
 
 export default function MessageBubble({ message }) {
   const isUser = message.role === 'user';
   const [copied, setCopied] = useState(false);
   const [showTimeline, setShowTimeline] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      // Clean up speech if component unmounts
+      if (isSpeaking) {
+        speechSynthesizer.stop();
+      }
+    };
+  }, [isSpeaking]);
+
+  function handleToggleSpeak() {
+    if (isSpeaking) {
+      speechSynthesizer.stop();
+      setIsSpeaking(false);
+    } else {
+      speechSynthesizer.onStateChange = (speaking) => {
+        setIsSpeaking(speaking);
+      };
+      speechSynthesizer.speak(message.content);
+    }
+  }
 
   function handleCopy(text) {
     if (navigator.clipboard) {
@@ -28,13 +53,67 @@ export default function MessageBubble({ message }) {
     }
   }
 
-  // Render markdown-like text and formatted code blocks
+  // Clean raw LaTeX math symbols into clean, readable formula text
+  function cleanMathLatex(raw) {
+    if (!raw) return '';
+    let s = raw.trim();
+
+    // Strip leading/trailing \[ \] or \( \) if present
+    if (s.startsWith('\\[') && s.endsWith('\\]')) {
+      s = s.slice(2, -2).trim();
+    } else if (s.startsWith('\\(') && s.endsWith('\\)')) {
+      s = s.slice(2, -2).trim();
+    }
+
+    // Repeated fraction replacements for nested fractions
+    for (let loop = 0; loop < 3; loop++) {
+      s = s.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, '($1) / ($2)');
+    }
+
+    return s
+      // Common Greek letters
+      .replace(/\\sigma_h/g, 'σ_h')
+      .replace(/\\sigma/g, 'σ')
+      .replace(/\\Delta/g, 'Δ')
+      .replace(/\\mu/g, 'μ')
+      .replace(/\\pi/g, 'π')
+      .replace(/\\theta/g, 'θ')
+      .replace(/\\alpha/g, 'α')
+      .replace(/\\beta/g, 'β')
+      .replace(/\\gamma/g, 'γ')
+      .replace(/\\lambda/g, 'λ')
+      .replace(/\\rho/g, 'ρ')
+      .replace(/\\omega/g, 'ω')
+      // Math operators
+      .replace(/\\times/g, '×')
+      .replace(/\\cdot/g, '·')
+      .replace(/\\approx/g, '≈')
+      .replace(/\\pm/g, '±')
+      .replace(/\\le(q)?/g, '≤')
+      .replace(/\\ge(q)?/g, '≥')
+      .replace(/\\ne(q)?/g, '≠')
+      .replace(/\\infty/g, '∞')
+      .replace(/\\sqrt\{([^{}]+)\}/g, '√($1)')
+      // Text wrapper removal: \text{MPa} -> MPa
+      .replace(/\\text\{([^{}]+)\}/g, '$1')
+      // Spacing and escaped backslashes: \  or \quad -> ' '
+      .replace(/\\\s+/g, ' ')
+      .replace(/\\quad/g, ' ')
+      .replace(/\\,/g, ' ')
+      .replace(/\\;/g, ' ')
+      // Strip any lingering standalone \[ \] \( \)
+      .replace(/\\[\[\]\(\)]/g, '')
+      .trim();
+  }
+
+  // Render markdown-like text, formatted code blocks, and math equations
   function renderContent(text) {
     if (!text) return null;
 
     const parts = text.split(/(```[\s\S]*?```)/g);
 
     return parts.map((part, i) => {
+      // 1. Code Blocks
       if (part.startsWith('```') && part.endsWith('```')) {
         const lines = part.slice(3, -3);
         const firstNewline = lines.indexOf('\n');
@@ -61,24 +140,80 @@ export default function MessageBubble({ message }) {
         );
       }
 
-      // Inline code and line breaks
-      const inlineParts = part.split(/(`[^`]+`)/g);
+      // 2. Display Math Blocks \[ ... \]
+      const mathBlockParts = part.split(/(\\\[[\s\S]*?\\\])/g);
+
       return (
         <span key={i}>
-          {inlineParts.map((ip, j) => {
-            if (ip.startsWith('`') && ip.endsWith('`')) {
+          {mathBlockParts.map((mbPart, mIdx) => {
+            if (mbPart.startsWith('\\[') && mbPart.endsWith('\\]')) {
+              const formula = cleanMathLatex(mbPart);
               return (
-                <code key={j} className="wb-inline-code">
-                  {ip.slice(1, -1)}
-                </code>
+                <div
+                  key={`math-${mIdx}`}
+                  className="wb-math-block"
+                  style={{
+                    margin: '10px 0',
+                    padding: '10px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderLeft: '3px solid #10b981',
+                    borderRadius: '6px',
+                    fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+                    fontSize: '0.98em',
+                    color: '#5eead4',
+                    textAlign: 'center',
+                    overflowX: 'auto',
+                  }}
+                >
+                  {formula}
+                </div>
               );
             }
-            return ip.split('\n').map((line, k, arr) => (
-              <React.Fragment key={`${j}-${k}`}>
-                {line}
-                {k < arr.length - 1 && <br />}
-              </React.Fragment>
-            ));
+
+            // 3. Inline Math \( ... \) and Inline Code `...`
+            const inlineMathParts = mbPart.split(/(\\\([\s\S]*?\\\))/g);
+
+            return inlineMathParts.map((imPart, imIdx) => {
+              if (imPart.startsWith('\\(') && imPart.endsWith('\\)')) {
+                return (
+                  <span
+                    key={`im-${imIdx}`}
+                    style={{
+                      color: '#5eead4',
+                      fontWeight: 500,
+                      fontFamily: 'Consolas, monospace',
+                      padding: '0 2px',
+                    }}
+                  >
+                    {cleanMathLatex(imPart)}
+                  </span>
+                );
+              }
+
+              // Process standard inline code `...`
+              const inlineCodeParts = imPart.split(/(`[^`]+`)/g);
+
+              return inlineCodeParts.map((ip, j) => {
+                if (ip.startsWith('`') && ip.endsWith('`')) {
+                  return (
+                    <code key={`code-${j}`} className="wb-inline-code">
+                      {ip.slice(1, -1)}
+                    </code>
+                  );
+                }
+
+                // Clean stray LaTeX artifacts from text outside math blocks
+                const cleanedText = cleanMathLatex(ip);
+
+                return cleanedText.split('\n').map((line, k, arr) => (
+                  <React.Fragment key={`${imIdx}-${j}-${k}`}>
+                    {line}
+                    {k < arr.length - 1 && <br />}
+                  </React.Fragment>
+                ));
+              });
+            });
           })}
         </span>
       );
@@ -111,19 +246,26 @@ export default function MessageBubble({ message }) {
         label: 'Native system action evaluated against whitelist',
         status: 'done',
       });
-    } else if (msg.task_type === 'CODE_MATH') {
+    } else if (msg.task_type === 'FAST_PATH' || msg.model_used === 'fast-path') {
       steps.push({
-        id: 'exec',
-        label: 'Sandboxed Python calculation executed',
+        id: 'fast',
+        label: 'Direct sovereign fast-path response (<5ms)',
+        status: 'done',
+      });
+    } else {
+      if (msg.task_type === 'CODE_MATH') {
+        steps.push({
+          id: 'exec',
+          label: 'Sandboxed Python calculation executed',
+          status: 'done',
+        });
+      }
+      steps.push({
+        id: 'infer',
+        label: `Qwen local inference (${msg.model_used || 'ai/qwen2.5:7B-Q4_K_M'})`,
         status: 'done',
       });
     }
-
-    steps.push({
-      id: 'infer',
-      label: `Qwen local inference (${msg.model_used || 'ai/qwen2.5:7B-Q4_K_M'})`,
-      status: 'done',
-    });
 
     if (msg.output_files && msg.output_files.length > 0) {
       steps.push({
@@ -241,6 +383,36 @@ export default function MessageBubble({ message }) {
           </div>
 
           <div className="wb-meta-right">
+            {!isUser && (
+              <button
+                type="button"
+                className={`wb-meta-voice-btn ${isSpeaking ? 'speaking' : ''}`}
+                onClick={handleToggleSpeak}
+                title={isSpeaking ? 'Stop reading' : 'Read aloud with math naturalization'}
+              >
+                {isSpeaking ? (
+                  <>
+                    <Square size={10} className="wb-voice-stop-icon" />
+                    <span>Stop</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2 size={11} />
+                    <span>Listen</span>
+                  </>
+                )}
+              </button>
+            )}
+
+            <button
+              type="button"
+              className="wb-meta-copy-btn"
+              onClick={() => handleCopy(message.content)}
+              title="Copy message text"
+            >
+              {copied ? <Check size={11} className="wb-copy-check" /> : <Copy size={11} />}
+            </button>
+
             {message.latency_ms > 0 && (
               <span className="wb-meta-time">
                 <Clock size={11} />

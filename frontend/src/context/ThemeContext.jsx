@@ -9,7 +9,7 @@ const ThemeContext = createContext({
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
     try {
-      const saved = localStorage.getItem('aerosovereign_theme');
+      const saved = localStorage.getItem('max_theme') || localStorage.getItem('aerosovereign_theme');
       if (saved === 'light' || saved === 'dark') return saved;
       // Default to light (White, Warm Beige & Minty Aqua)
       return 'light';
@@ -21,7 +21,7 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     try {
-      localStorage.setItem('aerosovereign_theme', theme);
+      localStorage.setItem('max_theme', theme);
     } catch {
       // ignore
     }

@@ -3,7 +3,8 @@
  * Max 50 sessions, auto-prunes oldest when limit is reached.
  */
 
-const STORAGE_KEY = 'aerosovereign_chats';
+const STORAGE_KEY = 'max_chats';
+const LEGACY_STORAGE_KEY = 'aerosovereign_chats';
 const MAX_SESSIONS = 50;
 
 function generateId() {
@@ -12,7 +13,7 @@ function generateId() {
 
 export function getAllSessions() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
     if (!raw) return [];
     const sessions = JSON.parse(raw);
     return Array.isArray(sessions) ? sessions : [];
@@ -107,10 +108,11 @@ export function clearAllSessions() {
 }
 
 // Check if first visit (for download modal)
-const FIRST_VISIT_KEY = 'aerosovereign_first_visit_done';
+const FIRST_VISIT_KEY = 'max_first_visit_done';
+const LEGACY_FIRST_VISIT_KEY = 'aerosovereign_first_visit_done';
 
 export function isFirstVisit() {
-  return !localStorage.getItem(FIRST_VISIT_KEY);
+  return !localStorage.getItem(FIRST_VISIT_KEY) && !localStorage.getItem(LEGACY_FIRST_VISIT_KEY);
 }
 
 export function markFirstVisitDone() {
