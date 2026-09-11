@@ -9,15 +9,18 @@ const ThemeContext = createContext({
 });
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
+  const [theme, setTheme] = useState('dark');
+
+  useEffect(() => {
     try {
       const saved = localStorage.getItem('max_theme') || localStorage.getItem('aerosovereign_theme');
-      if (saved === 'light' || saved === 'dark') return saved;
-      return 'dark';
+      if (saved === 'light' || saved === 'dark') {
+        setTheme(saved);
+      }
     } catch {
-      return 'dark';
+      // ignore
     }
-  });
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);

@@ -296,6 +296,23 @@ function WorkbenchContent() {
 }
 
 export default function WorkbenchPage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="wb-app-root flex items-center justify-center min-h-screen bg-[#07090e] text-neutral-400">
+        <div className="flex items-center gap-3 text-xs font-mono tracking-widest text-neutral-400">
+          <div className="w-3.5 h-3.5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+          <span>LOADING AIR-GAPPED WORKBENCH...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <ThemeProvider>
       <WorkbenchContent />

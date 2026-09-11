@@ -13,7 +13,7 @@ import {
   AudioLines,
 } from 'lucide-react';
 import MessageBubble from './MessageBubble';
-import { getCyclicMessage } from '../../services/cyclicMessages';
+import { getCyclicMessage, CYCLIC_MESSAGES } from '../../services/cyclicMessages';
 import { VoiceRecorderVAD } from '../../services/voiceService';
 
 export default function ChatView({
@@ -27,20 +27,21 @@ export default function ChatView({
   selectedTool,
   onSelectTool,
 }) {
-  const [inputText, setInputText] = useState(() => {
-    try {
-      const p = new URLSearchParams(window.location.search).get('prompt');
-      return p ? decodeURIComponent(p) : '';
-    } catch {
-      return '';
-    }
-  });
-  const [cyclicMsg, setCyclicMsg] = useState(() => getCyclicMessage());
+  const [inputText, setInputText] = useState('');
+  const [cyclicMsg, setCyclicMsg] = useState(CYCLIC_MESSAGES[0]);
   const [isRecording, setIsRecording] = useState(false);
   const [micVolume, setMicVolume] = useState(0);
   const [micStatus, setMicStatus] = useState('');
   const [thinkMode, setThinkMode] = useState(false);
   const [voiceAutoSend, setVoiceAutoSend] = useState(false);
+
+  useEffect(() => {
+    try {
+      const p = new URLSearchParams(window.location.search).get('prompt');
+      if (p) setInputText(decodeURIComponent(p));
+    } catch {}
+    setCyclicMsg(getCyclicMessage());
+  }, []);
 
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
