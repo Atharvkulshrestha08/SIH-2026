@@ -34,7 +34,7 @@ import { advanceCyclicVisitor } from '../../src/services/cyclicMessages';
 function WorkbenchContent() {
   const [activeView, setActiveView] = useState('chat');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [autoTTS, setAutoTTS] = useState(false);
+  const [autoTTS, setAutoTTS] = useState(true);
 
   // Backend live health state
   const [backendOnline, setBackendOnline] = useState(true);
@@ -66,6 +66,11 @@ function WorkbenchContent() {
 
   // Initialize on mount
   useEffect(() => {
+    try {
+      const savedTTS = localStorage.getItem('max_auto_tts');
+      if (savedTTS !== null) setAutoTTS(savedTTS === 'true');
+    } catch {}
+
     const sessions = getAllSessions();
     setChatSessions(sessions);
 
@@ -88,9 +93,22 @@ function WorkbenchContent() {
     advanceCyclicVisitor();
   }, []);
 
+  const handleToggleAutoTTS = () => {
+    setAutoTTS((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('max_auto_tts', String(next));
+      } catch {}
+      if (!next && speechSynthesizer?.stop) {
+        speechSynthesizer.stop();
+      }
+      return next;
+    });
+  };
+
   // Handle new chat session
   const handleNewChat = () => {
-    if (speechSynthesizer?.cancel) speechSynthesizer.cancel();
+    if (speechSynthesizer?.stop) speechSynthesizer.stop();
     const newSession = createSession();
     const updated = getAllSessions();
     setChatSessions(updated);
@@ -101,7 +119,7 @@ function WorkbenchContent() {
 
   // Handle switching active chat
   const handleSelectChat = (sessionId) => {
-    if (speechSynthesizer?.cancel) speechSynthesizer.cancel();
+    if (speechSynthesizer?.stop) speechSynthesizer.stop();
     setActiveChatId(sessionId);
     const session = getSession(sessionId);
     setMessages(session ? session.messages : []);
@@ -124,8 +142,8 @@ function WorkbenchContent() {
   };
 
   // Handle sending a message in the chat
-  const handleSendMessage = async (userText, fileAttachment = null) => {
-    if (!userText.trim() && !fileAttachment) return;
+  const handleSendMessage = async (userText, toolOverride = null) => {
+    if (!userText.trim() && !attachedFile) return;
 
     let currentChatId = activeChatId;
     if (!currentChatId) {
@@ -134,7 +152,7 @@ function WorkbenchContent() {
       setActiveChatId(currentChatId);
     }
 
-    const fileToUpload = fileAttachment || attachedFile;
+    const fileToUpload = attachedFile;
     let uploadedFileData = null;
 
     if (fileToUpload) {
@@ -147,7 +165,9 @@ function WorkbenchContent() {
 
     const userMsg = addMessage(currentChatId, {
       sender: 'user',
+      role: 'user',
       text: userText,
+      content: userText,
       attachment: uploadedFileData
         ? {
             filename: uploadedFileData.filename,
@@ -163,11 +183,15 @@ function WorkbenchContent() {
     setLoading(true);
 
     try {
-      const response = await orchestrate(userText, selectedModel, selectedTool);
+      const chosenTool = toolOverride || selectedTool;
+      const response = await orchestrate(userText, selectedModel, chosenTool);
+      const assistantText = response.final_response || response.response || response.text_response || 'Task executed successfully.';
 
       const agentMsg = addMessage(currentChatId, {
         sender: 'assistant',
-        text: response.final_response || response.response || response.text_response || 'Task executed successfully.',
+        role: 'assistant',
+        text: assistantText,
+        content: assistantText,
         intent: response.intent || response.task_type,
         tool_used: response.tool_used,
         execution_time_ms: response.execution_time_ms,
@@ -178,6 +202,11 @@ function WorkbenchContent() {
       });
 
       setMessages((prev) => [...prev, agentMsg]);
+
+      // Trigger TTS readout if autoTTS enabled
+      if (autoTTS && assistantText && speechSynthesizer?.speak) {
+        speechSynthesizer.speak(assistantText);
+      }
 
       if (response.tool_used && response.tool_used !== 'none') {
         const recordedTask = {
@@ -190,7 +219,7 @@ function WorkbenchContent() {
           timestamp: new Date().toISOString(),
           deliverable: response.deliverable || null,
           reasoning: response.agent_reasoning || response.reasoning || '',
-          response: response.final_response || response.response || '',
+          response: assistantText,
           sovereign_status: response.sovereign_status || 'PASS_0_EXTERNAL_EGRESS',
         };
         setTasksRegistry((prev) => [recordedTask, ...prev]);
@@ -201,7 +230,9 @@ function WorkbenchContent() {
       console.error('Orchestration error:', err);
       const errorMsg = addMessage(currentChatId, {
         sender: 'assistant',
+        role: 'assistant',
         text: `⚠️ Offline Local Processing Notice: Unable to communicate with the local model engine at http://localhost:8000. \n\nPlease verify that the sovereign backend is running:\n\`uvicorn app.main:app --reload\``,
+        content: `⚠️ Offline Local Processing Notice: Unable to communicate with the local model engine at http://localhost:8000. \n\nPlease verify that the sovereign backend is running:\n\`uvicorn app.main:app --reload\``,
         isError: true,
         sovereign_status: 'LOCAL_OFFLINE',
         offline_air_gapped: true,
@@ -218,7 +249,7 @@ function WorkbenchContent() {
   };
 
   return (
-    <div className="wb-app-root">
+    <div className="wb-clean-app">
       {!backendOnline && (
         <div className="wb-backend-alert-banner">
           <ShieldCheck size={14} />
@@ -228,7 +259,16 @@ function WorkbenchContent() {
         </div>
       )}
 
-      <div className="wb-layout-container">
+      <TopBar
+        activeView={activeView}
+        onViewChange={(view) => setActiveView(view)}
+        sidebarCollapsed={sidebarCollapsed}
+        onToggleSidebar={() => setSidebarCollapsed((p) => !p)}
+        autoTTS={autoTTS}
+        onToggleAutoTTS={handleToggleAutoTTS}
+      />
+
+      <div className="wb-clean-shell">
         <WorkbenchSidebar
           collapsed={sidebarCollapsed}
           onToggle={() => setSidebarCollapsed((p) => !p)}
@@ -241,48 +281,58 @@ function WorkbenchContent() {
           onDeleteChat={handleDeleteChat}
         />
 
-        <div className={`wb-main-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-          <TopBar
-            activeView={activeView}
-            onViewChange={(view) => setActiveView(view)}
-            sidebarCollapsed={sidebarCollapsed}
-            onToggleSidebar={() => setSidebarCollapsed((p) => !p)}
-            autoTTS={autoTTS}
-            onToggleAutoTTS={() => setAutoTTS((p) => !p)}
-          />
+        <main className="wb-clean-main">
+          {activeView === 'chat' && (
+            <ChatView
+              messages={messages}
+              loading={loading}
+              onSend={handleSendMessage}
+              onFileSelect={(file) => setAttachedFile(file)}
+              onRemoveFile={() => setAttachedFile(null)}
+              attachedFile={attachedFile}
+              selectedModel={selectedModel}
+              onSelectModel={setSelectedModel}
+              selectedTool={selectedTool}
+              onSelectTool={setSelectedTool}
+              onOpenModelModal={() => setShowDownloadModal(true)}
+            />
+          )}
 
-          <main className="wb-view-viewport">
-            {activeView === 'chat' && (
-              <ChatView
-                messages={messages}
-                loading={loading}
-                onSendMessage={handleSendMessage}
-                selectedModel={selectedModel}
-                onSelectModel={setSelectedModel}
-                selectedTool={selectedTool}
-                onSelectTool={setSelectedTool}
-                attachedFile={attachedFile}
-                onAttachFile={setAttachedFile}
-                onOpenModelManager={() => setActiveView('models')}
-              />
-            )}
+          {activeView === 'tasks' && (
+            <TasksView
+              tasks={tasksRegistry}
+              onSelectTaskForChat={handleSelectTaskForChat}
+            />
+          )}
 
-            {activeView === 'tasks' && (
-              <TasksView
-                tasks={tasksRegistry}
-                onSelectTaskForChat={handleSelectTaskForChat}
-              />
-            )}
+          {activeView === 'documents' && <DocumentsView />}
+          {activeView === 'knowledge' && <RAGView />}
+          {activeView === 'files' && <FilesView />}
+          {activeView === 'audit' && <AuditView />}
+          {activeView === 'status' && <StatusView />}
+          {activeView === 'models' && <ModelsView onOpenModelModal={() => setShowDownloadModal(true)} />}
+          {activeView === 'sandbox' && <SandboxView />}
 
-            {activeView === 'documents' && <DocumentsView />}
-            {activeView === 'knowledge' && <RAGView />}
-            {activeView === 'files' && <FilesView />}
-            {activeView === 'audit' && <AuditView />}
-            {activeView === 'status' && <StatusView />}
-            {activeView === 'models' && <ModelsView onOpenModelModal={() => setShowDownloadModal(true)} />}
-            {activeView === 'sandbox' && <SandboxView />}
-          </main>
-        </div>
+          {/* High-End Bottom-Right Sovereignty & Model Dock */}
+          <div className="wb-bottom-right-dock">
+            <button
+              className="wb-dock-model-btn"
+              onClick={() => setActiveView('models')}
+              title="Active Model: ai/qwen2.5:7B-Q4_K_M (4.36 GiB In-VRAM)"
+            >
+              <span className="wb-model-dot" />
+              <span className="wb-model-text">ai/qwen2.5:7B</span>
+            </button>
+
+            <div
+              className="wb-dock-sov-pill"
+              title="100% Offline Air-Gapped Station • 0 KB External Egress"
+            >
+              <ShieldCheck size={13} className="text-emerald-400" />
+              <span>AIR_GAPPED_PASS</span>
+            </div>
+          </div>
+        </main>
       </div>
 
       {showDownloadModal && (

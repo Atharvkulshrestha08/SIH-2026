@@ -308,6 +308,73 @@ export default function ChatView({
           {/* Centered Pill Composer */}
           {renderComposer(true)}
 
+          {/* High-End Quick Engineering Prompts Grid */}
+          <div className="wb-clean-suggestions-grid">
+            <button
+              type="button"
+              className="wb-clean-suggestion-card"
+              onClick={() => {
+                const q = "Check API 610 vibration limits & RMS envelope for centrifugal pump overhaul";
+                setInputText(q);
+                handleSubmit(q);
+              }}
+            >
+              <div className="wb-suggestion-icon-wrap">⚡</div>
+              <div className="wb-suggestion-text-group">
+                <div className="wb-suggestion-title">Pump Vibration Envelope</div>
+                <div className="wb-suggestion-desc">API 610 / ISO 10816 limits & trip thresholds</div>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              className="wb-clean-suggestion-card"
+              onClick={() => {
+                const q = "Calculate minimum required wall thickness for 4.2 MPa pressure vessel under ASME Sec VIII";
+                setInputText(q);
+                handleSubmit(q);
+              }}
+            >
+              <div className="wb-suggestion-icon-wrap">📐</div>
+              <div className="wb-suggestion-text-group">
+                <div className="wb-suggestion-title">ASME VIII Calculation</div>
+                <div className="wb-suggestion-desc">Shell wall thickness & MAWP safety factors</div>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              className="wb-clean-suggestion-card"
+              onClick={() => {
+                const q = "Draft an internal Capex authorization memo for Crude Distillation Column 101 overhaul";
+                setInputText(q);
+                handleSubmit(q);
+              }}
+            >
+              <div className="wb-suggestion-icon-wrap">📄</div>
+              <div className="wb-suggestion-text-group">
+                <div className="wb-suggestion-title">Draft Capex Memo</div>
+                <div className="wb-suggestion-desc">Turnaround justification memo for Column 101</div>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              className="wb-clean-suggestion-card"
+              onClick={() => {
+                const q = "Inspect refinery SOPs and verify zero-egress offline air-gap compliance status";
+                setInputText(q);
+                handleSubmit(q);
+              }}
+            >
+              <div className="wb-suggestion-icon-wrap">🛡️</div>
+              <div className="wb-suggestion-text-group">
+                <div className="wb-suggestion-title">Air-Gap Audit</div>
+                <div className="wb-suggestion-desc">Verify local model weights & zero network egress</div>
+              </div>
+            </button>
+          </div>
+
           <div className="wb-clean-disclaimer">
             <Shield size={11} />
             <span>Air-gapped on-premise workbench • 0 external egress</span>
