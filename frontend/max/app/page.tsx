@@ -2,10 +2,13 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import LogoCarousel from "./components/LogoCarousel";
 import BentoGrid from "./components/BentoGrid";
 
 export default function Home() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("16K HD");
   const [activePrompt, setActivePrompt] = useState(
     "Futuristic cybernetic core in deep obsidian void, liquid metallic chrome ribbon waves, violet studio rim lighting, 8k octane render"
@@ -22,6 +25,10 @@ export default function Home() {
     setActivePrompt(promptText);
     setIsGenerating(true);
     setTimeout(() => setIsGenerating(false), 600);
+  };
+
+  const goToWorkbench = (path = "/workbench") => {
+    router.push(path);
   };
 
   return (
@@ -82,12 +89,12 @@ export default function Home() {
               <span className="hidden sm:inline">ENGINE READY</span>
             </div>
 
-            <button
-              onClick={() => handlePromptClick(samplePrompts[0])}
-              className="text-xs font-normal tracking-wider px-3.5 py-1.5 rounded-full border border-white/[0.12] hover:border-white/[0.25] text-neutral-300 hover:text-white transition-all bg-white/[0.02]"
+            <Link
+              href="/workbench"
+              className="text-xs font-normal tracking-wider px-4 py-1.5 rounded-full border border-purple-500/40 hover:border-purple-400 text-purple-200 hover:text-white transition-all bg-purple-950/40 shadow-[0_0_15px_rgba(168,85,247,0.2)] inline-flex items-center no-underline"
             >
-              Studio
-            </button>
+              Launch Studio →
+            </Link>
           </div>
         </header>
 
@@ -123,38 +130,31 @@ export default function Home() {
 
             {/* CTA Buttons (Refined Orange-Purple Minimal Pill + Simple Secondary) */}
             <div className="flex flex-wrap items-center gap-4 pt-1">
-              {/* Minimalist Orange-Purple Gradient CTA */}
-              <button
-                onClick={() => handlePromptClick(activePrompt)}
-                className="btn-gradient-cta inline-flex items-center justify-center gap-2.5 rounded-full px-6 py-3 text-xs tracking-wider uppercase font-medium text-white transition-all cursor-pointer"
+              {/* Minimalist Orange-Purple Gradient CTA - Direct to Workbench */}
+              <Link
+                href="/workbench"
+                className="btn-gradient-cta inline-flex items-center justify-center gap-2.5 rounded-full px-7 py-3 text-xs tracking-wider uppercase font-medium text-white transition-all cursor-pointer shadow-lg no-underline"
               >
-                <span>{isGenerating ? "Synthesizing..." : "Start Creating"}</span>
-                <svg
-                  className={`h-3.5 w-3.5 transition-transform ${isGenerating ? "animate-spin" : ""}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  {isGenerating ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  )}
+                <span>Start Creating</span>
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
-              </button>
+              </Link>
 
               {/* Minimal Secondary Text Action */}
-              <button className="text-xs tracking-wider uppercase text-neutral-400 hover:text-white px-4 py-3 font-normal transition-colors flex items-center gap-1.5">
+              <Link
+                href="/workbench"
+                className="text-xs tracking-wider uppercase text-neutral-400 hover:text-white px-4 py-3 font-normal transition-colors flex items-center gap-1.5 no-underline"
+              >
                 <span>View Gallery</span>
                 <span className="text-neutral-500">→</span>
-              </button>
+              </Link>
             </div>
 
             {/* ----------------------------------------------------------------- */}
             {/* MINIMAL TELEMETRY CARD (Hairline graph matching reference) */}
             {/* ----------------------------------------------------------------- */}
-            <div className="pt-2 max-w-sm">
+            <Link href="/workbench" className="pt-2 max-w-sm block no-underline text-inherit cursor-pointer">
               <div className="glass-panel-minimal rounded-xl p-4 border border-white/[0.06]">
                 <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400 pb-3 border-b border-white/[0.05]">
                   <span className="tracking-wider">LATENT SYNTHESIS</span>
@@ -194,7 +194,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
 
           </div>
 

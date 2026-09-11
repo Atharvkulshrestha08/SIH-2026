@@ -1,8 +1,11 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function BentoGrid() {
+  const router = useRouter();
   return (
     <section className="relative w-full py-20 sm:py-32 bg-[#000000] text-neutral-100 overflow-hidden">
       
@@ -36,7 +39,10 @@ export default function BentoGrid() {
           {/* ----------------------------------------------------------------------- */}
           {/* CARD 1 (Top Left, compact ~1/3 width, lg:col-span-4) */}
           {/* ----------------------------------------------------------------------- */}
-          <div className="cosmic-card rounded-[28px] p-7 sm:p-9 flex flex-col justify-between relative overflow-hidden min-h-[360px] sm:min-h-[400px] lg:col-span-4 group">
+          <Link
+            href="/workbench"
+            className="cosmic-card rounded-[28px] p-7 sm:p-9 flex flex-col justify-between relative overflow-hidden min-h-[360px] sm:min-h-[400px] lg:col-span-4 group cursor-pointer block no-underline text-inherit"
+          >
             
             {/* Ambient Cosmic Stars & Particles */}
             <div className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]" />
@@ -84,12 +90,15 @@ export default function BentoGrid() {
               </p>
             </div>
 
-          </div>
+          </Link>
 
           {/* ----------------------------------------------------------------------- */}
           {/* CARD 2 (Top Right, wide ~2/3 width, lg:col-span-8) */}
           {/* ----------------------------------------------------------------------- */}
-          <div className="cosmic-card rounded-[28px] p-7 sm:p-10 lg:p-12 flex flex-col justify-between relative overflow-hidden min-h-[360px] sm:min-h-[400px] lg:col-span-8 group">
+          <Link
+            href="/workbench"
+            className="cosmic-card rounded-[28px] p-7 sm:p-10 lg:p-12 flex flex-col justify-between relative overflow-hidden min-h-[360px] sm:min-h-[400px] lg:col-span-8 group cursor-pointer block no-underline text-inherit"
+          >
             
             {/* Ambient Cosmic Stars */}
             <div className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:28px_28px]" />
@@ -140,12 +149,15 @@ export default function BentoGrid() {
               </span>
             </div>
 
-          </div>
+          </Link>
 
           {/* ----------------------------------------------------------------------- */}
           {/* CARD 3 (Bottom Left, medium ~45% width, lg:col-span-5) */}
           {/* ----------------------------------------------------------------------- */}
-          <div className="cosmic-card rounded-[28px] p-7 sm:p-9 flex flex-col justify-between relative overflow-hidden min-h-[340px] sm:min-h-[380px] lg:col-span-5 group">
+          <Link
+            href="/workbench"
+            className="cosmic-card rounded-[28px] p-7 sm:p-9 flex flex-col justify-between relative overflow-hidden min-h-[340px] sm:min-h-[380px] lg:col-span-5 group cursor-pointer block no-underline text-inherit"
+          >
             
             {/* Background Stars */}
             <div className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]" />
@@ -200,12 +212,15 @@ export default function BentoGrid() {
               </p>
             </div>
 
-          </div>
+          </Link>
 
           {/* ----------------------------------------------------------------------- */}
           {/* CARD 4 (Bottom Right, wide ~55% width, lg:col-span-7) */}
           {/* ----------------------------------------------------------------------- */}
-          <div className="cosmic-card rounded-[28px] p-7 sm:p-10 lg:p-12 flex flex-col justify-center items-center text-center relative overflow-hidden min-h-[340px] sm:min-h-[380px] lg:col-span-7 group">
+          <Link
+            href="/workbench"
+            className="cosmic-card rounded-[28px] p-7 sm:p-10 lg:p-12 flex flex-col justify-center items-center text-center relative overflow-hidden min-h-[340px] sm:min-h-[380px] lg:col-span-7 group cursor-pointer block no-underline text-inherit"
+          >
             
             {/* Background Perspective Grid Lines Fading into Cosmic Void */}
             <div 
@@ -249,7 +264,7 @@ export default function BentoGrid() {
               </div>
             </div>
 
-          </div>
+          </Link>
 
         </div>
 
