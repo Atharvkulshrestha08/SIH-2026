@@ -227,17 +227,23 @@ function WorkbenchContent() {
 
       setChatSessions(getAllSessions());
     } catch (err) {
-      console.error('Orchestration error:', err);
+      setBackendOnline(false);
+      const offlineNotice = `⚠️ Offline Local Processing Notice: Unable to reach the sovereign model runtime at http://127.0.0.1:8000.\n\nTo connect to the local inference engine on your GPU, start the backend:\n\`\`\`bash\nuvicorn app.main:app --reload\n\`\`\``;
+      
       const errorMsg = addMessage(currentChatId, {
         sender: 'assistant',
         role: 'assistant',
-        text: `⚠️ Offline Local Processing Notice: Unable to communicate with the local model engine at http://localhost:8000. \n\nPlease verify that the sovereign backend is running:\n\`uvicorn app.main:app --reload\``,
-        content: `⚠️ Offline Local Processing Notice: Unable to communicate with the local model engine at http://localhost:8000. \n\nPlease verify that the sovereign backend is running:\n\`uvicorn app.main:app --reload\``,
+        text: offlineNotice,
+        content: offlineNotice,
         isError: true,
         sovereign_status: 'LOCAL_OFFLINE',
         offline_air_gapped: true,
       });
       setMessages((prev) => [...prev, errorMsg]);
+
+      if (autoTTS && speechSynthesizer?.speak) {
+        speechSynthesizer.speak("The local MAX backend service is currently offline. Please start uvicorn to begin local GPU processing.");
+      }
     } finally {
       setLoading(false);
     }
