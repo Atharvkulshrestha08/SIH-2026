@@ -101,12 +101,21 @@ export default function ChatView({
     };
   }, []);
 
+  function stopRecording(submit = false) {
+    if (!isRecording) return;
+    if (submit) {
+      voiceAutoSendRef.current = true;
+    }
+    vadRecorderRef.current?.stop(false);
+  }
+
   function toggleRecording(autoSend = false) {
     if (isRecording) {
-      setVoiceAutoSend(false);
-      vadRecorderRef.current?.stop(false);
+      stopRecording(autoSend);
     } else {
       setVoiceAutoSend(autoSend);
+      voiceAutoSendRef.current = autoSend;
+      latestTranscriptRef.current = '';
       vadRecorderRef.current?.start(inputText);
     }
   }
@@ -184,9 +193,10 @@ export default function ChatView({
                 <button
                   type="button"
                   className="wb-recording-done-btn"
-                  onClick={() => toggleRecording(false)}
+                  onClick={() => stopRecording(true)}
+                  title="Finish speech and submit query"
                 >
-                  Done speaking
+                  Done speaking →
                 </button>
               </>
             ) : null}
@@ -253,6 +263,9 @@ export default function ChatView({
                 if (loading) return;
                 if (hasText) {
                   handleSubmit();
+                } else if (isRecording) {
+                  // Clicking wave button while recording finishes and auto-sends
+                  stopRecording(true);
                 } else {
                   // If empty, clicking blue button starts Voice Query Mode (speaks -> auto-sends to LLM)
                   toggleRecording(true);

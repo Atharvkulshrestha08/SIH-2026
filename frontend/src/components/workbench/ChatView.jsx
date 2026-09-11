@@ -13,7 +13,7 @@ import {
   AudioLines,
 } from 'lucide-react';
 import MessageBubble from './MessageBubble';
-import { getCyclicMessage } from '../../services/cyclicMessages';
+import { getCyclicMessage, CYCLIC_MESSAGES } from '../../services/cyclicMessages';
 import { VoiceRecorderVAD } from '../../services/voiceService';
 
 export default function ChatView({
@@ -27,20 +27,21 @@ export default function ChatView({
   selectedTool,
   onSelectTool,
 }) {
-  const [inputText, setInputText] = useState(() => {
-    try {
-      const p = new URLSearchParams(window.location.search).get('prompt');
-      return p ? decodeURIComponent(p) : '';
-    } catch {
-      return '';
-    }
-  });
-  const [cyclicMsg, setCyclicMsg] = useState(() => getCyclicMessage());
+  const [inputText, setInputText] = useState('');
+  const [cyclicMsg, setCyclicMsg] = useState(CYCLIC_MESSAGES[0]);
   const [isRecording, setIsRecording] = useState(false);
   const [micVolume, setMicVolume] = useState(0);
   const [micStatus, setMicStatus] = useState('');
   const [thinkMode, setThinkMode] = useState(false);
   const [voiceAutoSend, setVoiceAutoSend] = useState(false);
+
+  useEffect(() => {
+    try {
+      const p = new URLSearchParams(window.location.search).get('prompt');
+      if (p) setInputText(decodeURIComponent(p));
+    } catch {}
+    setCyclicMsg(getCyclicMessage());
+  }, []);
 
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
@@ -100,12 +101,21 @@ export default function ChatView({
     };
   }, []);
 
+  function stopRecording(submit = false) {
+    if (!isRecording) return;
+    if (submit) {
+      voiceAutoSendRef.current = true;
+    }
+    vadRecorderRef.current?.stop(false);
+  }
+
   function toggleRecording(autoSend = false) {
     if (isRecording) {
-      setVoiceAutoSend(false);
-      vadRecorderRef.current?.stop(false);
+      stopRecording(autoSend);
     } else {
       setVoiceAutoSend(autoSend);
+      voiceAutoSendRef.current = autoSend;
+      latestTranscriptRef.current = '';
       vadRecorderRef.current?.start(inputText);
     }
   }
@@ -183,9 +193,10 @@ export default function ChatView({
                 <button
                   type="button"
                   className="wb-recording-done-btn"
-                  onClick={() => toggleRecording(false)}
+                  onClick={() => stopRecording(true)}
+                  title="Finish speech and submit query"
                 >
-                  Done speaking
+                  Done speaking →
                 </button>
               </>
             ) : null}
@@ -252,6 +263,9 @@ export default function ChatView({
                 if (loading) return;
                 if (hasText) {
                   handleSubmit();
+                } else if (isRecording) {
+                  // Clicking wave button while recording finishes and auto-sends
+                  stopRecording(true);
                 } else {
                   // If empty, clicking blue button starts Voice Query Mode (speaks -> auto-sends to LLM)
                   toggleRecording(true);
