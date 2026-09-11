@@ -41,3 +41,67 @@
 2026-09-11 10:02:10 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: hey Max what is the deadline of sis 2026... | Model: general | Latency: 26411.9ms (SUCCESS)
 2026-09-11 10:02:49 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
 2026-09-11 10:02:49 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: Hey, MAX what is the deadline for SIH 2026... | Model: general | Latency: 4715.9ms (SUCCESS)
+2026-09-11 11:28:22 | INFO     | app.routes.voice | Transcribed audio successfully with en-US: open vs code
+2026-09-11 11:28:22 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (62850 bytes) | Lang: en-US | Latency: 4652.2ms (SUCCESS)
+2026-09-11 11:28:24 | INFO     | agents.action_executor | Opened app: vs code
+2026-09-11 11:28:24 | INFO     | security.audit | AUDIT [TASK_SYSTEM_ACTION]: Prompt: open vs code... | Action: open_app | Result: success (SUCCESS)
+2026-09-11 11:31:15 | WARNING  | app.models.model_manager | Model server (http://localhost:12434/engines/v1) unreachable: Request timed out.. Using offline fallback.
+2026-09-11 11:31:15 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: who is the president of india... | Model: general | Latency: 142276.4ms (SUCCESS)
+2026-09-11 11:39:50 | INFO     | app.routes.voice | Transcribed audio successfully with en-US: amax who is the Prime Minister of India
+2026-09-11 11:39:50 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (122924 bytes) | Lang: en-US | Latency: 1350.8ms (SUCCESS)
+2026-09-11 11:39:53 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 11:39:54 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: amax who is the Prime Minister of India... | Model: general | Latency: 3600.8ms (SUCCESS)
+2026-09-11 12:26:31 | INFO     | app.routes.voice | Transcribed audio successfully with en-US: of America
+2026-09-11 12:26:31 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (79234 bytes) | Lang: en-US | Latency: 950.6ms (SUCCESS)
+2026-09-11 12:27:24 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 12:27:24 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: of America... | Model: general | Latency: 52497.5ms (SUCCESS)
+2026-09-11 12:28:56 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 12:28:56 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: explain it.... | Model: general | Latency: 9684.0ms (SUCCESS)
+2026-09-11 12:31:03 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 12:31:03 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: what is Raect?... | Model: general | Latency: 4741.5ms (SUCCESS)
+2026-09-11 12:45:29 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 12:45:29 | INFO     | security.audit | AUDIT [TASK_CODE_MATH]: Prompt: BINARY TREE CODE IN PYTHON.... | Model: code | Latency: 79685.6ms (SUCCESS)
+2026-09-11 12:47:45 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: hi... | Mode: fast-path | Latency: 0.0ms (SUCCESS)
+2026-09-11 12:48:12 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 12:48:12 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: what is the final boss of elderring.... | Model: general | Latency: 8596.4ms (SUCCESS)
+2026-09-11 12:48:59 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 12:48:59 | INFO     | security.audit | AUDIT [TASK_CODE_MATH]: Prompt: code for 2 pointeer in C.... | Model: code | Latency: 29367.2ms (SUCCESS)
+2026-09-11 12:49:46 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 12:49:46 | INFO     | security.audit | AUDIT [TASK_CODE_MATH]: Prompt: BINARY TREE CODE IN PYTHON.... | Model: code | Latency: 31230.1ms (SUCCESS)
+2026-09-11 12:50:40 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 12:50:40 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: who built taj mahal and why?... | Model: general | Latency: 10292.9ms (SUCCESS)
+2026-09-11 13:04:20 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 13:04:20 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: hii mai college mai aaj kya pehen ke jau... | Model: general | Latency: 22997.0ms (SUCCESS)
+2026-09-11 13:05:15 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 13:05:15 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: abey bhen ke lode... | Model: general | Latency: 2155.5ms (SUCCESS)
+2026-09-11 13:05:43 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 13:05:43 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: yes im abusing you... | Model: general | Latency: 2434.5ms (SUCCESS)
+2026-09-11 13:06:47 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 13:06:47 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: da... | Model: general | Latency: 1902.0ms (SUCCESS)
+2026-09-11 13:06:51 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 13:06:51 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: t... | Model: general | Latency: 2701.4ms (SUCCESS)
+2026-09-11 13:07:01 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 13:07:01 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: data breach... | Model: general | Latency: 7226.3ms (SUCCESS)
+2026-09-11 13:16:40 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 13:16:40 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: trial... | Model: general | Latency: 20492.6ms (SUCCESS)
+2026-09-11 13:25:33 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: hello... | Mode: fast-path | Latency: 0.2ms (SUCCESS)
+2026-09-11 13:25:51 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 13:25:51 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: What is the boiling point of water at sea level?... | Model: general | Latency: 17743.9ms (SUCCESS)
+2026-09-11 13:25:51 | INFO     | agents.action_executor | Opened app: calculator
+2026-09-11 13:25:51 | INFO     | security.audit | AUDIT [TASK_SYSTEM_ACTION]: Prompt: open calculator... | Action: open_app | Result: success (SUCCESS)
+2026-09-11 13:25:52 | INFO     | security.audit | AUDIT [DOCUMENT_GENERATED]: Generated docx document: Memo_20260911_132552.docx (SUCCESS)
+2026-09-11 13:25:52 | INFO     | security.audit | AUDIT [DOCUMENT_GENERATED]: Generated xlsx document: Calculation_20260911_132552.xlsx (SUCCESS)
+2026-09-11 13:26:18 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: hello... | Mode: fast-path | Latency: 0.1ms (SUCCESS)
+2026-09-11 13:26:21 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 13:26:21 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: What is the boiling point of water at sea level?... | Model: general | Latency: 3754.9ms (SUCCESS)
+2026-09-11 13:26:22 | INFO     | agents.action_executor | Opened app: calculator
+2026-09-11 13:26:22 | INFO     | security.audit | AUDIT [TASK_SYSTEM_ACTION]: Prompt: open calculator... | Action: open_app | Result: success (SUCCESS)
+2026-09-11 13:26:22 | INFO     | security.audit | AUDIT [DOCUMENT_GENERATED]: Generated docx document: Memo_20260911_132622.docx (SUCCESS)
+2026-09-11 13:26:22 | INFO     | security.audit | AUDIT [DOCUMENT_GENERATED]: Generated xlsx document: Calculation_20260911_132622.xlsx (SUCCESS)
+2026-09-11 13:31:20 | INFO     | security.audit | AUDIT [TASK_FAST_PATH]: Prompt: hello... | Mode: fast-path | Latency: 0.0ms (SUCCESS)
+2026-09-11 13:31:23 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 13:31:23 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: What is the boiling point of water at sea level?... | Model: general | Latency: 2420.0ms (SUCCESS)
+2026-09-11 13:31:23 | INFO     | agents.action_executor | Opened app: calculator
+2026-09-11 13:31:23 | INFO     | security.audit | AUDIT [TASK_SYSTEM_ACTION]: Prompt: open calculator... | Action: open_app | Result: success (SUCCESS)
+2026-09-11 13:31:23 | INFO     | security.audit | AUDIT [DOCUMENT_GENERATED]: Generated docx document: Memo_20260911_133123.docx (SUCCESS)
+2026-09-11 13:31:23 | INFO     | security.audit | AUDIT [DOCUMENT_GENERATED]: Generated xlsx document: Calculation_20260911_133123.xlsx (SUCCESS)
