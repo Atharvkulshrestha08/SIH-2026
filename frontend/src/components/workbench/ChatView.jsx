@@ -13,7 +13,7 @@ import {
   AudioLines,
 } from 'lucide-react';
 import MessageBubble from './MessageBubble';
-import { getCyclicMessage, CYCLIC_MESSAGES } from '../../services/cyclicMessages';
+import { getCyclicMessage } from '../../services/cyclicMessages';
 import { VoiceRecorderVAD } from '../../services/voiceService';
 
 export default function ChatView({
@@ -27,21 +27,20 @@ export default function ChatView({
   selectedTool,
   onSelectTool,
 }) {
-  const [inputText, setInputText] = useState('');
-  const [cyclicMsg, setCyclicMsg] = useState(CYCLIC_MESSAGES[0]);
+  const [inputText, setInputText] = useState(() => {
+    try {
+      const p = new URLSearchParams(window.location.search).get('prompt');
+      return p ? decodeURIComponent(p) : '';
+    } catch {
+      return '';
+    }
+  });
+  const [cyclicMsg, setCyclicMsg] = useState(() => getCyclicMessage());
   const [isRecording, setIsRecording] = useState(false);
   const [micVolume, setMicVolume] = useState(0);
   const [micStatus, setMicStatus] = useState('');
   const [thinkMode, setThinkMode] = useState(false);
   const [voiceAutoSend, setVoiceAutoSend] = useState(false);
-
-  useEffect(() => {
-    try {
-      const p = new URLSearchParams(window.location.search).get('prompt');
-      if (p) setInputText(decodeURIComponent(p));
-    } catch {}
-    setCyclicMsg(getCyclicMessage());
-  }, []);
 
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
@@ -101,21 +100,12 @@ export default function ChatView({
     };
   }, []);
 
-  function stopRecording(submit = false) {
-    if (!isRecording) return;
-    if (submit) {
-      voiceAutoSendRef.current = true;
-    }
-    vadRecorderRef.current?.stop(false);
-  }
-
   function toggleRecording(autoSend = false) {
     if (isRecording) {
-      stopRecording(autoSend);
+      setVoiceAutoSend(false);
+      vadRecorderRef.current?.stop(false);
     } else {
       setVoiceAutoSend(autoSend);
-      voiceAutoSendRef.current = autoSend;
-      latestTranscriptRef.current = '';
       vadRecorderRef.current?.start(inputText);
     }
   }
@@ -193,10 +183,9 @@ export default function ChatView({
                 <button
                   type="button"
                   className="wb-recording-done-btn"
-                  onClick={() => stopRecording(true)}
-                  title="Finish speech and submit query"
+                  onClick={() => toggleRecording(false)}
                 >
-                  Done speaking →
+                  Done speaking
                 </button>
               </>
             ) : null}
@@ -263,9 +252,6 @@ export default function ChatView({
                 if (loading) return;
                 if (hasText) {
                   handleSubmit();
-                } else if (isRecording) {
-                  // Clicking wave button while recording finishes and auto-sends
-                  stopRecording(true);
                 } else {
                   // If empty, clicking blue button starts Voice Query Mode (speaks -> auto-sends to LLM)
                   toggleRecording(true);
@@ -321,73 +307,6 @@ export default function ChatView({
 
           {/* Centered Pill Composer */}
           {renderComposer(true)}
-
-          {/* High-End Quick Engineering Prompts Grid */}
-          <div className="wb-clean-suggestions-grid">
-            <button
-              type="button"
-              className="wb-clean-suggestion-card"
-              onClick={() => {
-                const q = "Check API 610 vibration limits & RMS envelope for centrifugal pump overhaul";
-                setInputText(q);
-                handleSubmit(q);
-              }}
-            >
-              <div className="wb-suggestion-icon-wrap">⚡</div>
-              <div className="wb-suggestion-text-group">
-                <div className="wb-suggestion-title">Pump Vibration Envelope</div>
-                <div className="wb-suggestion-desc">API 610 / ISO 10816 limits & trip thresholds</div>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              className="wb-clean-suggestion-card"
-              onClick={() => {
-                const q = "Calculate minimum required wall thickness for 4.2 MPa pressure vessel under ASME Sec VIII";
-                setInputText(q);
-                handleSubmit(q);
-              }}
-            >
-              <div className="wb-suggestion-icon-wrap">📐</div>
-              <div className="wb-suggestion-text-group">
-                <div className="wb-suggestion-title">ASME VIII Calculation</div>
-                <div className="wb-suggestion-desc">Shell wall thickness & MAWP safety factors</div>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              className="wb-clean-suggestion-card"
-              onClick={() => {
-                const q = "Draft an internal Capex authorization memo for Crude Distillation Column 101 overhaul";
-                setInputText(q);
-                handleSubmit(q);
-              }}
-            >
-              <div className="wb-suggestion-icon-wrap">📄</div>
-              <div className="wb-suggestion-text-group">
-                <div className="wb-suggestion-title">Draft Capex Memo</div>
-                <div className="wb-suggestion-desc">Turnaround justification memo for Column 101</div>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              className="wb-clean-suggestion-card"
-              onClick={() => {
-                const q = "Inspect refinery SOPs and verify zero-egress offline air-gap compliance status";
-                setInputText(q);
-                handleSubmit(q);
-              }}
-            >
-              <div className="wb-suggestion-icon-wrap">🛡️</div>
-              <div className="wb-suggestion-text-group">
-                <div className="wb-suggestion-title">Air-Gap Audit</div>
-                <div className="wb-suggestion-desc">Verify local model weights & zero network egress</div>
-              </div>
-            </button>
-          </div>
 
           <div className="wb-clean-disclaimer">
             <Shield size={11} />

@@ -13,9 +13,7 @@ import {
   Search,
   CheckSquare,
   Lock,
-  Home,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const MENU_ITEMS = [
   { id: 'tasks', label: 'Tasks & Projects', icon: CheckSquare },
@@ -43,9 +41,9 @@ export default function WorkbenchSidebar({
     <aside className={`wb-clean-sidebar ${collapsed ? 'collapsed' : ''}`}>
       {/* Top Brand & Collapse Icon */}
       <div className="wb-clean-sidebar-header">
-        <Link to="/" className="wb-clean-brand" title="Return to Landing Page" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <div className="wb-clean-brand">
           <span className="wb-clean-brand-name">Max AI Workbench</span>
-        </Link>
+        </div>
         <div className="wb-clean-header-actions">
           <button
             className="wb-clean-icon-btn"

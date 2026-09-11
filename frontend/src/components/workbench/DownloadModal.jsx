@@ -7,32 +7,21 @@ import {
   CheckCircle,
   Terminal,
   Server,
-  X,
 } from 'lucide-react';
 
 export default function DownloadModal({ onDismiss }) {
-  const [verified, setVerified] = useState(true);
+  const [verified, setVerified] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVerified(true);
+    }, 900);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="wb-modal-overlay" onClick={onDismiss}>
-      <div className="wb-modal" onClick={(e) => e.stopPropagation()} style={{ position: 'relative' }}>
-        <button
-          onClick={onDismiss}
-          title="Close dialog"
-          style={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            background: 'transparent',
-            border: 'none',
-            color: '#a1a1aa',
-            cursor: 'pointer',
-            padding: '4px',
-            borderRadius: '6px',
-          }}
-        >
-          <X size={18} />
-        </button>
+    <div className="wb-modal-overlay">
+      <div className="wb-modal">
         <div className="wb-modal-icon">🛡️</div>
         <h2 className="wb-modal-title">Max AI Local Runtime</h2>
         <p className="wb-modal-desc">
