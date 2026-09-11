@@ -279,18 +279,20 @@ function WorkbenchContent() {
             {activeView === 'files' && <FilesView />}
             {activeView === 'audit' && <AuditView />}
             {activeView === 'status' && <StatusView />}
-            {activeView === 'models' && <ModelsView onOpenModelModal={() => {}} />}
+            {activeView === 'models' && <ModelsView onOpenModelModal={() => setShowDownloadModal(true)} />}
             {activeView === 'sandbox' && <SandboxView />}
           </main>
         </div>
       </div>
 
-      <DownloadModal
-        onDismiss={() => {
-          setShowDownloadModal(false);
-          markFirstVisitDone();
-        }}
-      />
+      {showDownloadModal && (
+        <DownloadModal
+          onDismiss={() => {
+            setShowDownloadModal(false);
+            markFirstVisitDone();
+          }}
+        />
+      )}
     </div>
   );
 }
