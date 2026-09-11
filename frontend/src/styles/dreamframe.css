@@ -1,0 +1,104 @@
+/* =========================================================================
+   DREAMFRAME HERO & COSMIC SECTIONS STYLING
+   ========================================================================= */
+
+@keyframes floatSubtle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.df-animate-float {
+  animation: floatSubtle 6s ease-in-out infinite;
+}
+
+/* Infinite Marquee Animations */
+@keyframes dfMarqueeLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes dfMarqueeRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.df-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: dfMarqueeLeft 32s linear infinite;
+}
+
+.df-marquee-right {
+  display: flex;
+  width: max-content;
+  animation: dfMarqueeRight 36s linear infinite;
+}
+
+.df-marquee-left:hover,
+.df-marquee-right:hover {
+  animation-play-state: paused;
+}
+
+/* Masking edges for seamless marquee */
+.df-mask-marquee {
+  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+
+/* Cosmic Bento Card */
+.df-cosmic-card {
+  background: radial-gradient(circle at 50% 0%, rgba(30, 18, 42, 0.5) 0%, rgba(9, 7, 14, 0.95) 100%), #06050a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.df-cosmic-card:hover {
+  border-color: rgba(192, 132, 252, 0.28);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(168, 85, 247, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Minimalist hairline glass styling */
+.df-glass-panel-minimal {
+  background: rgba(8, 8, 10, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.df-glass-panel-neon {
+  background: rgba(5, 5, 8, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.7);
+}
+
+/* Refined, Minimalist Orange-Purple Gradient CTA */
+.df-btn-gradient-cta {
+  background: linear-gradient(135deg, #ea580c 0%, #c026d3 60%, #7c3aed 100%);
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.25), 0 0 30px rgba(124, 58, 237, 0.15);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.df-btn-gradient-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(234, 88, 12, 0.35), 0 0 40px rgba(192, 38, 211, 0.25);
+  filter: brightness(1.05);
+}
+
+/* Minimalist Editorial Watermark (lighter weight, lower contrast, pure elegance) */
+.df-oversized-watermark {
+  user-select: none;
+  pointer-events: none;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.002) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

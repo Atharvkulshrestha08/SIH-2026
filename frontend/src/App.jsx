@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
+import LandingPage from "./pages/LandingPage";
 import Workbench from "./pages/Workbench";
 
 function App() {
@@ -8,8 +9,9 @@ function App() {
     <ThemeProvider>
       <Router>
         <Routes>
-          {/* Direct to Sovereign Workbench Application (Offline Air-Gapped) */}
-          <Route path="/" element={<Workbench initialView="chat" />} />
+          {/* DreamFrame Landing Page with direct link to Workbench */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/landing" element={<LandingPage />} />
 
           {/* Workbench Application routes */}
           <Route path="/workbench" element={<Workbench initialView="chat" />} />
