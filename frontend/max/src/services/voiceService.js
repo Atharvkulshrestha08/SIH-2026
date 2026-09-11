@@ -434,34 +434,37 @@ function encodeWAV(samples, sampleRate = 16000) {
 }
 
 export async function sendAudioToBackend(wavBlob, language = 'en-US') {
-  try {
-    const formData = new FormData();
-    formData.append('file', wavBlob, 'recording.wav');
-    formData.append('language', language);
+  const endpoints = [
+    '/api/v1/voice/transcribe',
+    '/api/voice/transcribe',
+    'http://127.0.0.1:8000/api/v1/voice/transcribe',
+    'http://127.0.0.1:8000/api/voice/transcribe',
+    'http://localhost:8000/api/v1/voice/transcribe',
+    'http://localhost:8000/api/voice/transcribe',
+  ];
 
-    let res = await fetch('/api/v1/voice/transcribe', {
-      method: 'POST',
-      body: formData,
-    });
+  for (const ep of endpoints) {
+    try {
+      const formData = new FormData();
+      formData.append('file', wavBlob, 'recording.wav');
+      if (language) formData.append('language', language);
 
-    if (!res.ok) {
-      res = await fetch('/api/voice/transcribe', {
+      const res = await fetch(ep, {
         method: 'POST',
         body: formData,
       });
-    }
 
-    if (!res.ok) {
-      console.warn('Backend transcription returned status:', res.status);
-      return '';
+      if (res.ok) {
+        const data = await res.json();
+        if (data && typeof data.transcript === 'string') {
+          return data.transcript;
+        }
+      }
+    } catch (err) {
+      // Try next endpoint
     }
-
-    const data = await res.json();
-    return data?.transcript || '';
-  } catch (err) {
-    console.error('Backend audio transcription network error:', err);
-    return '';
   }
+  return '';
 }
 
 export class VoiceRecorderVAD {
@@ -487,6 +490,7 @@ export class VoiceRecorderVAD {
     this.mediaStream = null;
     this.analyser = null;
     this.processorNode = null;
+    this.silenceGain = null;
     this.audioChunks = [];
     this.silenceTimer = null;
     this.recognition = null;
@@ -524,6 +528,10 @@ export class VoiceRecorderVAD {
       this.analyser.fftSize = 256;
       source.connect(this.analyser);
 
+      // Create a muted GainNode to keep audio flow alive without playing back into speakers
+      this.silenceGain = this.audioContext.createGain();
+      this.silenceGain.gain.value = 0;
+
       // 2. Audio recording node to capture PCM samples for backend transcription fallback
       try {
         this.processorNode = this.audioContext.createScriptProcessor(4096, 1, 1);
@@ -533,7 +541,13 @@ export class VoiceRecorderVAD {
           this.audioChunks.push(new Float32Array(input));
         };
         source.connect(this.processorNode);
-        this.processorNode.connect(this.audioContext.destination);
+        this.processorNode.connect(this.silenceGain);
+        this.silenceGain.connect(this.audioContext.destination);
+
+        // Retain reference on window to prevent Chrome garbage collection
+        if (typeof window !== 'undefined') {
+          window.__max_voice_proc = this.processorNode;
+        }
       } catch (procErr) {
         console.warn('ScriptProcessor init warning:', procErr);
       }
@@ -572,29 +586,25 @@ export class VoiceRecorderVAD {
 
         this.recognition.onresult = (event) => {
           let interimChunk = '';
-          for (let i = event.resultIndex; i < event.results.length; i++) {
+          let finalChunk = '';
+          for (let i = 0; i < event.results.length; i++) {
             const res = event.results[i];
             if (res.isFinal) {
-              const piece = res[0].transcript.trim();
-              if (piece) {
-                this.accumulatedTranscript = (this.accumulatedTranscript ? this.accumulatedTranscript + ' ' : '') + piece;
-              }
+              finalChunk += res[0].transcript + ' ';
             } else {
               interimChunk += res[0].transcript;
             }
           }
 
-          let full = this.accumulatedTranscript;
-          if (interimChunk.trim()) {
-            full = (full ? full + ' ' : '') + interimChunk.trim();
-          }
+          const base = this.initialText ? (this.initialText.trim() + ' ') : '';
+          const full = (base + finalChunk + interimChunk).trim();
 
-          if (full.trim()) {
+          if (full) {
             this.hasSpoken = true;
             this.hasWebSpeechProducedText = true;
             this.silenceStart = null;
             if (this.onTranscription) {
-              this.onTranscription(full.trim(), !interimChunk.trim());
+              this.onTranscription(full, !interimChunk.trim());
             }
           }
         };
@@ -603,7 +613,6 @@ export class VoiceRecorderVAD {
           if (e.error !== 'no-speech') {
             console.warn('SpeechRecognition warning:', e.error);
           }
-          // If Web Speech fails with network or not-allowed, backend fallback handles audio!
         };
 
         this.recognition.onend = () => {
@@ -643,7 +652,7 @@ export class VoiceRecorderVAD {
         this.silenceStart = null;
       } else if (!this.hasSpoken) {
         if (elapsed >= 10000) {
-          this.stop(true);
+          this.stop(false);
         }
       } else if (this.hasSpoken) {
         if (!this.silenceStart) {
@@ -678,6 +687,16 @@ export class VoiceRecorderVAD {
         this.processorNode.disconnect();
       } catch (e) {}
       this.processorNode = null;
+      if (typeof window !== 'undefined') {
+        window.__max_voice_proc = null;
+      }
+    }
+
+    if (this.silenceGain) {
+      try {
+        this.silenceGain.disconnect();
+      } catch (e) {}
+      this.silenceGain = null;
     }
 
     const sampleRate = this.audioContext?.sampleRate || 44100;
@@ -704,7 +723,8 @@ export class VoiceRecorderVAD {
         console.log(`[Voice] Submitting ${wavBlob.size} bytes WAV to local transcription backend...`);
         const transcript = await sendAudioToBackend(wavBlob, this.language);
         if (transcript && transcript.trim()) {
-          const finalFull = (this.accumulatedTranscript ? this.accumulatedTranscript + ' ' : '') + transcript.trim();
+          const base = this.initialText ? (this.initialText.trim() + ' ') : '';
+          const finalFull = (base + transcript.trim()).trim();
           this.accumulatedTranscript = finalFull;
           if (this.onTranscription) {
             this.onTranscription(finalFull, true);

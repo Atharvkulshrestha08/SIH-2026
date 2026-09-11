@@ -21,3 +21,23 @@
 2026-09-11 03:51:42 | INFO     | app.routes.voice | Transcribed audio successfully: open PPT open PPT
 2026-09-11 03:51:42 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (117462 bytes) | Lang: en-US | Latency: 767.4ms (SUCCESS)
 2026-09-11 03:51:45 | INFO     | security.audit | AUDIT [TASK_SYSTEM_ACTION]: Prompt: open PPT open PPT... | Action: open_file | Result: denied (DENIED)
+2026-09-11 09:33:12 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 09:33:12 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: hey hlo how are you... | Model: general | Latency: 31208.1ms (SUCCESS)
+2026-09-11 09:37:04 | INFO     | app.routes.voice | No audible speech detected in audio payload
+2026-09-11 09:37:04 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: silence.wav (32044 bytes) | Lang: auto | Latency: 570.5ms (SUCCESS)
+2026-09-11 09:39:37 | INFO     | app.routes.voice | No audible speech detected in audio payload
+2026-09-11 09:39:37 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: test.wav (32044 bytes) | Lang: auto | Latency: 1045.1ms (SUCCESS)
+2026-09-11 09:39:38 | INFO     | app.routes.voice | No audible speech detected in audio payload
+2026-09-11 09:39:38 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: test.wav (32044 bytes) | Lang: auto | Latency: 1056.2ms (SUCCESS)
+2026-09-11 09:56:06 | INFO     | app.routes.voice | Transcribed audio successfully with en-US: can you open the vs code
+2026-09-11 09:56:06 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (131116 bytes) | Lang: en-US | Latency: 1255.7ms (SUCCESS)
+2026-09-11 09:56:06 | INFO     | agents.action_executor | Opened app: vs code
+2026-09-11 09:56:06 | INFO     | security.audit | AUDIT [TASK_SYSTEM_ACTION]: Prompt: can you open the vs code... | Action: open_app | Result: success (SUCCESS)
+2026-09-11 10:01:18 | INFO     | app.routes.voice | No audible speech detected in audio payload
+2026-09-11 10:01:18 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (294956 bytes) | Lang: en-US | Latency: 2122.0ms (SUCCESS)
+2026-09-11 10:01:43 | INFO     | app.routes.voice | Transcribed audio successfully with en-US: hey Max what is the deadline of sis 2026
+2026-09-11 10:01:43 | INFO     | security.audit | AUDIT [VOICE_TRANSCRIBE]: Audio: recording.wav (322262 bytes) | Lang: en-US | Latency: 2012.6ms (SUCCESS)
+2026-09-11 10:02:10 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 10:02:10 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: hey Max what is the deadline of sis 2026... | Model: general | Latency: 26411.9ms (SUCCESS)
+2026-09-11 10:02:49 | INFO     | httpx2 | HTTP Request: POST http://localhost:12434/engines/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-11 10:02:49 | INFO     | security.audit | AUDIT [TASK_GENERAL]: Prompt: Hey, MAX what is the deadline for SIH 2026... | Model: general | Latency: 4715.9ms (SUCCESS)

@@ -57,10 +57,11 @@ async def transcribe_audio(
     engine_used = "speech-recognition"
 
     try:
+        # pyrefly: ignore [missing-import]
         import speech_recognition as sr
 
         r = sr.Recognizer()
-        r.energy_threshold = 300
+        r.energy_threshold = 150
         r.dynamic_energy_threshold = True
 
         wav_io = None
@@ -68,6 +69,7 @@ async def transcribe_audio(
             wav_io = io.BytesIO(audio_bytes)
         else:
             try:
+                # pyrefly: ignore [missing-import]
                 from pydub import AudioSegment
                 seg = AudioSegment.from_file(io.BytesIO(audio_bytes))
                 wav_io = io.BytesIO()
@@ -80,13 +82,21 @@ async def transcribe_audio(
         with sr.AudioFile(wav_io) as source:
             audio_data = r.record(source)
 
-        target_lang = language or "en-US"
+        target_lang = language or "en-IN"
         try:
             transcript = r.recognize_google(audio_data, language=target_lang)
-            logger.info("Transcribed audio successfully: %s", transcript)
+            logger.info("Transcribed audio successfully with %s: %s", target_lang, transcript)
         except sr.UnknownValueError:
-            logger.info("No audible speech detected in audio payload")
-            transcript = ""
+            alt_lang = "en-US" if target_lang != "en-US" else "en-IN"
+            try:
+                transcript = r.recognize_google(audio_data, language=alt_lang)
+                logger.info("Transcribed audio with fallback %s: %s", alt_lang, transcript)
+            except sr.UnknownValueError:
+                logger.info("No audible speech detected in audio payload")
+                transcript = ""
+            except Exception as e:
+                logger.warning("Fallback recognition error: %s", e)
+                transcript = ""
         except sr.RequestError as req_err:
             logger.error("Speech recognition service unreachable: %s", req_err)
             transcript = ""
